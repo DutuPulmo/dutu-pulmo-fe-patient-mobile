@@ -1,465 +1,32 @@
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Stack, useRouter } from 'expo-router';
-import { useState, useCallback, useRef } from 'react';
+import { useRef, useState } from 'react';
 import {
-  View,
-  Text,
+  ActivityIndicator,
   FlatList,
   Pressable,
+  Text,
   TextInput,
-  Image,
-  Modal,
-  ScrollView,
-  ActivityIndicator,
+  View,
 } from 'react-native';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { usePublicDoctors, useSpecialties } from '@/hooks/useAppointments';
-import { useHospitals } from '@/hooks/useHospitals';
-import type { DoctorResponseDto } from '@/types/generated/patient-api';
 
-// ── Helper ──────────────────────────────────────────────────────────────────
-function getSpecialtyLabel(specialty: string) {
-  const map: Record<string, string> = {
-    Pulmonology: 'Hô hấp',
-    'Thoracic Surgery': 'Phẫu thuật lồng ngực',
-    'Respiratory Medicine': 'Nội khoa hô hấp',
-    Tuberculosis: 'Lao phổi',
-  };
-  return map[specialty] ?? specialty;
-}
+import { DoctorCard } from '@/components/doctor/DoctorCard';
+import { DoctorFilterSheet } from '@/components/doctor/DoctorFilterSheet';
+import type { DoctorFilterState } from '@/components/doctor/DoctorFilterSheet';
+import { usePublicDoctors } from '@/hooks/useAppointments';
+import type { AppointmentTypeFilter } from '@/services/appointment.service';
 
-function getTitleLabel(title?: string) {
-  const map: Record<string, string> = {
-    SPECIALIST_DOCTOR_1: 'BS. CK1',
-    SPECIALIST_DOCTOR_2: 'BS. CK2',
-    MASTER: 'ThS. BS',
-    DOCTOR_ASSOCIATE_PROFESSOR: 'PGS. TS',
-    DOCTOR_PROFESSOR: 'GS. TS',
-    DOCTOR: 'BS',
-    PHD: 'TS. BS',
-  };
-  return title ? (map[title] ?? title) : 'BS';
-}
-
-// ── Doctor Card ──────────────────────────────────────────────────────────────
-function DoctorCard({ doctor }: { doctor: DoctorResponseDto }) {
-  const router = useRouter();
-  const [avatarError, setAvatarError] = useState(false);
-
-  const initials = doctor.fullName
-    ? doctor.fullName
-        .split(' ')
-        .slice(-2)
-        .map((w) => w[0]?.toUpperCase() ?? '')
-        .join('')
-    : '?';
-
-  return (
-    <View
-      style={{
-        backgroundColor: 'white',
-        borderRadius: 16,
-        padding: 16,
-        borderWidth: 1,
-        borderColor: '#F1F5F9',
-        shadowColor: '#000',
-        shadowOpacity: 0.04,
-        shadowRadius: 8,
-        elevation: 1,
-        marginBottom: 12,
-      }}
-    >
-      <Pressable
-        onPress={() => router.push(`/doctors/${doctor.id}`)}
-        style={({ pressed }) => ({
-          backgroundColor: 'white',
-          borderRadius: 16,
-          padding: 16,
-          borderWidth: 1,
-          borderColor: '#F1F5F9',
-          shadowColor: '#000',
-          shadowOpacity: 0.04,
-          shadowRadius: 8,
-          elevation: 1,
-          marginBottom: 12,
-          opacity: pressed ? 0.93 : 1,
-        })}
-      >
-        {/* Top row: avatar + info */}
-        <View style={{ flexDirection: 'row', gap: 14 }}>
-          {/* Avatar */}
-          <View
-            style={{
-              width: 72,
-              height: 72,
-              borderRadius: 36,
-              overflow: 'hidden',
-              backgroundColor: '#DBEAFE',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexShrink: 0,
-            }}
-          >
-            {doctor.avatarUrl && !avatarError ? (
-              <Image
-                source={{ uri: doctor.avatarUrl }}
-                style={{ width: '100%', height: '100%' }}
-                resizeMode="cover"
-                onError={() => setAvatarError(true)}
-              />
-            ) : (
-              <Text
-                style={{ fontSize: 22, fontWeight: '700', color: '#0A7CFF' }}
-              >
-                {initials}
-              </Text>
-            )}
-          </View>
-
-          {/* Info */}
-          <View style={{ flex: 1 }}>
-            <Text
-              style={{
-                fontSize: 11,
-                color: '#6B7280',
-                fontWeight: '500',
-                marginBottom: 2,
-              }}
-            >
-              {getTitleLabel(doctor.title)}
-            </Text>
-            <Text
-              style={{
-                fontSize: 16,
-                fontWeight: '700',
-                color: '#1F2937',
-                marginBottom: 2,
-              }}
-              numberOfLines={1}
-            >
-              {doctor.fullName ?? 'Bác sĩ'}
-            </Text>
-            {doctor.yearsOfExperience && (
-              <Text style={{ fontSize: 12, color: '#6B7280', marginBottom: 6 }}>
-                {doctor.yearsOfExperience} năm kinh nghiệm
-              </Text>
-            )}
-            {doctor.specialty && (
-              <View
-                style={{
-                  alignSelf: 'flex-start',
-                  backgroundColor: '#EFF6FF',
-                  paddingHorizontal: 10,
-                  paddingVertical: 4,
-                  borderRadius: 8,
-                }}
-              >
-                <Text
-                  style={{ color: '#0A7CFF', fontSize: 11, fontWeight: '600' }}
-                >
-                  {getSpecialtyLabel(doctor.specialty)}
-                </Text>
-              </View>
-            )}
-          </View>
-
-          {/* Rating */}
-          {!!doctor.averageRating && parseFloat(doctor.averageRating) > 0 && (
-            <View style={{ alignItems: 'center', gap: 2 }}>
-              <MaterialIcons name="star" size={16} color="#FBBF24" />
-              <Text
-                style={{ fontSize: 12, fontWeight: '700', color: '#1F2937' }}
-              >
-                {parseFloat(doctor.averageRating).toFixed(1)}
-              </Text>
-            </View>
-          )}
-        </View>
-
-        {/* Address */}
-        {(doctor.address || doctor.primaryHospital?.address) && (
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'flex-start',
-              gap: 6,
-              marginTop: 12,
-            }}
-          >
-            <MaterialIcons
-              name="location-on"
-              size={14}
-              color="#6B7280"
-              style={{ marginTop: 1 }}
-            />
-            <Text
-              style={{
-                flex: 1,
-                fontSize: 12,
-                color: '#6B7280',
-                lineHeight: 18,
-              }}
-              numberOfLines={2}
-            >
-              {doctor.address || doctor.primaryHospital?.address}
-            </Text>
-          </View>
-        )}
-      </Pressable>
-    </View>
-  );
-}
-
-// ── Filter Bottom Sheet ───────────────────────────────────────────────────────
-interface FilterState {
-  specialty: string;
-  hospitalId: string;
-}
-
-function FilterSheet({
-  visible,
-  current,
-  onApply,
-  onClose,
-}: {
-  visible: boolean;
-  current: FilterState;
-  onApply: (f: FilterState) => void;
-  onClose: () => void;
-}) {
-  const [draft, setDraft] = useState<FilterState>(current);
-  const specialtiesQuery = useSpecialties();
-  const hospitalsQuery = useHospitals({ page: 1, limit: 50 });
-
-  const onOpen = useCallback(() => setDraft(current), [current]);
-
-  return (
-    <Modal
-      visible={visible}
-      animationType="slide"
-      transparent
-      onShow={onOpen}
-      onRequestClose={onClose}
-    >
-      <Pressable
-        style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.4)' }}
-        onPress={onClose}
-      />
-      <View
-        style={{
-          backgroundColor: 'white',
-          borderTopLeftRadius: 24,
-          borderTopRightRadius: 24,
-          paddingHorizontal: 20,
-          paddingTop: 12,
-          paddingBottom: 32,
-          maxHeight: '80%',
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
-        }}
-      >
-        {/* Handle */}
-        <View
-          style={{
-            width: 40,
-            height: 4,
-            backgroundColor: '#E2E8F0',
-            borderRadius: 2,
-            alignSelf: 'center',
-            marginBottom: 16,
-          }}
-        />
-        <Text
-          style={{
-            fontSize: 18,
-            fontWeight: '700',
-            color: '#1F2937',
-            marginBottom: 20,
-          }}
-        >
-          Bộ lọc
-        </Text>
-
-        <ScrollView showsVerticalScrollIndicator={false}>
-          {/* Specialty section */}
-          <Text
-            style={{
-              fontSize: 14,
-              fontWeight: '600',
-              color: '#374151',
-              marginBottom: 12,
-            }}
-          >
-            Chuyên khoa
-          </Text>
-          {[
-            { value: '', label: 'Tất cả' },
-            ...(specialtiesQuery.data ?? []).map((s) => ({
-              value: s,
-              label: getSpecialtyLabel(s),
-            })),
-          ].map((item) => (
-            <Pressable
-              key={item.value}
-              onPress={() => setDraft((d) => ({ ...d, specialty: item.value }))}
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 12,
-                paddingVertical: 12,
-                borderBottomWidth: 1,
-                borderBottomColor: '#F8FAFC',
-              }}
-            >
-              <View
-                style={{
-                  width: 20,
-                  height: 20,
-                  borderRadius: 10,
-                  borderWidth: 2,
-                  borderColor:
-                    draft.specialty === item.value ? '#0A7CFF' : '#CBD5E1',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                {draft.specialty === item.value && (
-                  <View
-                    style={{
-                      width: 10,
-                      height: 10,
-                      borderRadius: 5,
-                      backgroundColor: '#0A7CFF',
-                    }}
-                  />
-                )}
-              </View>
-              <Text style={{ fontSize: 14, color: '#374151' }}>
-                {item.label}
-              </Text>
-            </Pressable>
-          ))}
-
-          {/* Hospital section */}
-          <Text
-            style={{
-              fontSize: 14,
-              fontWeight: '600',
-              color: '#374151',
-              marginTop: 20,
-              marginBottom: 12,
-            }}
-          >
-            Nơi khám
-          </Text>
-          {[
-            { value: '', label: 'Tất cả' },
-            ...(hospitalsQuery.data?.items ?? []).map((h) => ({
-              value: h.id,
-              label: h.name,
-            })),
-          ].map((item) => (
-            <Pressable
-              key={item.value}
-              onPress={() =>
-                setDraft((d) => ({ ...d, hospitalId: item.value }))
-              }
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 12,
-                paddingVertical: 12,
-                borderBottomWidth: 1,
-                borderBottomColor: '#F8FAFC',
-              }}
-            >
-              <View
-                style={{
-                  width: 20,
-                  height: 20,
-                  borderRadius: 10,
-                  borderWidth: 2,
-                  borderColor:
-                    draft.hospitalId === item.value ? '#0A7CFF' : '#CBD5E1',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                {draft.hospitalId === item.value && (
-                  <View
-                    style={{
-                      width: 10,
-                      height: 10,
-                      borderRadius: 5,
-                      backgroundColor: '#0A7CFF',
-                    }}
-                  />
-                )}
-              </View>
-              <Text
-                style={{ fontSize: 14, color: '#374151' }}
-                numberOfLines={1}
-              >
-                {item.label}
-              </Text>
-            </Pressable>
-          ))}
-          <View style={{ height: 20 }} />
-        </ScrollView>
-
-        {/* Action buttons */}
-        <View style={{ flexDirection: 'row', gap: 12, marginTop: 8 }}>
-          <Pressable
-            onPress={() => {
-              setDraft({ specialty: '', hospitalId: '' });
-            }}
-            style={({ pressed }) => ({
-              flex: 1,
-              borderRadius: 12,
-              paddingVertical: 14,
-              alignItems: 'center',
-              backgroundColor: '#F1F5F9',
-              opacity: pressed ? 0.8 : 1,
-            })}
-          >
-            <Text style={{ color: '#374151', fontWeight: '600' }}>
-              Xoá bộ lọc
-            </Text>
-          </Pressable>
-          <Pressable
-            onPress={() => {
-              onApply(draft);
-              onClose();
-            }}
-            style={({ pressed }) => ({
-              flex: 1,
-              borderRadius: 12,
-              paddingVertical: 14,
-              alignItems: 'center',
-              backgroundColor: '#0A7CFF',
-              opacity: pressed ? 0.85 : 1,
-            })}
-          >
-            <Text style={{ color: 'white', fontWeight: '700' }}>Áp dụng</Text>
-          </Pressable>
-        </View>
-      </View>
-    </Modal>
-  );
-}
-
-// ── Main Screen ───────────────────────────────────────────────────────────────
 export function DoctorListScreen() {
   const router = useRouter();
+  const [activeTab, setActiveTab] = useState<AppointmentTypeFilter>('offline');
   const [search, setSearch] = useState('');
+  const [searchDebounced, setSearchDebounced] = useState('');
   const [filterVisible, setFilterVisible] = useState(false);
-  const [activeFilter, setActiveFilter] = useState<FilterState>({
+  const [activeFilter, setActiveFilter] = useState<DoctorFilterState>({
     specialty: '',
     hospitalId: '',
   });
-  const [searchDebounced, setSearchDebounced] = useState('');
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleSearchChange = (text: string) => {
@@ -474,6 +41,7 @@ export function DoctorListScreen() {
     search: searchDebounced || undefined,
     specialty: activeFilter.specialty || undefined,
     hospitalId: activeFilter.hospitalId || undefined,
+    appointmentType: activeTab,
   });
 
   const hasFilters = activeFilter.specialty || activeFilter.hospitalId;
@@ -481,13 +49,8 @@ export function DoctorListScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: '#F8FAFC' }}>
-      <Stack.Screen
-        options={{
-          headerShown: false,
-        }}
-      />
+      <Stack.Screen options={{ headerShown: false }} />
 
-      {/* ── Custom Header ── */}
       <View
         style={{
           backgroundColor: '#0A7CFF',
@@ -496,28 +59,18 @@ export function DoctorListScreen() {
           paddingHorizontal: 16,
         }}
       >
-        {/* back + title row */}
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginBottom: 12,
-          }}
-        >
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}>
           <Pressable
             onPress={() => router.back()}
             style={{ padding: 8, marginLeft: -8, marginRight: 8 }}
           >
             <MaterialIcons name="arrow-back-ios" size={20} color="white" />
           </Pressable>
-          <Text
-            style={{ color: 'white', fontSize: 18, fontWeight: '700', flex: 1 }}
-          >
+          <Text style={{ color: 'white', fontSize: 18, fontWeight: '700', flex: 1 }}>
             Tìm bác sĩ
           </Text>
         </View>
 
-        {/* Search bar */}
         <View
           style={{
             flexDirection: 'row',
@@ -551,7 +104,6 @@ export function DoctorListScreen() {
         </View>
       </View>
 
-      {/* ── Filter chips & count row ── */}
       <View
         style={{
           flexDirection: 'row',
@@ -564,6 +116,43 @@ export function DoctorListScreen() {
           borderBottomColor: '#F1F5F9',
         }}
       >
+        <View
+          style={{
+            flexDirection: 'row',
+            backgroundColor: '#F1F5F9',
+            borderRadius: 20,
+            padding: 3,
+          }}
+        >
+          {(
+            [
+              { key: 'offline', label: 'Lịch khám' },
+              { key: 'online', label: 'Lịch tư vấn' },
+            ] as const
+          ).map((tab) => (
+            <Pressable
+              key={tab.key}
+              onPress={() => setActiveTab(tab.key)}
+              style={{
+                paddingHorizontal: 12,
+                paddingVertical: 7,
+                borderRadius: 16,
+                backgroundColor: activeTab === tab.key ? '#FFFFFF' : 'transparent',
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontWeight: '600',
+                  color: activeTab === tab.key ? '#0A7CFF' : '#64748B',
+                }}
+              >
+                {tab.label}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
+
         <Pressable
           onPress={() => setFilterVisible(true)}
           style={({ pressed }) => ({
@@ -598,26 +187,16 @@ export function DoctorListScreen() {
         <View style={{ flex: 1 }} />
 
         {!doctorsQuery.isLoading && (
-          <Text style={{ fontSize: 12, color: '#94A3B8' }}>
-            {doctors.length} bác sĩ
-          </Text>
+          <Text style={{ fontSize: 12, color: '#94A3B8' }}>{doctors.length} bác sĩ</Text>
         )}
       </View>
 
-      {/* ── List ── */}
       {doctorsQuery.isLoading ? (
         <View
-          style={{
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 12,
-          }}
+          style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12 }}
         >
           <ActivityIndicator size="large" color="#0A7CFF" />
-          <Text style={{ color: '#94A3B8', fontSize: 14 }}>
-            Đang tìm bác sĩ phù hợp...
-          </Text>
+          <Text style={{ color: '#94A3B8', fontSize: 14 }}>Đang tìm bác sĩ phù hợp...</Text>
         </View>
       ) : doctors.length === 0 ? (
         <View
@@ -647,9 +226,7 @@ export function DoctorListScreen() {
                 opacity: pressed ? 0.8 : 1,
               })}
             >
-              <Text style={{ color: '#0A7CFF', fontWeight: '600' }}>
-                Xoá bộ lọc
-              </Text>
+              <Text style={{ color: '#0A7CFF', fontWeight: '600' }}>Xoá bộ lọc</Text>
             </Pressable>
           )}
         </View>
@@ -658,16 +235,17 @@ export function DoctorListScreen() {
           data={doctors}
           keyExtractor={(item) => item.id}
           contentContainerStyle={{ padding: 16, paddingBottom: 32 }}
-          renderItem={({ item }) => <DoctorCard doctor={item} />}
+          renderItem={({ item }) => (
+            <DoctorCard doctor={item} onPress={() => router.push(`/doctors/${item.id}`)} />
+          )}
           showsVerticalScrollIndicator={false}
         />
       )}
 
-      {/* ── Filter Sheet ── */}
-      <FilterSheet
+      <DoctorFilterSheet
         visible={filterVisible}
         current={activeFilter}
-        onApply={(f) => setActiveFilter(f)}
+        onApply={setActiveFilter}
         onClose={() => setFilterVisible(false)}
       />
     </View>

@@ -204,6 +204,8 @@ export type DoctorResponseDto = {
   averageRating: string;
   totalReviews: number;
   verifiedAt?: string;
+  hasOnlineFutureSlots?: boolean;
+  hasOfflineFutureSlots?: boolean;
   createdAt: string;
   updatedAt: string;
 };
@@ -268,11 +270,16 @@ export type RescheduleAppointmentDto = { newTimeSlotId: string };
 export type TimeSlotResponseDto = {
   id: string;
   doctorId: string;
+  allowedAppointmentTypes?: AppointmentTypeEnum[];
   startTime: string;
   endTime: string;
   capacity: number;
   bookedCount: number;
   isAvailable: boolean;
+  baseConsultationFee?: string | null;
+  discountPercent?: number;
+  finalConsultationFee?: string;
+  currency?: 'VND';
 };
 export type JoinVideoCallResponseDto = {
   token: string;

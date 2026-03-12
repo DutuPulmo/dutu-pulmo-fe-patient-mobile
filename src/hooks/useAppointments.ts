@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { appointmentService } from '@/services/appointment.service';
+import type { AppointmentTypeFilter } from '@/services/appointment.service';
 import type {
   CancelAppointmentDto,
   CreateAppointmentDto,
@@ -13,9 +14,14 @@ const appointmentKeys = {
   detail: (appointmentId: string) => ['appointments', 'detail', appointmentId] as const,
   doctors: (params?: Record<string, unknown>) => ['doctors', 'public', params] as const,
   doctorDetail: (doctorId: string) => ['doctors', 'detail', doctorId] as const,
-  doctorSlots: (doctorId: string, date: string) => ['doctors', 'slots', doctorId, date] as const,
-  doctorSlotSummary: (doctorId: string, from: string, to: string) =>
-    ['doctors', 'slots', 'summary', doctorId, from, to] as const,
+  doctorSlots: (doctorId: string, date: string, appointmentType: AppointmentTypeFilter) =>
+    ['doctors', 'slots', doctorId, date, appointmentType] as const,
+  doctorSlotSummary: (
+    doctorId: string,
+    from: string,
+    to: string,
+    appointmentType: AppointmentTypeFilter,
+  ) => ['doctors', 'slots', 'summary', doctorId, from, to, appointmentType] as const,
   specialties: () => ['doctors', 'specialties'] as const,
 };
 
@@ -49,6 +55,7 @@ export function usePublicDoctors(params?: {
   order?: 'ASC' | 'DESC';
   specialty?: string;
   hospitalId?: string;
+  appointmentType?: AppointmentTypeFilter;
 }) {
   return useQuery({
     queryKey: appointmentKeys.doctors(params),
@@ -64,18 +71,42 @@ export function usePublicDoctorDetail(doctorId: string) {
   });
 }
 
-export function useDoctorAvailableSlots(doctorId: string, date: string) {
+export function useDoctorAvailableSlots(
+  doctorId: string,
+  date: string,
+  appointmentType: AppointmentTypeFilter = 'all',
+) {
   return useQuery({
-    queryKey: appointmentKeys.doctorSlots(doctorId, date),
-    queryFn: () => appointmentService.getDoctorAvailableTimeSlots(doctorId, date),
+    queryKey: appointmentKeys.doctorSlots(doctorId, date, appointmentType),
+    queryFn: () =>
+      appointmentService.getDoctorAvailableTimeSlots(
+        doctorId,
+        date,
+        appointmentType,
+      ),
     enabled: Boolean(doctorId && date),
   });
 }
 
-export function useDoctorTimeSlotSummary(doctorId: string, from: string, to: string) {
+export function useDoctorTimeSlotSummary(
+  doctorId: string,
+  from: string,
+  to: string,
+  appointmentType: AppointmentTypeFilter = 'all',
+) {
   return useQuery({
-    queryKey: appointmentKeys.doctorSlotSummary(doctorId, from, to),
-    queryFn: () => appointmentService.getDoctorTimeSlotSummary(doctorId, { from, to }),
+    queryKey: appointmentKeys.doctorSlotSummary(
+      doctorId,
+      from,
+      to,
+      appointmentType,
+    ),
+    queryFn: () =>
+      appointmentService.getDoctorTimeSlotSummary(doctorId, {
+        from,
+        to,
+        appointmentType,
+      }),
     enabled: Boolean(doctorId && from && to),
   });
 }

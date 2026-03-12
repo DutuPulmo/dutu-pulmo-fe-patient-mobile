@@ -28,7 +28,7 @@ export function PrescriptionsScreen() {
 
   if (meQuery.isError || prescriptionsQuery.isError) {
     return (
-      <View className="flex-1 items-center justify-center bg-slate-50 px-6">
+      <View className="flex-1 items-center justify-center bg-background-light px-6">
         <EmptyState title="Unable to load prescriptions" description="Please try again later." />
       </View>
     );
@@ -37,7 +37,7 @@ export function PrescriptionsScreen() {
   const prescriptions = prescriptionsQuery.data ?? [];
 
   return (
-    <ScrollView className="flex-1 bg-slate-50" contentContainerStyle={{ padding: 16, paddingBottom: 32 }}>
+    <ScrollView className="flex-1 bg-background-light" contentContainerStyle={{ padding: 16, paddingBottom: 32 }}>
       <Text className="text-2xl font-bold text-slate-900">Prescriptions</Text>
 
       <View className="mt-4 gap-3">

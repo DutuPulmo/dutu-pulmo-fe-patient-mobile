@@ -51,7 +51,7 @@ export function ReportIssueScreen() {
   };
 
   return (
-    <ScrollView className="flex-1 bg-slate-50" contentContainerStyle={{ padding: 16, paddingBottom: 32 }}>
+    <ScrollView className="flex-1 bg-background-light" contentContainerStyle={{ padding: 16, paddingBottom: 32 }}>
       <Text className="text-2xl font-bold text-slate-900">Submit a report</Text>
 
       <Card className="mt-4">

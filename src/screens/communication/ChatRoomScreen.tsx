@@ -26,7 +26,7 @@ export function ChatRoomScreen() {
 
   if (roomQuery.isError || messagesQuery.isError || !roomQuery.data) {
     return (
-      <View className="flex-1 items-center justify-center bg-slate-50 px-6">
+      <View className="flex-1 items-center justify-center bg-background-light px-6">
         <EmptyState title="Unable to load conversation" description="Please try again later." />
       </View>
     );
@@ -49,7 +49,7 @@ export function ChatRoomScreen() {
 
   return (
     <KeyboardAvoidingView
-      className="flex-1 bg-slate-50"
+      className="flex-1 bg-background-light"
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       keyboardVerticalOffset={90}
     >

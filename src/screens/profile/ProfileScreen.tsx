@@ -23,7 +23,7 @@ export function ProfileScreen() {
 
   if (myPatientQuery.isError || profileQuery.isError) {
     return (
-      <View className="flex-1 items-center justify-center bg-slate-50 px-6">
+      <View className="flex-1 items-center justify-center bg-background-light px-6">
         <EmptyState title="Unable to load account" description="Please try again later." />
       </View>
     );
@@ -32,7 +32,7 @@ export function ProfileScreen() {
   const profile = profileQuery.data;
 
   return (
-    <ScrollView className="flex-1 bg-slate-50" contentContainerStyle={{ padding: 16, paddingBottom: 32 }}>
+    <ScrollView className="flex-1 bg-background-light" contentContainerStyle={{ padding: 16, paddingBottom: 32 }}>
       <Card>
         <View className="flex-row items-center gap-3">
           <Avatar uri={user?.avatarUrl} size={56} />
@@ -76,3 +76,4 @@ export function ProfileScreen() {
 }
 
 export default ProfileScreen;
+

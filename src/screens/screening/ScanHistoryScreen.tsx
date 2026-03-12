@@ -6,7 +6,7 @@ import { permissions } from '@/constants/permissions';
 
 export function ScanHistoryScreen() {
   return (
-    <ScrollView className="flex-1 bg-slate-50" contentContainerStyle={{ padding: 16, paddingBottom: 32 }}>
+    <ScrollView className="flex-1 bg-background-light" contentContainerStyle={{ padding: 16, paddingBottom: 32 }}>
       <Text className="text-2xl font-bold text-slate-900">Lịch sử phân tích AI</Text>
       <Text className="mt-1 text-slate-500">
         Ứng dụng bệnh nhân chỉ hiển thị dữ liệu AI khi backend cho phép truy cập theo role PATIENT.
@@ -36,3 +36,4 @@ export function ScanHistoryScreen() {
 }
 
 export default ScanHistoryScreen;
+

@@ -37,7 +37,7 @@ export function AppointmentDetailScreen() {
 
   if (detailQuery.isError || !detailQuery.data) {
     return (
-      <View className="flex-1 items-center justify-center bg-slate-50 px-6">
+      <View className="flex-1 items-center justify-center bg-background-light px-6">
         <EmptyState title="Appointment not found" description="Please try again later." />
       </View>
     );
@@ -74,7 +74,7 @@ export function AppointmentDetailScreen() {
 
   return (
     <>
-      <ScrollView className="flex-1 bg-slate-50" contentContainerStyle={{ padding: 16, paddingBottom: 32 }}>
+      <ScrollView className="flex-1 bg-background-light" contentContainerStyle={{ padding: 16, paddingBottom: 32 }}>
         <Text className="text-2xl font-bold text-slate-900">Appointment detail</Text>
 
         <Card className="mt-4">

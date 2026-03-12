@@ -14,6 +14,8 @@ import type {
   TimeSlotResponseDto,
 } from '@/types/appointment.types';
 
+export type AppointmentTypeFilter = 'all' | 'online' | 'offline';
+
 export const appointmentService = {
   getSpecialties: async () => {
     const { data } = await api.get<string[]>('/public/doctors/specialties');
@@ -28,6 +30,7 @@ export const appointmentService = {
     order?: 'ASC' | 'DESC';
     specialty?: string;
     hospitalId?: string;
+    appointmentType?: AppointmentTypeFilter;
   }) => {
     const { data } = await api.get<PaginatedResponseDto<DoctorResponseDto>>(
       '/public/doctors',
@@ -52,11 +55,15 @@ export const appointmentService = {
     return data;
   },
 
-  getDoctorAvailableTimeSlots: async (doctorId: string, date: string) => {
+  getDoctorAvailableTimeSlots: async (
+    doctorId: string,
+    date: string,
+    appointmentType: AppointmentTypeFilter = 'all',
+  ) => {
     const { data } = await api.get<TimeSlotResponseDto[]>(
       `/public/doctors/${doctorId}/time-slots/available`,
       {
-        params: { date },
+        params: cleanParams({ date, appointmentType }),
       },
     );
     return data;
@@ -64,7 +71,7 @@ export const appointmentService = {
 
   getDoctorTimeSlotSummary: async (
     doctorId: string,
-    params?: { from?: string; to?: string },
+    params?: { from?: string; to?: string; appointmentType?: AppointmentTypeFilter },
   ) => {
     const { data } = await api.get<
       { date: string; count: number; hasAvailability: boolean }[]

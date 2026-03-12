@@ -77,7 +77,7 @@ export function RegisterScreen() {
   };
 
   return (
-    <View className="flex-1 bg-slate-50 px-6 pt-14">
+    <View className="flex-1 bg-background-light px-6 pt-14">
       <Text className="text-3xl font-bold text-slate-900">Create account</Text>
       <Text className="mt-2 text-slate-500">Join us and start your personalized pulmonary care journey.</Text>
 
@@ -190,3 +190,4 @@ export function RegisterScreen() {
 }
 
 export default RegisterScreen;
+

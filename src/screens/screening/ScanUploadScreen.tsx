@@ -6,7 +6,7 @@ import { permissions } from '@/constants/permissions';
 
 export function ScanUploadScreen() {
   return (
-    <ScrollView className="flex-1 bg-slate-50" contentContainerStyle={{ padding: 16, paddingBottom: 32 }}>
+    <ScrollView className="flex-1 bg-background-light" contentContainerStyle={{ padding: 16, paddingBottom: 32 }}>
       <Text className="text-2xl font-bold text-slate-900">Image analysis</Text>
       <Text className="mt-1 text-slate-500">Upload X-ray images to run AI screening</Text>
 
@@ -34,3 +34,4 @@ export function ScanUploadScreen() {
 }
 
 export default ScanUploadScreen;
+

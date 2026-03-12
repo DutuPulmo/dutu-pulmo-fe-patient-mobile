@@ -28,7 +28,7 @@ export function MedicalRecordsScreen() {
 
   if (meQuery.isError || recordsQuery.isError) {
     return (
-      <View className="flex-1 items-center justify-center bg-slate-50 px-6">
+      <View className="flex-1 items-center justify-center bg-background-light px-6">
         <EmptyState title="Unable to load records" description="Please try again later." />
       </View>
     );
@@ -37,7 +37,7 @@ export function MedicalRecordsScreen() {
   const records = recordsQuery.data ?? [];
 
   return (
-    <ScrollView className="flex-1 bg-slate-50" contentContainerStyle={{ padding: 16, paddingBottom: 32 }}>
+    <ScrollView className="flex-1 bg-background-light" contentContainerStyle={{ padding: 16, paddingBottom: 32 }}>
       <Text className="text-2xl font-bold text-slate-900">Medical records</Text>
 
       <View className="mt-4 gap-3">

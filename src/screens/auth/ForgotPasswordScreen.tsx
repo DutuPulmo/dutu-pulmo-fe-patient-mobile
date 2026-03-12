@@ -43,7 +43,7 @@ export function ForgotPasswordScreen() {
   };
 
   return (
-    <View className="flex-1 bg-slate-50 px-6 pt-16">
+    <View className="flex-1 bg-background-light px-6 pt-16">
       <Text className="text-3xl font-bold text-slate-900">Forgot password</Text>
       <Text className="mt-2 text-slate-500">Enter your registered email to receive password recovery instructions.</Text>
 
@@ -79,3 +79,4 @@ export function ForgotPasswordScreen() {
 }
 
 export default ForgotPasswordScreen;
+

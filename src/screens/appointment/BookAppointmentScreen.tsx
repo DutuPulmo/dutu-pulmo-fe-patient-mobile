@@ -69,7 +69,7 @@ export function BookAppointmentScreen() {
   const slots = slotsQuery.data ?? [];
 
   return (
-    <ScrollView className="flex-1 bg-slate-50" contentContainerStyle={{ padding: 16, paddingBottom: 32 }}>
+    <ScrollView className="flex-1 bg-background-light" contentContainerStyle={{ padding: 16, paddingBottom: 32 }}>
       <Text className="text-2xl font-bold text-slate-900">Đặt lịch khám</Text>
       <Text className="mt-1 text-slate-500">Ngày khám: {date}</Text>
 
@@ -182,3 +182,4 @@ export function BookAppointmentScreen() {
 }
 
 export default BookAppointmentScreen;
+

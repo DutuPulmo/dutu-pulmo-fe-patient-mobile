@@ -20,7 +20,7 @@ export function PrescriptionDetailScreen() {
 
   if (detailQuery.isError || !detailQuery.data) {
     return (
-      <View className="flex-1 items-center justify-center bg-slate-50 px-6">
+      <View className="flex-1 items-center justify-center bg-background-light px-6">
         <EmptyState title="Prescription not found" description="Please try again later." />
       </View>
     );
@@ -29,7 +29,7 @@ export function PrescriptionDetailScreen() {
   const prescription = detailQuery.data;
 
   return (
-    <ScrollView className="flex-1 bg-slate-50" contentContainerStyle={{ padding: 16, paddingBottom: 32 }}>
+    <ScrollView className="flex-1 bg-background-light" contentContainerStyle={{ padding: 16, paddingBottom: 32 }}>
       <Text className="text-2xl font-bold text-slate-900">Prescription details</Text>
 
       <Card className="mt-4">
@@ -42,7 +42,7 @@ export function PrescriptionDetailScreen() {
         <Text className="mt-3 text-sm font-semibold text-slate-700">Medication list</Text>
         <View className="mt-2 gap-2">
           {prescription.items.map((item) => (
-            <View key={item.id} className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+            <View key={item.id} className="rounded-lg border border-slate-200 bg-background-light p-3">
               <Text className="text-sm font-semibold text-slate-900">{item.medicineName || 'Medicine'}</Text>
               <Text className="mt-1 text-xs text-slate-600">
                 {item.dosage} - {item.frequency} - {item.duration}

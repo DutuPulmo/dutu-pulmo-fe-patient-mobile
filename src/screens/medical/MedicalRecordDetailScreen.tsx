@@ -20,7 +20,7 @@ export function MedicalRecordDetailScreen() {
 
   if (detailQuery.isError || !detailQuery.data) {
     return (
-      <View className="flex-1 items-center justify-center bg-slate-50 px-6">
+      <View className="flex-1 items-center justify-center bg-background-light px-6">
         <EmptyState title="Record not found" description="Please try again later." />
       </View>
     );
@@ -29,7 +29,7 @@ export function MedicalRecordDetailScreen() {
   const record = detailQuery.data;
 
   return (
-    <ScrollView className="flex-1 bg-slate-50" contentContainerStyle={{ padding: 16, paddingBottom: 32 }}>
+    <ScrollView className="flex-1 bg-background-light" contentContainerStyle={{ padding: 16, paddingBottom: 32 }}>
       <Text className="text-2xl font-bold text-slate-900">Chi tiết hồ sơ y tế</Text>
 
       <Card className="mt-4">
@@ -74,7 +74,7 @@ export function MedicalRecordDetailScreen() {
         ) : (
           <View className="mt-3 gap-2">
             {record.prescriptions.map((prescription) => (
-              <View key={prescription.id} className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+              <View key={prescription.id} className="rounded-xl border border-slate-200 bg-background-light p-3">
                 <Text className="text-sm font-semibold text-slate-900">{prescription.prescriptionNumber}</Text>
                 <Text className="mt-1 text-xs text-slate-600">Số thuốc: {prescription.items.length}</Text>
               </View>
@@ -87,3 +87,4 @@ export function MedicalRecordDetailScreen() {
 }
 
 export default MedicalRecordDetailScreen;
+
