@@ -27,7 +27,8 @@ type AuthState = {
 };
 
 const secureStorage = {
-  getItem: async (name: string): Promise<string | null> => SecureStore.getItemAsync(name),
+  getItem: async (name: string): Promise<string | null> =>
+    SecureStore.getItemAsync(name),
   setItem: async (name: string, value: string): Promise<void> => {
     await SecureStore.setItemAsync(name, value);
   },
@@ -45,7 +46,8 @@ export const useAuthStore = create<AuthState>()(
       hydrated: false,
       setSession: ({ accessToken, refreshToken, user }) =>
         set({ accessToken, refreshToken, user }),
-      clearSession: () => set({ accessToken: null, refreshToken: null, user: null }),
+      clearSession: () =>
+        set({ accessToken: null, refreshToken: null, user: null }),
       setUser: (user) => set({ user }),
       setHydrated: (value) => set({ hydrated: value }),
     }),
