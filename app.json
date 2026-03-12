@@ -3,6 +3,9 @@
     "name": "dutu-pulmo-fe-patient-mobile",
     "slug": "dutu-pulmo-fe-patient-mobile",
     "version": "1.0.0",
+    "extra": {
+      "apiBaseUrl": "http://192.168.1.3:3000"
+    },
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "dutupulmofepatientmobile",
