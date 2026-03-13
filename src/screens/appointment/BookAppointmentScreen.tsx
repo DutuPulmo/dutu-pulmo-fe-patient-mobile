@@ -19,9 +19,7 @@ import { z } from 'zod';
 
 import { Loading } from '@/components/ui/Loading';
 import { DatePicker } from '@/components/doctor/DatePicker';
-import type { DateItem } from '@/components/doctor/DatePicker';
 import { TimeSlotGrid } from '@/components/doctor/TimeSlotGrid';
-import type { TimeSlot } from '@/components/doctor/TimeSlotGrid';
 import { SectionLabel } from '@/components/doctor/SectionLabel';
 import { StepBar } from '@/components/appointment/StepBar';
 import { InfoRowHorizontal } from '@/components/appointment/InfoRowHorizontal';
@@ -37,7 +35,7 @@ import {
   useDoctorTimeSlotSummary,
   usePublicDoctorDetail,
 } from '@/hooks/useAppointments';
-import { useProfile } from '@/hooks/useProfile';
+import { useMyPatient, useProfile } from '@/hooks/useProfile';
 import { useBookingStore } from '@/store/booking.store';
 import { useAuthStore } from '@/store/auth.store';
 import { getDoctorTitleLabel, getSpecialtyLabel } from '@/utils/doctor-display';
@@ -76,6 +74,7 @@ export function BookAppointmentScreen() {
   const setDraft = useBookingStore((s) => s.setDraft);
 
   const meQuery = useProfile();
+  const myPatientQuery = useMyPatient();
   const doctorQuery = usePublicDoctorDetail(doctorId ?? '');
 
   // ── Date state — có thể thay đổi trong màn hình ───────────────────────────
@@ -119,6 +118,7 @@ export function BookAppointmentScreen() {
 
   // ── Additional info form ──────────────────────────────────────────────────
   const [showAdditionalInfo, setShowAdditionalInfo] = useState(false);
+  const [patientInfoExpanded, setPatientInfoExpanded] = useState(false);
   const [patientNotesHtml, setPatientNotesHtml] = useState('');
   const richEditorRef = useRef<RichEditor>(null);
   const base64ImageCount = (patientNotesHtml.match(/data:image\//gi) ?? []).length;
@@ -145,14 +145,26 @@ export function BookAppointmentScreen() {
 
   // ── Computed display values ───────────────────────────────────────────────
   const me = meQuery.data;
+  const myPatient = myPatientQuery.data;
   const doctor = doctorQuery.data;
   const titleLabel = doctor ? getDoctorTitleLabel(doctor.title) : '';
   const specialtyLabel = doctor ? getSpecialtyLabel(doctor.specialty ?? '') : '';
-  const displayName = me?.patient?.user?.fullName ?? user?.fullName ?? '—';
-  const displayGender = genderLabel(me?.patient?.user?.gender);
-  const displayDOB = formatDate(me?.patient?.user?.dateOfBirth);
-  const displayPhone = me?.patient?.user?.phone ?? '—';
-  const avatarUrl = me?.patient?.user?.avatarUrl ?? user?.avatarUrl;
+  const fallback = '—';
+  const patientUser = me?.patient?.user;
+  const profileCode = myPatient?.profileCode ?? me?.patient?.profileCode ?? fallback;
+  const displayName = patientUser?.fullName ?? user?.fullName ?? fallback;
+  const displayGender = genderLabel(patientUser?.gender);
+  const displayDOB = formatDate(patientUser?.dateOfBirth);
+  const displayPhone = patientUser?.phone ?? fallback;
+  const avatarUrl = patientUser?.avatarUrl ?? user?.avatarUrl;
+  const displayEmail = patientUser?.email ?? fallback;
+  const displayCCCD = patientUser?.CCCD ?? fallback;
+  const displayNationality = patientUser?.nationality ?? fallback;
+  const displayEthnicity = patientUser?.ethnicity ?? fallback;
+  const displayOccupation = patientUser?.occupation ?? fallback;
+  const displayAddress = patientUser?.address ?? fallback;
+  const displayWard = patientUser?.ward ?? fallback;
+  const displayProvince = patientUser?.province ?? fallback;
 
   const onSubmit = (values: FormData) => {
     if (!selectedSlotId || !selectedSlot) return;
@@ -264,17 +276,48 @@ export function BookAppointmentScreen() {
                   </View>
                   <InfoRowHorizontal label="Họ và tên" value={displayName} />
                   <Divider />
-                  <InfoRowHorizontal label="Giới tính" value={displayGender} />
-                  <Divider />
-                  <InfoRowHorizontal label="Ngày sinh" value={displayDOB} />
+                  <InfoRowHorizontal label="Mã bệnh nhân" value={profileCode} />
                   <Divider />
                   <InfoRowHorizontal label="Điện thoại" value={displayPhone} />
+                  {patientInfoExpanded && (
+                    <>
+                      <Divider />
+                      <InfoRowHorizontal label="Email" value={displayEmail} />
+                      <Divider />
+                      <InfoRowHorizontal label="CCCD" value={displayCCCD} />
+                      <Divider />
+                      <InfoRowHorizontal label="Giới tính" value={displayGender} />
+                      <Divider />
+                      <InfoRowHorizontal label="Ngày sinh" value={displayDOB} />
+                      <Divider />
+                      <InfoRowHorizontal label="Quốc tịch" value={displayNationality} />
+                      <Divider />
+                      <InfoRowHorizontal label="Dân tộc" value={displayEthnicity} />
+                      <Divider />
+                      <InfoRowHorizontal label="Nghề nghiệp" value={displayOccupation} />
+                      <Divider />
+                      <InfoRowHorizontal label="Địa chỉ chi tiết" value={displayAddress} />
+                      <Divider />
+                      <InfoRowHorizontal label="Phường/Xã" value={displayWard} />
+                      <Divider />
+                      <InfoRowHorizontal label="Tỉnh/Thành" value={displayProvince} />
+                    </>
+                  )}
                 </View>
-                <View className="border-t border-slate-100 bg-slate-50 px-4 py-[10px]">
-                  <Text className="text-center text-xs text-gray-400">
-                    Thông tin được lấy từ hồ sơ tài khoản của bạn
+                <TouchableOpacity
+                  onPress={() => setPatientInfoExpanded((prev) => !prev)}
+                  activeOpacity={0.7}
+                  className="flex-row items-center justify-center gap-1 border-t border-slate-100 bg-slate-50 px-4 py-[10px]"
+                >
+                  <Text className="text-center text-xs font-medium text-blue-500">
+                    {patientInfoExpanded ? 'Thu gọn' : 'Chi tiết'}
                   </Text>
-                </View>
+                  <MaterialIcons
+                    name={patientInfoExpanded ? 'expand-less' : 'expand-more'}
+                    size={16}
+                    color="#0A7CFF"
+                  />
+                </TouchableOpacity>
               </View>
             </View>
 

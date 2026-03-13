@@ -1,9 +1,3 @@
-/**
- * ConfirmAppointmentScreen — Step 2: Xác nhận thông tin
- * Đọc draft từ useBookingStore → hiển thị tóm tắt → gọi API tạo lịch
- * Sử dụng NativeWind CSS (Tailwind cho React Native)
- */
-
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
@@ -284,7 +278,9 @@ export function ConfirmAppointmentScreen() {
               <Text className="text-[15px] font-bold text-slate-900">
                 Tổng thanh toán
               </Text>
-              <Text className="text-[15px] font-bold text-slate-900">0đ</Text>
+              <Text className="text-[15px] font-bold text-slate-900">
+                {draft.finalConsultationFee?.toLocaleString('vi-VN')}đ
+              </Text>
             </View>
           </View>
         </View>

@@ -15,7 +15,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import QRCode from "react-native-qrcode-svg";
+import QRCode from 'react-native-qrcode-svg';
 
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Loading } from '@/components/ui/Loading';
@@ -31,12 +31,7 @@ import { chatService } from '@/services/chat.service';
 function QrCodeBox({ value }: { value: string }) {
   return (
     <View className="my-4 items-center">
-      <QRCode
-        value={value}
-        size={200}
-        backgroundColor="white"
-        color="black"
-      />
+      <QRCode value={value} size={200} backgroundColor="white" color="black" />
     </View>
   );
 }
@@ -193,7 +188,7 @@ export function AppointmentDetailScreen() {
   const [cancelModalOpen, setCancelModalOpen] = useState(false);
   const [reason, setReason] = useState('');
   const [chatLoading, setChatLoading] = useState(false);
-  const [patientExpanded, setPatientExpanded] = useState(true);
+  const [patientExpanded, setPatientExpanded] = useState(false);
 
   const detailQuery = useAppointmentDetail(appointmentId);
   const cancelMutation = useCancelAppointment();
@@ -271,9 +266,27 @@ export function AppointmentDetailScreen() {
   const scheduledDate = new Date(appointment.scheduledAt);
   const weekdays = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
 
-  const displayPhone = myPatient?.user?.phone ?? '—';
-  const patientCode = myPatient?.profileCode ?? '—';
-  const displayName = myPatient?.user?.fullName ?? currentUser?.fullName ?? '—';
+  const fallback = '—';
+  const patientUser = myPatient?.user;
+  const patientCode = myPatient?.profileCode ?? fallback;
+  const displayName =
+    patientUser?.fullName ?? currentUser?.fullName ?? fallback;
+  const displayPhone = patientUser?.phone ?? fallback;
+  const displayEmail = patientUser?.email ?? fallback;
+  const displayCCCD = patientUser?.CCCD ?? fallback;
+  const displayDob = patientUser?.dateOfBirth
+    ? new Date(`${patientUser.dateOfBirth}`).toLocaleDateString('vi-VN')
+    : fallback;
+  const displayGender =
+    ({ MALE: 'Nam', FEMALE: 'Nữ', OTHER: 'Khác' } as Record<string, string>)[
+      patientUser?.gender ?? ''
+    ] ?? fallback;
+  const displayNationality = patientUser?.nationality ?? fallback;
+  const displayEthnicity = patientUser?.ethnicity ?? fallback;
+  const displayOccupation = patientUser?.occupation ?? fallback;
+  const displayAddress = patientUser?.address ?? fallback;
+  const displayWard = patientUser?.ward ?? fallback;
+  const displayProvince = patientUser?.province ?? fallback;
 
   return (
     <>
@@ -389,8 +402,26 @@ export function AppointmentDetailScreen() {
                   label="Số điện thoại"
                   value={displayPhone}
                   copyable
-                  isLast
+                  isLast={!patientExpanded}
                 />
+                {patientExpanded && (
+                  <>
+                    <InfoLine label="Email" value={displayEmail} />
+                    <InfoLine label="CCCD" value={displayCCCD} />
+                    <InfoLine label="Giới tính" value={displayGender} />
+                    <InfoLine label="Ngày sinh" value={displayDob} />
+                    <InfoLine label="Quốc tịch" value={displayNationality} />
+                    <InfoLine label="Dân tộc" value={displayEthnicity} />
+                    <InfoLine label="Nghề nghiệp" value={displayOccupation} />
+                    <InfoLine label="Địa chỉ chi tiết" value={displayAddress} />
+                    <InfoLine label="Phường/Xã" value={displayWard} />
+                    <InfoLine
+                      label="Tỉnh/Thành"
+                      value={displayProvince}
+                      isLast
+                    />
+                  </>
+                )}
               </View>
               <Pressable
                 onPress={() => setPatientExpanded(!patientExpanded)}
@@ -449,7 +480,7 @@ export function AppointmentDetailScreen() {
           >
             <MaterialIcons name="chat-bubble" size={18} color="#0A7CFF" />
             <Text className="text-sm font-semibold text-blue-500">
-              {chatLoading ? 'Đang mở...' : 'Nhắn tin với bác sĩ'}
+              {chatLoading ? 'Đang mở...' : 'Nhắn tin với bác sĩ '}
             </Text>
           </TouchableOpacity>
 
