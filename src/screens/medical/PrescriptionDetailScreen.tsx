@@ -1,13 +1,46 @@
-import { useLocalSearchParams } from 'expo-router';
+import { MaterialIcons } from '@expo/vector-icons';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
-import { ScrollView, Text, View } from 'react-native';
+import {
+  Linking,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
-import { Card } from '@/components/ui/Card';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Loading } from '@/components/ui/Loading';
 import { medicalService } from '@/services/medical.service';
 
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+function InfoLine({
+  label,
+  value,
+  isLast,
+}: {
+  label: string;
+  value: string;
+  isLast?: boolean;
+}) {
+  return (
+    <View
+      className={`flex-row items-start justify-between py-[11px] ${isLast ? '' : 'border-b border-slate-50'}`}
+    >
+      <Text className="flex-1 text-[13px] text-slate-400">{label}</Text>
+      <Text
+        className="flex-1 text-right text-sm font-semibold text-slate-900"
+        numberOfLines={3}
+      >
+        {value || '—'}
+      </Text>
+    </View>
+  );
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
 export function PrescriptionDetailScreen() {
+  const router = useRouter();
   const { prescriptionId } = useLocalSearchParams<{ prescriptionId: string }>();
 
   const detailQuery = useQuery({
@@ -16,42 +49,183 @@ export function PrescriptionDetailScreen() {
     enabled: Boolean(prescriptionId),
   });
 
-  if (detailQuery.isLoading) return <Loading label="Loading prescription details..." />;
+  const pdfQuery = useQuery({
+    queryKey: ['prescription', 'pdf', prescriptionId],
+    queryFn: () => medicalService.getPrescriptionPdf(prescriptionId),
+    enabled: Boolean(prescriptionId),
+  });
+
+  if (detailQuery.isLoading) return <Loading label="Đang tải đơn thuốc..." />;
 
   if (detailQuery.isError || !detailQuery.data) {
     return (
-      <View className="flex-1 items-center justify-center bg-background-light px-6">
-        <EmptyState title="Prescription not found" description="Please try again later." />
+      <View className="flex-1 items-center justify-center bg-slate-50 px-6">
+        <EmptyState
+          title="Không tìm thấy đơn thuốc"
+          description="Vui lòng thử lại sau."
+        />
       </View>
     );
   }
 
   const prescription = detailQuery.data;
 
+  const pdfUrl = pdfQuery.data?.pdfUrl ?? pdfQuery.data?.url ?? null;
+
+  const handleOpenPdf = async () => {
+    if (!pdfUrl) return;
+    await Linking.openURL(pdfUrl);
+  };
+
   return (
-    <ScrollView className="flex-1 bg-background-light" contentContainerStyle={{ padding: 16, paddingBottom: 32 }}>
-      <Text className="text-2xl font-bold text-slate-900">Prescription details</Text>
+    <View className="flex-1 bg-slate-50">
+      {/* HEADER */}
+      <View className="flex-row items-center justify-between bg-blue-500 px-4 pb-4 pt-12">
+        <TouchableOpacity
+          onPress={() => router.back()}
+          activeOpacity={0.7}
+          className="rounded-full p-1"
+        >
+          <MaterialIcons name="arrow-back-ios-new" size={22} color="white" />
+        </TouchableOpacity>
+        <Text className="text-lg font-bold text-white">Chi tiết đơn thuốc</Text>
+        <View className="w-8" />
+      </View>
 
-      <Card className="mt-4">
-        <Text className="text-sm text-slate-500">Prescription code</Text>
-        <Text className="text-base font-bold text-slate-900">{prescription.prescriptionNumber}</Text>
-
-        <Text className="mt-3 text-sm font-semibold text-slate-700">Diagnosis</Text>
-        <Text className="mt-1 text-sm text-slate-600">{prescription.diagnosis || 'Not updated yet'}</Text>
-
-        <Text className="mt-3 text-sm font-semibold text-slate-700">Medication list</Text>
-        <View className="mt-2 gap-2">
-          {prescription.items.map((item) => (
-            <View key={item.id} className="rounded-lg border border-slate-200 bg-background-light p-3">
-              <Text className="text-sm font-semibold text-slate-900">{item.medicineName || 'Medicine'}</Text>
-              <Text className="mt-1 text-xs text-slate-600">
-                {item.dosage} - {item.frequency} - {item.duration}
-              </Text>
-            </View>
-          ))}
+      <ScrollView
+        className="flex-1"
+        contentContainerClassName="p-4 pb-[120px]"
+        showsVerticalScrollIndicator={false}
+      >
+        {/* ── THÔNG TIN ĐƠN THUỐC ── */}
+        <View
+          className="overflow-hidden rounded-2xl bg-white"
+          style={{
+            shadowColor: '#000',
+            shadowOpacity: 0.06,
+            shadowRadius: 10,
+            elevation: 3,
+          }}
+        >
+          <View className="px-4">
+            <InfoLine
+              label="Mã đơn thuốc"
+              value={prescription.prescriptionNumber ?? '—'}
+            />
+            <InfoLine
+              label="Bác sĩ kê đơn"
+              value={prescription.doctor?.fullName ?? '—'}
+            />
+            <InfoLine
+              label="Ngày kê đơn"
+              value={
+                prescription.createdAt
+                  ? new Date(prescription.createdAt).toLocaleDateString(
+                      'vi-VN',
+                      { day: '2-digit', month: '2-digit', year: 'numeric' },
+                    )
+                  : '—'
+              }
+              isLast
+            />
+          </View>
         </View>
-      </Card>
-    </ScrollView>
+
+        {/* ── DANH SÁCH THUỐC ── */}
+        <View className="mt-4">
+          <Text className="mb-[10px] text-[15px] font-bold text-slate-900">
+            Danh sách thuốc ({prescription.items?.length ?? 0})
+          </Text>
+          <View className="gap-3">
+            {(prescription.items ?? []).map((item: any, idx: number) => (
+              <View
+                key={item.id ?? idx}
+                className="overflow-hidden rounded-2xl bg-white"
+                style={{
+                  shadowColor: '#000',
+                  shadowOpacity: 0.06,
+                  shadowRadius: 10,
+                  elevation: 3,
+                }}
+              >
+                {/* Medicine name header */}
+                <View className="border-b border-blue-100 bg-blue-50 px-4 py-3">
+                  <Text className="text-sm font-bold text-blue-800">
+                    {idx + 1}. {item.medicineName ?? 'Thuốc'}
+                  </Text>
+                </View>
+
+                <View className="px-4">
+                  <InfoLine label="Liều dùng" value={item.dosage ?? '—'} />
+                  <InfoLine label="Tần suất" value={item.frequency ?? '—'} />
+                  <InfoLine
+                    label="Thời gian"
+                    value={
+                      item.duration ??
+                      (item.durationDays ? `${item.durationDays} ngày` : '—')
+                    }
+                  />
+                  <InfoLine
+                    label="Số lượng"
+                    value={
+                      item.quantity != null
+                        ? `${item.quantity} ${item.unit ?? ''}`.trim()
+                        : '—'
+                    }
+                  />
+                  {item.instructions && (
+                    <InfoLine
+                      label="Hướng dẫn"
+                      value={item.instructions}
+                      isLast
+                    />
+                  )}
+                </View>
+              </View>
+            ))}
+          </View>
+        </View>
+
+        {/* ── GHI CHÚ ── */}
+        {prescription.notes && (
+          <View className="mt-4">
+            <Text className="mb-[10px] text-[15px] font-bold text-slate-900">
+              Ghi chú
+            </Text>
+            <View
+              className="rounded-2xl bg-white px-4"
+              style={{
+                shadowColor: '#000',
+                shadowOpacity: 0.06,
+                shadowRadius: 10,
+                elevation: 3,
+              }}
+            >
+              <View className="py-3">
+                <Text className="text-sm leading-5 text-slate-700">
+                  {prescription.notes}
+                </Text>
+              </View>
+            </View>
+          </View>
+        )}
+
+        {/* ── PDF ── */}
+        <View className="mt-6">
+          <TouchableOpacity
+            onPress={handleOpenPdf}
+            disabled={!pdfUrl}
+            activeOpacity={0.85}
+            className={`flex-row items-center justify-center gap-2 rounded-[14px] border border-blue-200 bg-blue-50 py-[14px] ${!pdfUrl ? 'opacity-50' : ''}`}
+          >
+            <MaterialIcons name="picture-as-pdf" size={18} color="#0A7CFF" />
+            <Text className="text-sm font-semibold text-blue-500">
+              {pdfUrl ? 'Tải đơn thuốc PDF' : 'PDF chưa được tạo'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </View>
   );
 }
 

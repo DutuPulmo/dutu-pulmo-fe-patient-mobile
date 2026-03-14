@@ -1,13 +1,200 @@
-import { useLocalSearchParams } from 'expo-router';
+import { MaterialIcons } from '@expo/vector-icons';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
-import { ScrollView, Text, View } from 'react-native';
-
-import { Card } from '@/components/ui/Card';
-import { EmptyState } from '@/components/ui/EmptyState';
+import {
+  Linking,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  useWindowDimensions,
+  View,
+} from 'react-native';
+import RenderHtml from 'react-native-render-html';
 import { Loading } from '@/components/ui/Loading';
 import { medicalService } from '@/services/medical.service';
+import EmptyState from '@/components/ui/EmptyState';
 
+// ─── Status configs ────────────────────────────────────────────────────────────
+const RECORD_STATUS_CONFIG: Record<
+  string,
+  {
+    label: string;
+    icon: string;
+    color: string;
+    bgClass: string;
+    borderClass: string;
+    textClass: string;
+  }
+> = {
+  DRAFT: {
+    label: 'Đang xử lý',
+    icon: 'edit-note',
+    color: '#d97706',
+    bgClass: 'bg-amber-50',
+    borderClass: 'border-amber-200',
+    textClass: 'text-amber-700',
+  },
+  IN_PROGRESS: {
+    label: 'Đang khám',
+    icon: 'medical-services',
+    color: '#0A7CFF',
+    bgClass: 'bg-blue-50',
+    borderClass: 'border-blue-200',
+    textClass: 'text-blue-600',
+  },
+  COMPLETED: {
+    label: 'Đã hoàn thành',
+    icon: 'done-all',
+    color: '#16a34a',
+    bgClass: 'bg-green-50',
+    borderClass: 'border-green-200',
+    textClass: 'text-green-700',
+  },
+};
+
+const SIGNED_CONFIG: Record<
+  string,
+  {
+    label: string;
+    icon: string;
+    color: string;
+    bgClass: string;
+    borderClass: string;
+    textClass: string;
+  }
+> = {
+  SIGNED: {
+    label: 'Đã ký số',
+    icon: 'verified',
+    color: '#16a34a',
+    bgClass: 'bg-green-50',
+    borderClass: 'border-green-200',
+    textClass: 'text-green-700',
+  },
+  NOT_SIGNED: {
+    label: 'Chưa ký',
+    icon: 'pending-actions',
+    color: '#94a3b8',
+    bgClass: 'bg-slate-50',
+    borderClass: 'border-slate-200',
+    textClass: 'text-slate-500',
+  },
+};
+
+// ─── Reusable components ───────────────────────────────────────────────────────
+function InfoLine({
+  label,
+  value,
+  isLast,
+}: {
+  label: string;
+  value: string;
+  isLast?: boolean;
+}) {
+  return (
+    <View
+      className={`flex-row items-start justify-between py-[11px] ${isLast ? '' : 'border-b border-slate-50'}`}
+    >
+      <Text className="flex-1 text-[13px] text-slate-400">{label}</Text>
+      <Text
+        className="flex-1 text-right text-sm font-semibold text-slate-900"
+        numberOfLines={3}
+      >
+        {value || '—'}
+      </Text>
+    </View>
+  );
+}
+
+function HtmlRow({
+  label,
+  html,
+  isLast,
+}: {
+  label: string;
+  html: string;
+  isLast?: boolean;
+}) {
+  const { width } = useWindowDimensions();
+
+  if (!html) {
+    return <InfoLine label={label} value="—" isLast={isLast} />;
+  }
+
+  return (
+    <View className={`py-[11px] ${isLast ? '' : 'border-b border-slate-50'}`}>
+      <Text className="mb-2 text-[13px] text-slate-400">{label}</Text>
+      <RenderHtml
+        contentWidth={width - 48} // Padding ngang (24 * 2)
+        source={{ html }}
+        baseStyle={{
+          fontSize: 14,
+          color: '#0f172a',
+          lineHeight: 20,
+        }}
+        tagsStyles={{
+          p: { margin: 0, padding: 0 },
+          div: { margin: 0, padding: 0 },
+        }}
+      />
+    </View>
+  );
+}
+
+function SectionCard({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <View className="mt-4">
+      <Text className="mb-[10px] text-[15px] font-bold text-slate-900">
+        {title}
+      </Text>
+      <View
+        className="overflow-hidden rounded-2xl bg-white"
+        style={{
+          shadowColor: '#000',
+          shadowOpacity: 0.06,
+          shadowRadius: 10,
+          elevation: 3,
+        }}
+      >
+        <View className="px-4">{children}</View>
+      </View>
+    </View>
+  );
+}
+
+function StatusBadge({
+  config,
+}: {
+  config: {
+    label: string;
+    icon: string;
+    color: string;
+    bgClass: string;
+    borderClass: string;
+    textClass: string;
+  };
+}) {
+  return (
+    <View
+      className={`flex-row items-center gap-1.5 ${config.bgClass} border ${config.borderClass} rounded-lg px-3 py-1.5`}
+    >
+      <MaterialIcons name={config.icon as any} size={14} color={config.color} />
+      <Text className={`text-xs font-semibold ${config.textClass}`}>
+        {config.label}
+      </Text>
+    </View>
+  );
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
 export function MedicalRecordDetailScreen() {
+  const router = useRouter();
   const { recordId } = useLocalSearchParams<{ recordId: string }>();
 
   const detailQuery = useQuery({
@@ -16,75 +203,327 @@ export function MedicalRecordDetailScreen() {
     enabled: Boolean(recordId),
   });
 
-  if (detailQuery.isLoading) return <Loading label="Loading record details..." />;
+  const pdfQuery = useQuery({
+    queryKey: ['medical-record', 'pdf', recordId],
+    queryFn: () => medicalService.getMedicalRecordPdf(recordId),
+    enabled: Boolean(recordId),
+  });
+
+  if (detailQuery.isLoading) return <Loading label="Đang tải hồ sơ..." />;
 
   if (detailQuery.isError || !detailQuery.data) {
     return (
-      <View className="flex-1 items-center justify-center bg-background-light px-6">
-        <EmptyState title="Record not found" description="Please try again later." />
+      <View className="flex-1 items-center justify-center bg-slate-50 px-6">
+        <EmptyState
+          title="Không tìm thấy hồ sơ"
+          description="Vui lòng thử lại sau."
+        />
       </View>
     );
   }
 
   const record = detailQuery.data;
+  const pdfUrl = pdfQuery.data?.pdfUrl ?? pdfQuery.data?.url ?? null;
+  const statusConfig =
+    RECORD_STATUS_CONFIG[record.status] ?? RECORD_STATUS_CONFIG['DRAFT'];
+  const signedConfig =
+    SIGNED_CONFIG[record.signedStatus] ?? SIGNED_CONFIG['NOT_SIGNED'];
+  const vs = record.vitalSigns ?? {};
+
+  const handleOpenPdf = async () => {
+    if (!pdfUrl) return;
+    await Linking.openURL(pdfUrl);
+  };
 
   return (
-    <ScrollView className="flex-1 bg-background-light" contentContainerStyle={{ padding: 16, paddingBottom: 32 }}>
-      <Text className="text-2xl font-bold text-slate-900">Chi tiết hồ sơ y tế</Text>
+    <View className="flex-1 bg-slate-50">
+      {/* HEADER */}
+      <View className="flex-row items-center justify-between bg-blue-500 px-4 pb-4 pt-12">
+        <TouchableOpacity
+          onPress={() => router.back()}
+          activeOpacity={0.7}
+          className="rounded-full p-1"
+        >
+          <MaterialIcons name="arrow-back-ios-new" size={22} color="white" />
+        </TouchableOpacity>
+        <Text className="text-lg font-bold text-white">
+          Chi tiết hồ sơ y tế
+        </Text>
+        <View className="w-8" />
+      </View>
 
-      <Card className="mt-4">
-        <Text className="text-sm text-slate-500">Mã hồ sơ</Text>
-        <Text className="text-base font-bold text-slate-900">{record.recordNumber || 'N/A'}</Text>
+      <ScrollView
+        className="flex-1"
+        contentContainerClassName="p-4 pb-[120px]"
+        showsVerticalScrollIndicator={false}
+      >
+        {/* ── THÔNG TIN HÀNH CHÍNH ── */}
+        <View
+          className="overflow-hidden rounded-2xl bg-white"
+          style={{
+            shadowColor: '#000',
+            shadowOpacity: 0.06,
+            shadowRadius: 10,
+            elevation: 3,
+          }}
+        >
+          <View className="px-4 pb-3 pt-4">
+            {/* Status badges row */}
+            <View className="mb-3 flex-row flex-wrap gap-2">
+              <StatusBadge config={statusConfig} />
+              <StatusBadge config={signedConfig} />
+            </View>
+            <InfoLine label="Mã hồ sơ" value={record.recordNumber ?? '—'} />
+            <InfoLine
+              label="Bệnh nhân"
+              value={record.patient?.fullName ?? '—'}
+            />
+            <InfoLine label="Bác sĩ" value={record.doctor?.fullName ?? '—'} />
+            <InfoLine
+              label="Ngày khám"
+              value={
+                record.appointment?.scheduledAt
+                  ? new Date(record.appointment.scheduledAt).toLocaleDateString(
+                      'vi-VN',
+                      {
+                        weekday: 'long',
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                      },
+                    )
+                  : '—'
+              }
+              isLast
+            />
+          </View>
+        </View>
 
-        <Text className="mt-3 text-sm font-semibold text-slate-700">Bệnh nhân</Text>
-        <Text className="mt-1 text-sm text-slate-600">{record.patient.fullName}</Text>
+        {/* ── CHỈ SỐ SINH HIỆU ── */}
+        <SectionCard title="Chỉ số sinh hiệu">
+          <InfoLine
+            label="Nhiệt độ (°C)"
+            value={vs.temperature != null ? String(vs.temperature) : '—'}
+          />
+          <InfoLine label="Huyết áp" value={vs.bloodPressure ?? '—'} />
+          <InfoLine
+            label="Nhịp tim (bpm)"
+            value={vs.heartRate != null ? String(vs.heartRate) : '—'}
+          />
+          <InfoLine
+            label="Nhịp thở (bpm)"
+            value={
+              vs.respiratoryRate != null ? String(vs.respiratoryRate) : '—'
+            }
+          />
+          <InfoLine
+            label="SpO2 (%)"
+            value={vs.spo2 != null ? String(vs.spo2) : '—'}
+          />
+          <InfoLine
+            label="Chiều cao (cm)"
+            value={vs.height != null ? String(vs.height) : '—'}
+          />
+          <InfoLine
+            label="Cân nặng (kg)"
+            value={vs.weight != null ? String(vs.weight) : '—'}
+          />
+          <InfoLine
+            label="BMI"
+            value={vs.bmi != null ? String(vs.bmi) : '—'}
+            isLast
+          />
+        </SectionCard>
 
-        <Text className="mt-3 text-sm font-semibold text-slate-700">Bác sĩ</Text>
-        <Text className="mt-1 text-sm text-slate-600">{record.doctor.fullName}</Text>
+        {/* ── BỆNH ÁN ── */}
+        <SectionCard title="Bệnh án">
+          <InfoLine label="Lý do khám" value={record.chiefComplaint ?? '—'} />
+          <HtmlRow
+            label="Quá trình bệnh lý"
+            html={record.presentIllness || ''}
+          />
+          <InfoLine
+            label="Đánh giá lâm sàng"
+            value={record.assessment ?? '—'}
+          />
+          <InfoLine label="Chẩn đoán" value={record.diagnosis ?? '—'} />
+          <InfoLine
+            label="Phác đồ điều trị"
+            value={record.treatmentPlan ?? '—'}
+          />
+          <InfoLine
+            label="Ghi chú theo dõi"
+            value={record.progressNotes ?? '—'}
+          />
+          <InfoLine
+            label="Hướng điều trị tiếp"
+            value={record.followUpInstructions ?? '—'}
+            isLast
+          />
+        </SectionCard>
 
-        <Text className="mt-3 text-sm font-semibold text-slate-700">Lịch khám</Text>
-        <Text className="mt-1 text-sm text-slate-600">{record.appointment.appointmentNumber}</Text>
-        <Text className="mt-1 text-xs text-slate-500">{new Date(record.appointment.scheduledAt).toLocaleString()}</Text>
-      </Card>
+        {/* ── BỆNH SỬ ── */}
+        <SectionCard title="Bệnh sử">
+          <InfoLine label="Tiền sử bệnh" value={record.medicalHistory ?? '—'} />
+          <InfoLine
+            label="Tiền sử phẫu thuật"
+            value={record.surgicalHistory ?? '—'}
+          />
+          <InfoLine
+            label="Tiền sử gia đình"
+            value={record.familyHistory ?? '—'}
+          />
+          <InfoLine
+            label="Dị ứng"
+            value={record.allergies?.length ? record.allergies.join(', ') : '—'}
+          />
+          <InfoLine
+            label="Bệnh mãn tính"
+            value={
+              record.chronicDiseases?.length
+                ? record.chronicDiseases.join(', ')
+                : '—'
+            }
+          />
+          <InfoLine
+            label="Thuốc đang dùng"
+            value={
+              record.currentMedications?.length
+                ? record.currentMedications.join(', ')
+                : '—'
+            }
+            isLast
+          />
+        </SectionCard>
 
-      <Card className="mt-4">
-        <Text className="text-base font-bold text-slate-900">Bệnh án</Text>
-        <Text className="mt-3 text-sm font-semibold text-slate-700">Lý do khám</Text>
-        <Text className="mt-1 text-sm text-slate-600">{record.chiefComplaint || 'Chưa cập nhật'}</Text>
+        {/* ── LỐI SỐNG ── */}
+        <SectionCard title="Lối sống">
+          <InfoLine
+            label="Hút thuốc"
+            value={
+              record.smokingStatus
+                ? `Có${record.smokingYears ? ` (${record.smokingYears} năm)` : ''}`
+                : 'Không'
+            }
+          />
+          <InfoLine
+            label="Rượu bia"
+            value={record.alcoholConsumption ? 'Có' : 'Không'}
+            isLast
+          />
+        </SectionCard>
 
-        <Text className="mt-3 text-sm font-semibold text-slate-700">Chẩn đoán</Text>
-        <Text className="mt-1 text-sm text-slate-600">{record.diagnosis || record.primaryDiagnosis || 'Chưa cập nhật'}</Text>
+        {/* ── TỔNG KẾT ── */}
+        {(record.primaryDiagnosis ||
+          record.secondaryDiagnosis ||
+          record.dischargeCondition ||
+          record.fullRecordSummary) && (
+          <SectionCard title="Tổng kết ra viện">
+            <InfoLine
+              label="Chẩn đoán chính"
+              value={record.primaryDiagnosis ?? '—'}
+            />
+            <InfoLine
+              label="Chẩn đoán kèm"
+              value={record.secondaryDiagnosis ?? '—'}
+            />
+            <InfoLine
+              label="Tình trạng ra viện"
+              value={record.dischargeCondition ?? '—'}
+            />
+            <InfoLine
+              label="Tóm tắt hồ sơ"
+              value={record.fullRecordSummary ?? '—'}
+              isLast
+            />
+          </SectionCard>
+        )}
 
-        <Text className="mt-3 text-sm font-semibold text-slate-700">Kế hoạch điều trị</Text>
-        <Text className="mt-1 text-sm text-slate-600">{record.treatmentPlan || 'Chưa cập nhật'}</Text>
-      </Card>
-
-      <Card className="mt-4">
-        <Text className="text-base font-bold text-slate-900">Chỉ số sinh hiệu</Text>
-        <Text className="mt-2 text-sm text-slate-600">Nhiệt độ: {record.vitalSigns.temperature ?? '-'}</Text>
-        <Text className="mt-1 text-sm text-slate-600">Mạch: {record.vitalSigns.heartRate ?? '-'}</Text>
-        <Text className="mt-1 text-sm text-slate-600">Huyết áp: {record.vitalSigns.bloodPressure ?? '-'}</Text>
-        <Text className="mt-1 text-sm text-slate-600">SpO2: {record.vitalSigns.spo2 ?? '-'}</Text>
-      </Card>
-
-      <Card className="mt-4">
-        <Text className="text-base font-bold text-slate-900">Đơn thuốc</Text>
-        {record.prescriptions.length === 0 ? (
-          <Text className="mt-2 text-sm text-slate-500">Chưa có đơn thuốc.</Text>
-        ) : (
-          <View className="mt-3 gap-2">
-            {record.prescriptions.map((prescription) => (
-              <View key={prescription.id} className="rounded-xl border border-slate-200 bg-background-light p-3">
-                <Text className="text-sm font-semibold text-slate-900">{prescription.prescriptionNumber}</Text>
-                <Text className="mt-1 text-xs text-slate-600">Số thuốc: {prescription.items.length}</Text>
+        {/* ── TẦM SOÁT ── */}
+        {record.screeningRequests && record.screeningRequests.length > 0 && (
+          <SectionCard title="Tầm soát">
+            {record.screeningRequests.map((sr: any, idx: number) => (
+              <View
+                key={sr.id}
+                className={`py-3 ${idx < record.screeningRequests.length - 1 ? 'border-b border-slate-50' : ''}`}
+              >
+                <View className="flex-row items-center justify-between">
+                  <Text className="text-sm font-semibold text-slate-900">
+                    {sr.screeningNumber ?? '—'}
+                  </Text>
+                  <Text className="text-xs capitalize text-slate-500">
+                    {sr.screeningType ?? ''}
+                  </Text>
+                </View>
+                {sr.aiAnalyses?.[0]?.primaryDiagnosis?.name_vn && (
+                  <Text className="mt-1 text-xs text-slate-600">
+                    AI: {sr.aiAnalyses[0].primaryDiagnosis.name_vn}
+                  </Text>
+                )}
               </View>
             ))}
+          </SectionCard>
+        )}
+
+        {/* ── ĐƠN THUỐC ── */}
+        {record.prescriptions && record.prescriptions.length > 0 && (
+          <View className="mt-4">
+            <Text className="mb-[10px] text-[15px] font-bold text-slate-900">
+              Đơn thuốc
+            </Text>
+            <View className="gap-3">
+              {record.prescriptions.map((prescription: any) => (
+                <TouchableOpacity
+                  key={prescription.id}
+                  onPress={() =>
+                    router.push(`/prescriptions/${prescription.id}`)
+                  }
+                  activeOpacity={0.85}
+                  className="flex-row items-center justify-between rounded-[14px] border border-slate-100 bg-white px-4 py-3"
+                  style={{
+                    shadowColor: '#000',
+                    shadowOpacity: 0.04,
+                    shadowRadius: 6,
+                    elevation: 2,
+                  }}
+                >
+                  <View className="flex-1">
+                    <Text className="text-sm font-semibold text-slate-900">
+                      {prescription.prescriptionNumber}
+                    </Text>
+                    <Text className="mt-0.5 text-xs text-slate-500">
+                      {prescription.items?.length ?? 0} loại thuốc
+                      {prescription.pdfUrl ? '  •  PDF sẵn sàng' : ''}
+                    </Text>
+                  </View>
+                  <MaterialIcons
+                    name="chevron-right"
+                    size={20}
+                    color="#cbd5e1"
+                  />
+                </TouchableOpacity>
+              ))}
+            </View>
           </View>
         )}
-      </Card>
-    </ScrollView>
+
+        {/* ── PDF ── */}
+        <View className="mt-6">
+          <TouchableOpacity
+            onPress={handleOpenPdf}
+            disabled={!pdfUrl}
+            activeOpacity={0.85}
+            className={`flex-row items-center justify-center gap-2 rounded-[14px] border border-blue-200 bg-blue-50 py-[14px] ${!pdfUrl ? 'opacity-50' : ''}`}
+          >
+            <MaterialIcons name="picture-as-pdf" size={18} color="#0A7CFF" />
+            <Text className="text-sm font-semibold text-blue-500">
+              {pdfUrl ? 'Tải bệnh án PDF' : 'PDF chưa được tạo'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </View>
   );
 }
 
 export default MedicalRecordDetailScreen;
-
