@@ -1,4 +1,9 @@
-import { Stack } from 'expo-router';
+import {
+  Stack,
+  useRouter,
+  useSegments,
+  useRootNavigationState,
+} from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
@@ -6,28 +11,28 @@ import '../../global.css';
 
 import { AppQueryProvider } from '@/providers/query-provider';
 import { useAuthStore } from '@/store/auth.store';
-import { useSegments, useRouter } from 'expo-router';
 import { Loading } from '@/components/ui/Loading';
+
+import { Redirect } from 'expo-router';
 
 function AuthGuard({ children }: { children: React.ReactNode }) {
   const accessToken = useAuthStore((state) => state.accessToken);
   const hydrated = useAuthStore((state) => state.hydrated);
   const segments = useSegments();
-  const router = useRouter();
 
-  useEffect(() => {
-    if (!hydrated) return;
+  if (!hydrated) {
+    return <Loading label="Đang tải..." />;
+  }
 
-    const inAuthGroup = segments[0] === '(auth)';
+  const inAuthGroup = segments[0] === '(auth)';
 
-    if (!accessToken && !inAuthGroup) {
-      router.replace('/(auth)/login');
-    } else if (accessToken && inAuthGroup) {
-      router.replace('/(tabs)/home');
-    }
-  }, [accessToken, hydrated, segments]);
+  if (!accessToken && !inAuthGroup) {
+    return <Redirect href="/(auth)/login" />;
+  }
 
-  if (!hydrated) return <Loading label="Đang tải..." />;
+  if (accessToken && inAuthGroup) {
+    return <Redirect href="/(tabs)/home" />;
+  }
 
   return <>{children}</>;
 }
