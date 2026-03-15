@@ -7,6 +7,8 @@ import { z } from 'zod';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { useLogin } from '@/hooks/useLogin';
+import { Ionicons } from '@expo/vector-icons';
+import { useState } from 'react';
 
 const schema = z.object({
   email: z.string().email('Email không hợp lệ'),
@@ -18,6 +20,8 @@ type FormData = z.infer<typeof schema>;
 export function LoginScreen() {
   const router = useRouter();
   const loginMutation = useLogin();
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     control,
@@ -42,17 +46,19 @@ export function LoginScreen() {
   return (
     <View className="flex-1 bg-white px-6 pt-16">
       {/* Logo */}
-      <View className="items-center mb-6">
+      <View className="mb-6 items-center">
         <Image
           source={require('@/assets/images/logo.jpg')}
-          className="w-36 h-36"
+          className="h-36 w-36"
           resizeMode="cover"
         />
       </View>
 
       {/* Header */}
-      <View className="items-center mb-8">
-        <Text className="text-3xl font-bold text-slate-900">Chào mừng trở lại</Text>
+      <View className="mb-8 items-center">
+        <Text className="text-3xl font-bold text-slate-900">
+          Chào mừng trở lại
+        </Text>
         <Text className="mt-2 text-center text-slate-500">
           Đăng nhập để tiếp tục chăm sóc sức khỏe
         </Text>
@@ -83,10 +89,22 @@ export function LoginScreen() {
             <Input
               label="Mật khẩu"
               placeholder="Nhập mật khẩu"
-              secureTextEntry
+              secureTextEntry={!showPassword}
               value={value}
               onChangeText={onChange}
               error={errors.password?.message}
+              right={
+                <TouchableOpacity
+                  onPress={() => setShowPassword((v) => !v)}
+                  hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                >
+                  <Ionicons
+                    name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                    size={20}
+                    color="#94a3b8"
+                  />
+                </TouchableOpacity>
+              }
             />
           )}
         />
@@ -118,23 +136,27 @@ export function LoginScreen() {
 
       {/* Social Login Divider */}
       <View className="mt-8 flex-row items-center gap-3">
-        <View className="flex-1 h-px bg-slate-200" />
+        <View className="h-px flex-1 bg-slate-200" />
         <Text className="text-sm text-slate-500">Hoặc đăng nhập bằng</Text>
-        <View className="flex-1 h-px bg-slate-200" />
+        <View className="h-px flex-1 bg-slate-200" />
       </View>
 
       {/* Social Login Buttons */}
       <View className="mt-4 flex-row gap-4">
         <TouchableOpacity
           className="flex-1 items-center justify-center rounded-xl border border-slate-200 py-3"
-          onPress={() => {/* handle Google login */}}
+          onPress={() => {
+            /* handle Google login */
+          }}
         >
           <FontAwesome name="google" size={22} color="#EA4335" />
         </TouchableOpacity>
 
         <TouchableOpacity
           className="flex-1 items-center justify-center rounded-xl border border-slate-200 py-3"
-          onPress={() => {/* handle Facebook login */}}
+          onPress={() => {
+            /* handle Facebook login */
+          }}
         >
           <FontAwesome name="facebook" size={22} color="#1877F2" />
         </TouchableOpacity>
