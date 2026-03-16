@@ -658,7 +658,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Test end-to-end lưu thông báo vào DB & Push Notifications */
+        /** Test end-to-end lưu thông báo vào DB và gửi Push Notifications */
         post: operations["NotificationController_testPushNotification"];
         delete?: never;
         options?: never;
@@ -2007,8 +2007,8 @@ export interface components {
              */
             email: string;
             /**
-             * @description Mật khẩu (ít nhất 8 ký tự, có chữ hoa, chữ thường và số)
-             * @example SecurePass123
+             * @description Mật khẩu (ít nhất 8 ký tự, có chữ hoa, chữ thường, số và ký tự đặc biệt)
+             * @example SecurePass@123
              */
             password: string;
             /**
@@ -3123,6 +3123,16 @@ export interface components {
             /** @description Bật/Tắt lịch nghỉ */
             isAvailable?: boolean;
         };
+        ResponseCommon: {
+            /**
+             * @description HTTP status code
+             * @example 200
+             */
+            code: number;
+            /** @example Success */
+            message: string;
+            data?: Record<string, never>;
+        };
         NotificationResponseDto: {
             /** @example fd2c7dbb-7031-4d6c-a548-123b12f6e5cd */
             id: string;
@@ -3132,7 +3142,7 @@ export interface components {
              * @example PAYMENT
              * @enum {string}
              */
-            type: "GENERAL" | "PAYMENT" | "CONTRACT" | "PENALTY" | "SYSTEM" | "APPOINTMENT";
+            type: "GENERAL" | "PAYMENT" | "SYSTEM" | "APPOINTMENT";
             /** @example Thanh toán thành công */
             title: string;
             /** @example Bạn vừa thanh toán tiền thuê nhà tháng 7 */
@@ -3147,6 +3157,16 @@ export interface components {
              * @example 2024-07-17T09:12:23.000Z
              */
             createdAt?: string;
+        };
+        NotificationActionResponseDto: {
+            /** @example true */
+            success: boolean;
+            /** @example Operation completed successfully */
+            message: string;
+        };
+        NotificationUnreadCountResponseDto: {
+            /** @example 3 */
+            count: number;
         };
         PatientUserSummaryDto: {
             id?: string;
@@ -3785,6 +3805,16 @@ export interface components {
              * @example 123e4567-e89b-12d3-a456-426614174000
              */
             appointmentId: string;
+            /**
+             * @description URL chuyển hướng sau khi thanh toán thành công
+             * @example https://example.com/payment/success
+             */
+            returnUrl?: string;
+            /**
+             * @description URL chuyển hướng khi hủy thanh toán
+             * @example https://example.com/payment/cancel
+             */
+            cancelUrl?: string;
         };
         PaymentResponseDto: {
             /**
@@ -3828,6 +3858,21 @@ export interface components {
              * @example 123e4567-e89b-12d3-a456-426614174000
              */
             appointmentId: string;
+            /**
+             * @description Mã ngân hàng (BIN)
+             * @example 970418
+             */
+            bin?: string;
+            /**
+             * @description Số tài khoản nhận
+             * @example 19038765321011
+             */
+            accountNumber?: string;
+            /**
+             * @description Tên chủ tài khoản
+             * @example VU NGUYEN MINH DUC
+             */
+            accountName?: string;
             /**
              * Format: date-time
              * @description Thời gian tạo
@@ -6012,7 +6057,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["NotificationResponseDto"][];
+                    "application/json": components["schemas"]["ResponseCommon"] & {
+                        data?: {
+                            items: components["schemas"]["NotificationResponseDto"][];
+                            meta: components["schemas"]["PaginationMetaDto"];
+                        };
+                    };
                 };
             };
         };
@@ -6031,7 +6081,11 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ResponseCommon"] & {
+                        data?: components["schemas"]["NotificationUnreadCountResponseDto"];
+                    };
+                };
             };
         };
     };
@@ -6049,7 +6103,11 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ResponseCommon"] & {
+                        data?: components["schemas"]["NotificationActionResponseDto"];
+                    };
+                };
             };
         };
     };
@@ -6069,7 +6127,11 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ResponseCommon"] & {
+                        data?: components["schemas"]["NotificationActionResponseDto"];
+                    };
+                };
             };
         };
     };
@@ -6083,20 +6145,22 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
-                    /** @example Test Push Từ Notification */
+                    /** @example Test Push Notification */
                     title?: string;
-                    /** @example Nội dung test gửi Push đa luồng */
+                    /** @example Nội dung test gửi Push đã lưu */
                     content?: string;
                 };
             };
         };
         responses: {
-            /** @description Tạo thông báo thành công và sẽ gửi Push ngầm */
+            /** @description Tạo thông báo thành công và gửi Push ngầm */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["NotificationResponseDto"];
+                };
             };
         };
     };
@@ -7908,9 +7972,18 @@ export interface operations {
     PatientController_getAppointments: {
         parameters: {
             query?: {
-                status?: string;
-                limit?: number;
+                /** @description Số trang (bắt đầu từ 1) */
                 page?: number;
+                /** @description Số lượng items mỗi trang */
+                limit?: number;
+                /** @description Từ khóa tìm kiếm */
+                search?: string;
+                /** @description Trường dùng để sắp xếp kết quả */
+                sort?: string;
+                /** @description Thứ tự sắp xếp (ASC hoặc DESC) */
+                order?: "ASC" | "DESC";
+                /** @description Filter by appointment status */
+                status?: "PENDING_PAYMENT" | "PENDING" | "CONFIRMED" | "CHECKED_IN" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED" | "RESCHEDULED";
             };
             header?: never;
             path: {

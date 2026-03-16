@@ -10,9 +10,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "App"
-        ]
+        "tags": ["App"]
       }
     },
     "/test-notification": {
@@ -46,9 +44,7 @@
                     }
                   }
                 },
-                "required": [
-                  "token"
-                ]
+                "required": ["token"]
               }
             }
           }
@@ -69,9 +65,7 @@
           }
         },
         "summary": "Send test notification to device",
-        "tags": [
-          "App"
-        ]
+        "tags": ["App"]
       }
     },
     "/auth/register": {
@@ -104,9 +98,7 @@
           }
         },
         "summary": "Đăng ký tài khoản mới",
-        "tags": [
-          "Auth"
-        ]
+        "tags": ["Auth"]
       }
     },
     "/auth/login": {
@@ -139,9 +131,7 @@
           }
         },
         "summary": "Đăng nhập",
-        "tags": [
-          "Auth"
-        ]
+        "tags": ["Auth"]
       }
     },
     "/auth/google/callback": {
@@ -175,9 +165,7 @@
           }
         },
         "summary": "Google OAuth callback",
-        "tags": [
-          "Auth"
-        ]
+        "tags": ["Auth"]
       }
     },
     "/auth/forgot-password": {
@@ -200,9 +188,7 @@
           }
         },
         "summary": "Gửi email reset mật khẩu",
-        "tags": [
-          "Auth"
-        ]
+        "tags": ["Auth"]
       }
     },
     "/auth/forgot-password-otp": {
@@ -225,9 +211,7 @@
           }
         },
         "summary": "Gửi OTP reset mật khẩu",
-        "tags": [
-          "Auth"
-        ]
+        "tags": ["Auth"]
       }
     },
     "/auth/reset-password-otp": {
@@ -260,9 +244,7 @@
           }
         },
         "summary": "Reset mật khẩu bằng OTP",
-        "tags": [
-          "Auth"
-        ]
+        "tags": ["Auth"]
       }
     },
     "/auth/reset-password-email": {
@@ -295,9 +277,7 @@
           }
         },
         "summary": "Reset mật khẩu bằng token từ email",
-        "tags": [
-          "Auth"
-        ]
+        "tags": ["Auth"]
       }
     },
     "/auth/refresh": {
@@ -330,9 +310,7 @@
           }
         },
         "summary": "Làm mới access token bằng refresh token",
-        "tags": [
-          "Auth"
-        ]
+        "tags": ["Auth"]
       }
     },
     "/auth/logout": {
@@ -353,9 +331,7 @@
           }
         ],
         "summary": "Đăng xuất và xóa refresh token",
-        "tags": [
-          "Auth"
-        ]
+        "tags": ["Auth"]
       }
     },
     "/auth/verify-email": {
@@ -378,9 +354,7 @@
           }
         },
         "summary": "Xác thực email bằng token",
-        "tags": [
-          "Auth"
-        ]
+        "tags": ["Auth"]
       }
     },
     "/auth/resend-verification": {
@@ -406,9 +380,7 @@
           }
         },
         "summary": "Gửi lại email xác thực",
-        "tags": [
-          "Auth"
-        ]
+        "tags": ["Auth"]
       }
     },
     "/auth/verify-otp": {
@@ -434,9 +406,7 @@
           }
         },
         "summary": "Xác thực email bằng mã OTP",
-        "tags": [
-          "Auth"
-        ]
+        "tags": ["Auth"]
       }
     },
     "/auth/resend-otp": {
@@ -462,9 +432,7 @@
           }
         },
         "summary": "Gửi lại mã OTP xác thực",
-        "tags": [
-          "Auth"
-        ]
+        "tags": ["Auth"]
       }
     },
     "/doctors": {
@@ -521,10 +489,7 @@
             "schema": {
               "example": "DESC",
               "type": "string",
-              "enum": [
-                "ASC",
-                "DESC"
-              ]
+              "enum": ["ASC", "DESC"]
             }
           },
           {
@@ -560,11 +525,7 @@
             "schema": {
               "default": "all",
               "type": "string",
-              "enum": [
-                "all",
-                "online",
-                "offline"
-              ]
+              "enum": ["all", "online", "offline"]
             }
           }
         ],
@@ -586,9 +547,7 @@
           }
         ],
         "summary": "Lấy danh sách bác sĩ (có phân trang)",
-        "tags": [
-          "Doctors"
-        ]
+        "tags": ["Doctors"]
       }
     },
     "/doctors/{id}": {
@@ -626,9 +585,7 @@
           }
         ],
         "summary": "Lấy thông tin chi tiết bác sĩ",
-        "tags": [
-          "Doctors"
-        ]
+        "tags": ["Doctors"]
       }
     },
     "/public/doctors": {
@@ -685,10 +642,7 @@
             "schema": {
               "example": "DESC",
               "type": "string",
-              "enum": [
-                "ASC",
-                "DESC"
-              ]
+              "enum": ["ASC", "DESC"]
             }
           },
           {
@@ -724,11 +678,7 @@
             "schema": {
               "default": "all",
               "type": "string",
-              "enum": [
-                "all",
-                "online",
-                "offline"
-              ]
+              "enum": ["all", "online", "offline"]
             }
           }
         ],
@@ -745,9 +695,7 @@
           }
         },
         "summary": "Lấy danh sách bác sĩ công khai (có phân trang)",
-        "tags": [
-          "Public - Doctors"
-        ]
+        "tags": ["Public - Doctors"]
       }
     },
     "/public/doctors/specialties": {
@@ -770,9 +718,7 @@
           }
         },
         "summary": "Lấy danh sách chuyên khoa",
-        "tags": [
-          "Public - Doctors"
-        ]
+        "tags": ["Public - Doctors"]
       }
     },
     "/public/doctors/{id}": {
@@ -805,9 +751,7 @@
           }
         },
         "summary": "Lấy thông tin chi tiết bác sĩ công khai",
-        "tags": [
-          "Public - Doctors"
-        ]
+        "tags": ["Public - Doctors"]
       }
     },
     "/doctors/{doctorId}/time-slots": {
@@ -845,9 +789,7 @@
           }
         ],
         "summary": "Lấy tất cả time slots của bác sĩ",
-        "tags": [
-          "Time Slots"
-        ]
+        "tags": ["Time Slots"]
       }
     },
     "/doctors/{doctorId}/time-slots/available": {
@@ -894,9 +836,7 @@
           }
         ],
         "summary": "Lấy các time slots còn trống theo ngày",
-        "tags": [
-          "Time Slots"
-        ]
+        "tags": ["Time Slots"]
       }
     },
     "/doctors/{doctorId}/time-slots/summary": {
@@ -942,9 +882,7 @@
           }
         ],
         "summary": "Lấy tóm tắt số lượng slot còn trống theo ngày",
-        "tags": [
-          "Time Slots"
-        ]
+        "tags": ["Time Slots"]
       }
     },
     "/doctors/{doctorId}/time-slots/{id}": {
@@ -989,9 +927,7 @@
           }
         ],
         "summary": "Lấy chi tiết một time slot",
-        "tags": [
-          "Time Slots"
-        ]
+        "tags": ["Time Slots"]
       }
     },
     "/doctors/{doctorId}/schedules": {
@@ -1029,9 +965,7 @@
           }
         ],
         "summary": "Lấy tất cả lịch làm việc của bác sĩ",
-        "tags": [
-          "Doctor Schedules"
-        ]
+        "tags": ["Doctor Schedules"]
       }
     },
     "/doctors/{doctorId}/schedules/regular": {
@@ -1069,9 +1003,7 @@
           }
         ],
         "summary": "Lấy danh sách lịch làm việc cố định (REGULAR)",
-        "tags": [
-          "Doctor Schedules"
-        ]
+        "tags": ["Doctor Schedules"]
       }
     },
     "/public/doctors/{doctorId}/time-slots": {
@@ -1104,9 +1036,7 @@
           }
         },
         "summary": "Lấy tất cả time slots của bác sĩ",
-        "tags": [
-          "Public Time Slots"
-        ]
+        "tags": ["Public Time Slots"]
       }
     },
     "/public/doctors/{doctorId}/time-slots/available": {
@@ -1137,11 +1067,7 @@
             "in": "query",
             "description": "Lọc slot theo online/offline (mặc định all)",
             "schema": {
-              "enum": [
-                "all",
-                "online",
-                "offline"
-              ],
+              "enum": ["all", "online", "offline"],
               "type": "string"
             }
           }
@@ -1162,9 +1088,7 @@
           }
         },
         "summary": "Lấy các time slots còn trống theo ngày",
-        "tags": [
-          "Public Time Slots"
-        ]
+        "tags": ["Public Time Slots"]
       }
     },
     "/public/doctors/{doctorId}/time-slots/summary": {
@@ -1204,11 +1128,7 @@
             "in": "query",
             "description": "Lọc summary theo online/offline (mặc định all)",
             "schema": {
-              "enum": [
-                "all",
-                "online",
-                "offline"
-              ],
+              "enum": ["all", "online", "offline"],
               "type": "string"
             }
           }
@@ -1219,9 +1139,7 @@
           }
         },
         "summary": "Lấy tóm tắt số lượng slot còn trống (Mặc định 7 ngày từ hiện tại)",
-        "tags": [
-          "Public Time Slots"
-        ]
+        "tags": ["Public Time Slots"]
       }
     },
     "/public/doctors/{doctorId}/time-slots/{id}": {
@@ -1261,9 +1179,7 @@
           }
         },
         "summary": "Lấy chi tiết một time slot",
-        "tags": [
-          "Public Time Slots"
-        ]
+        "tags": ["Public Time Slots"]
       }
     },
     "/upload/image": {
@@ -1307,9 +1223,7 @@
           }
         ],
         "summary": "Upload a single image",
-        "tags": [
-          "Upload"
-        ]
+        "tags": ["Upload"]
       }
     },
     "/upload/images": {
@@ -1356,9 +1270,7 @@
           }
         ],
         "summary": "Upload multiple images (max 5)",
-        "tags": [
-          "Upload"
-        ]
+        "tags": ["Upload"]
       }
     },
     "/upload/{publicId}": {
@@ -1385,9 +1297,7 @@
           }
         ],
         "summary": "Delete an image by public ID",
-        "tags": [
-          "Upload"
-        ]
+        "tags": ["Upload"]
       }
     },
     "/upload/pdf": {
@@ -1431,9 +1341,7 @@
           }
         ],
         "summary": "Upload a PDF file",
-        "tags": [
-          "Upload"
-        ]
+        "tags": ["Upload"]
       }
     },
     "/notifications": {
@@ -1490,10 +1398,7 @@
             "schema": {
               "example": "DESC",
               "type": "string",
-              "enum": [
-                "ASC",
-                "DESC"
-              ]
+              "enum": ["ASC", "DESC"]
             }
           }
         ],
@@ -1503,10 +1408,30 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NotificationResponseDto"
-                  }
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResponseCommon"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "items": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/NotificationResponseDto"
+                              }
+                            },
+                            "meta": {
+                              "$ref": "#/components/schemas/PaginationMetaDto"
+                            }
+                          },
+                          "required": ["items", "meta"]
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -1518,9 +1443,7 @@
           }
         ],
         "summary": "Lấy danh sách thông báo của user (có phân trang)",
-        "tags": [
-          "Notifications"
-        ]
+        "tags": ["Notifications"]
       }
     },
     "/notifications/unread-count": {
@@ -1529,7 +1452,25 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": "Số lượng thông báo chưa đọc"
+            "description": "Số lượng thông báo chưa đọc",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResponseCommon"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/NotificationUnreadCountResponseDto"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1538,9 +1479,7 @@
           }
         ],
         "summary": "Lấy số lượng thông báo chưa đọc của user hiện tại",
-        "tags": [
-          "Notifications"
-        ]
+        "tags": ["Notifications"]
       }
     },
     "/notifications/read-all": {
@@ -1549,7 +1488,25 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": "Thành công"
+            "description": "Thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResponseCommon"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/NotificationActionResponseDto"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1558,9 +1515,7 @@
           }
         ],
         "summary": "Đánh dấu tất cả thông báo của user là đã đọc",
-        "tags": [
-          "Notifications"
-        ]
+        "tags": ["Notifications"]
       }
     },
     "/notifications/{id}/read": {
@@ -1578,7 +1533,25 @@
         ],
         "responses": {
           "200": {
-            "description": "Thành công"
+            "description": "Thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResponseCommon"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/NotificationActionResponseDto"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1587,9 +1560,7 @@
           }
         ],
         "summary": "Đánh dấu 1 thông báo là đã đọc",
-        "tags": [
-          "Notifications"
-        ]
+        "tags": ["Notifications"]
       }
     },
     "/notifications/test-push": {
@@ -1605,11 +1576,11 @@
                 "properties": {
                   "title": {
                     "type": "string",
-                    "example": "Test Push Từ Notification"
+                    "example": "Test Push Notification"
                   },
                   "content": {
                     "type": "string",
-                    "example": "Nội dung test gửi Push đa luồng"
+                    "example": "Nội dung test gửi Push đã lưu"
                   }
                 }
               }
@@ -1618,7 +1589,14 @@
         },
         "responses": {
           "200": {
-            "description": "Tạo thông báo thành công và sẽ gửi Push ngầm"
+            "description": "Tạo thông báo thành công và gửi Push ngầm",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationResponseDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1626,10 +1604,8 @@
             "JWT-auth": []
           }
         ],
-        "summary": "Test end-to-end lưu thông báo vào DB & Push Notifications",
-        "tags": [
-          "Notifications"
-        ]
+        "summary": "Test end-to-end lưu thông báo vào DB và gửi Push Notifications",
+        "tags": ["Notifications"]
       }
     },
     "/appointments": {
@@ -1670,9 +1646,7 @@
           }
         ],
         "summary": "Tạo lịch hẹn mới",
-        "tags": [
-          "Appointment Actions"
-        ]
+        "tags": ["Appointment Actions"]
       }
     },
     "/appointments/my/patient": {
@@ -1730,10 +1704,7 @@
             "schema": {
               "example": "DESC",
               "type": "string",
-              "enum": [
-                "ASC",
-                "DESC"
-              ]
+              "enum": ["ASC", "DESC"]
             }
           },
           {
@@ -1794,12 +1765,8 @@
           }
         ],
         "summary": "Lấy lịch hẹn của bệnh nhân hiện tại",
-        "tags": [
-          "Appointment Read"
-        ],
-        "x-roles": [
-          "PATIENT"
-        ]
+        "tags": ["Appointment Read"],
+        "x-roles": ["PATIENT"]
       }
     },
     "/appointments/patient/{patientId}": {
@@ -1866,10 +1833,7 @@
             "schema": {
               "example": "DESC",
               "type": "string",
-              "enum": [
-                "ASC",
-                "DESC"
-              ]
+              "enum": ["ASC", "DESC"]
             }
           },
           {
@@ -1933,9 +1897,7 @@
           }
         ],
         "summary": "Lấy lịch hẹn của bệnh nhân",
-        "tags": [
-          "Appointment Read"
-        ]
+        "tags": ["Appointment Read"]
       }
     },
     "/appointments/doctor/{doctorId}": {
@@ -2002,10 +1964,7 @@
             "schema": {
               "example": "DESC",
               "type": "string",
-              "enum": [
-                "ASC",
-                "DESC"
-              ]
+              "enum": ["ASC", "DESC"]
             }
           },
           {
@@ -2069,9 +2028,7 @@
           }
         ],
         "summary": "Lấy lịch hẹn của bác sĩ",
-        "tags": [
-          "Appointment Read"
-        ]
+        "tags": ["Appointment Read"]
       }
     },
     "/appointments/{id}": {
@@ -2112,9 +2069,7 @@
           }
         ],
         "summary": "Lấy chi tiết lịch hẹn",
-        "tags": [
-          "Appointment Read"
-        ]
+        "tags": ["Appointment Read"]
       }
     },
     "/appointments/{id}/medical-record": {
@@ -2149,14 +2104,8 @@
           }
         ],
         "summary": "Lấy hồ sơ bệnh án của lịch hẹn",
-        "tags": [
-          "Appointment Read"
-        ],
-        "x-roles": [
-          "DOCTOR",
-          "ADMIN",
-          "PATIENT"
-        ]
+        "tags": ["Appointment Read"],
+        "x-roles": ["DOCTOR", "ADMIN", "PATIENT"]
       }
     },
     "/appointments/{id}/vital-signs": {
@@ -2194,9 +2143,7 @@
           }
         ],
         "summary": "Lấy danh sách chỉ số sinh tồn của lịch hẹn",
-        "tags": [
-          "Appointment Read"
-        ]
+        "tags": ["Appointment Read"]
       }
     },
     "/appointments/{id}/prescriptions": {
@@ -2234,9 +2181,7 @@
           }
         ],
         "summary": "Lấy danh sách đơn thuốc của lịch hẹn",
-        "tags": [
-          "Appointment Read"
-        ]
+        "tags": ["Appointment Read"]
       }
     },
     "/appointments/{id}/check-in": {
@@ -2278,15 +2223,8 @@
           }
         ],
         "summary": "Check-in bệnh nhân",
-        "tags": [
-          "Appointment Actions"
-        ],
-        "x-roles": [
-          "DOCTOR",
-          "PATIENT",
-          "ADMIN",
-          "RECEPTIONIST"
-        ]
+        "tags": ["Appointment Actions"],
+        "x-roles": ["DOCTOR", "PATIENT", "ADMIN", "RECEPTIONIST"]
       }
     },
     "/appointments/{id}/check-in/video": {
@@ -2325,13 +2263,8 @@
           }
         ],
         "summary": "Check-in cho cuộc hẹn VIDEO (bệnh nhân hoặc bác sĩ)",
-        "tags": [
-          "Appointment Actions"
-        ],
-        "x-roles": [
-          "PATIENT",
-          "DOCTOR"
-        ]
+        "tags": ["Appointment Actions"],
+        "x-roles": ["PATIENT", "DOCTOR"]
       }
     },
     "/appointments/{id}/cancel": {
@@ -2379,9 +2312,7 @@
           }
         ],
         "summary": "Hủy lịch hẹn",
-        "tags": [
-          "Appointment Actions"
-        ]
+        "tags": ["Appointment Actions"]
       }
     },
     "/appointments/{id}/reschedule": {
@@ -2432,9 +2363,7 @@
           }
         ],
         "summary": "Đổi lịch hẹn sang time slot khác",
-        "tags": [
-          "Appointment Actions"
-        ]
+        "tags": ["Appointment Actions"]
       }
     },
     "/appointments/{id}/video/join": {
@@ -2475,9 +2404,7 @@
           }
         ],
         "summary": "Lấy token để join video call",
-        "tags": [
-          "Appointment Actions"
-        ]
+        "tags": ["Appointment Actions"]
       }
     },
     "/appointments/{id}/video/leave": {
@@ -2505,9 +2432,7 @@
           }
         ],
         "summary": "Rời khỏi video call",
-        "tags": [
-          "Appointment Actions"
-        ]
+        "tags": ["Appointment Actions"]
       }
     },
     "/appointments/my/patient/statistics": {
@@ -2532,12 +2457,8 @@
           }
         ],
         "summary": "Lấy thống kê lịch hẹn của bệnh nhân",
-        "tags": [
-          "Appointment Statistics"
-        ],
-        "x-roles": [
-          "PATIENT"
-        ]
+        "tags": ["Appointment Statistics"],
+        "x-roles": ["PATIENT"]
       }
     },
     "/appointments/me/call-status": {
@@ -2562,9 +2483,7 @@
           }
         ],
         "summary": "Kiểm tra trạng thái cuộc gọi hiện tại của user",
-        "tags": [
-          "Appointment Statistics"
-        ]
+        "tags": ["Appointment Statistics"]
       }
     },
     "/appointments/{id}/video/status": {
@@ -2600,9 +2519,7 @@
           }
         ],
         "summary": "Kiểm tra trạng thái video call trước khi join",
-        "tags": [
-          "Appointment Statistics"
-        ]
+        "tags": ["Appointment Statistics"]
       }
     },
     "/payment/create": {
@@ -2652,9 +2569,7 @@
           }
         ],
         "summary": "Tạo payment link cho cuộc hẹn",
-        "tags": [
-          "Payment"
-        ]
+        "tags": ["Payment"]
       }
     },
     "/payment/appointment/{appointmentId}": {
@@ -2692,9 +2607,7 @@
           }
         ],
         "summary": "Lấy thông tin payment theo appointment ID",
-        "tags": [
-          "Payment"
-        ]
+        "tags": ["Payment"]
       }
     },
     "/payment/cancel/appointment/{appointmentId}": {
@@ -2745,9 +2658,7 @@
           }
         ],
         "summary": "Hủy payment link theo appointment ID",
-        "tags": [
-          "Payment"
-        ]
+        "tags": ["Payment"]
       }
     },
     "/payment/webhook": {
@@ -2760,9 +2671,7 @@
           }
         },
         "summary": "Webhook endpoint cho PayOS callback",
-        "tags": [
-          "Payment"
-        ]
+        "tags": ["Payment"]
       }
     },
     "/payment/return": {
@@ -2784,9 +2693,7 @@
           }
         },
         "summary": "Return URL sau khi thanh toán thành công",
-        "tags": [
-          "Payment"
-        ]
+        "tags": ["Payment"]
       }
     },
     "/payment/cancel-callback": {
@@ -2808,9 +2715,7 @@
           }
         },
         "summary": "Cancel URL khi hủy thanh toán",
-        "tags": [
-          "Payment"
-        ]
+        "tags": ["Payment"]
       }
     },
     "/medical/records/patient/{patientId}": {
@@ -2848,9 +2753,7 @@
           }
         ],
         "summary": "Lấy hồ sơ bệnh án của bệnh nhân (Reference/History View)",
-        "tags": [
-          "Medical Records"
-        ]
+        "tags": ["Medical Records"]
       }
     },
     "/medical/records/{id}/detail": {
@@ -2885,9 +2788,7 @@
           }
         ],
         "summary": "Lấy chi tiết bệnh án (Detail Page - Read-only)",
-        "tags": [
-          "Medical Records"
-        ]
+        "tags": ["Medical Records"]
       }
     },
     "/medical/records/{id}/summary": {
@@ -2922,14 +2823,8 @@
           }
         ],
         "summary": "Lấy thông tin tổng kết bệnh án",
-        "tags": [
-          "Medical Records"
-        ],
-        "x-roles": [
-          "DOCTOR",
-          "PATIENT",
-          "ADMIN"
-        ]
+        "tags": ["Medical Records"],
+        "x-roles": ["DOCTOR", "PATIENT", "ADMIN"]
       }
     },
     "/medical/vital-signs/patient/{patientId}": {
@@ -2967,9 +2862,7 @@
           }
         ],
         "summary": "Lấy chỉ số sinh tồn của bệnh nhân",
-        "tags": [
-          "Medical Records"
-        ]
+        "tags": ["Medical Records"]
       }
     },
     "/medical/prescriptions/{id}": {
@@ -3004,9 +2897,7 @@
           }
         ],
         "summary": "Lấy chi tiết đơn thuốc",
-        "tags": [
-          "Medical Records"
-        ]
+        "tags": ["Medical Records"]
       }
     },
     "/medical/prescriptions/patient/{patientId}": {
@@ -3044,9 +2935,7 @@
           }
         ],
         "summary": "Lấy danh sách đơn thuốc của bệnh nhân",
-        "tags": [
-          "Medical Records"
-        ]
+        "tags": ["Medical Records"]
       }
     },
     "/medical/records/{id}/pdf": {
@@ -3083,14 +2972,8 @@
           }
         ],
         "summary": "Lấy URL PDF bệnh án đã lưu",
-        "tags": [
-          "Medical Records"
-        ],
-        "x-roles": [
-          "DOCTOR",
-          "PATIENT",
-          "ADMIN"
-        ]
+        "tags": ["Medical Records"],
+        "x-roles": ["DOCTOR", "PATIENT", "ADMIN"]
       }
     },
     "/medical/prescriptions/{id}/pdf": {
@@ -3127,14 +3010,8 @@
           }
         ],
         "summary": "Lấy URL PDF đơn thuốc đã lưu",
-        "tags": [
-          "Medical Records"
-        ],
-        "x-roles": [
-          "DOCTOR",
-          "PATIENT",
-          "ADMIN"
-        ]
+        "tags": ["Medical Records"],
+        "x-roles": ["DOCTOR", "PATIENT", "ADMIN"]
       }
     },
     "/medicines": {
@@ -3164,9 +3041,7 @@
           }
         },
         "summary": "Create a new medicine/product",
-        "tags": [
-          "Medicines"
-        ]
+        "tags": ["Medicines"]
       },
       "get": {
         "operationId": "MedicineController_findAll",
@@ -3221,10 +3096,7 @@
             "schema": {
               "example": "DESC",
               "type": "string",
-              "enum": [
-                "ASC",
-                "DESC"
-              ]
+              "enum": ["ASC", "DESC"]
             }
           },
           {
@@ -3363,9 +3235,7 @@
           }
         },
         "summary": "List and search medicines",
-        "tags": [
-          "Medicines"
-        ]
+        "tags": ["Medicines"]
       }
     },
     "/medicines/{id}": {
@@ -3397,9 +3267,7 @@
           }
         },
         "summary": "Get medicine details",
-        "tags": [
-          "Medicines"
-        ]
+        "tags": ["Medicines"]
       },
       "patch": {
         "operationId": "MedicineController_update",
@@ -3436,9 +3304,7 @@
           }
         },
         "summary": "Update medicine",
-        "tags": [
-          "Medicines"
-        ]
+        "tags": ["Medicines"]
       },
       "delete": {
         "operationId": "MedicineController_remove",
@@ -3458,9 +3324,7 @@
           }
         },
         "summary": "Soft delete (deactivate) medicine",
-        "tags": [
-          "Medicines"
-        ]
+        "tags": ["Medicines"]
       }
     },
     "/chatmessages": {
@@ -3498,9 +3362,7 @@
           }
         ],
         "summary": "Gửi message mới (chỉ thành viên chatroom)",
-        "tags": [
-          "Chat"
-        ]
+        "tags": ["Chat"]
       }
     },
     "/chatmessages/chatroom/{chatroomId}": {
@@ -3540,9 +3402,7 @@
           }
         ],
         "summary": "Lấy danh sách message theo chatroomId (chỉ thành viên)",
-        "tags": [
-          "Chat"
-        ]
+        "tags": ["Chat"]
       }
     },
     "/chatmessages/{id}": {
@@ -3582,9 +3442,7 @@
           }
         ],
         "summary": "Lấy message theo id (chỉ thành viên chatroom)",
-        "tags": [
-          "Chat"
-        ]
+        "tags": ["Chat"]
       },
       "patch": {
         "operationId": "ChatMessageController_update",
@@ -3629,9 +3487,7 @@
           }
         ],
         "summary": "Cập nhật nội dung message (chỉ người gửi)",
-        "tags": [
-          "Chat"
-        ]
+        "tags": ["Chat"]
       },
       "delete": {
         "operationId": "ChatMessageController_remove",
@@ -3659,9 +3515,7 @@
           }
         ],
         "summary": "Xoá message (chỉ người gửi hoặc Admin)",
-        "tags": [
-          "Chat"
-        ]
+        "tags": ["Chat"]
       }
     },
     "/chatrooms": {
@@ -3696,9 +3550,7 @@
           }
         ],
         "summary": "Tạo hoặc lấy chatroom giữa 2 users",
-        "tags": [
-          "Chat"
-        ]
+        "tags": ["Chat"]
       }
     },
     "/chatrooms/my-chats": {
@@ -3726,9 +3578,7 @@
           }
         ],
         "summary": "Lấy tất cả chatrooms của user hiện tại",
-        "tags": [
-          "Chat"
-        ]
+        "tags": ["Chat"]
       }
     },
     "/chatrooms/{id}": {
@@ -3768,9 +3618,7 @@
           }
         ],
         "summary": "Lấy chatroom theo id (chỉ thành viên hoặc Admin)",
-        "tags": [
-          "Chat"
-        ]
+        "tags": ["Chat"]
       }
     },
     "/enums/countries": {
@@ -3827,10 +3675,7 @@
             "schema": {
               "example": "DESC",
               "type": "string",
-              "enum": [
-                "ASC",
-                "DESC"
-              ]
+              "enum": ["ASC", "DESC"]
             }
           }
         ],
@@ -3847,9 +3692,7 @@
           }
         },
         "summary": "Lấy danh sách quốc gia",
-        "tags": [
-          "Enum - Danh mục"
-        ]
+        "tags": ["Enum - Danh mục"]
       }
     },
     "/enums/ethnicities": {
@@ -3906,10 +3749,7 @@
             "schema": {
               "example": "DESC",
               "type": "string",
-              "enum": [
-                "ASC",
-                "DESC"
-              ]
+              "enum": ["ASC", "DESC"]
             }
           }
         ],
@@ -3926,9 +3766,7 @@
           }
         },
         "summary": "Lấy danh sách dân tộc",
-        "tags": [
-          "Enum - Danh mục"
-        ]
+        "tags": ["Enum - Danh mục"]
       }
     },
     "/enums/occupations": {
@@ -3985,10 +3823,7 @@
             "schema": {
               "example": "DESC",
               "type": "string",
-              "enum": [
-                "ASC",
-                "DESC"
-              ]
+              "enum": ["ASC", "DESC"]
             }
           }
         ],
@@ -4005,9 +3840,7 @@
           }
         },
         "summary": "Lấy danh sách nghề nghiệp",
-        "tags": [
-          "Enum - Danh mục"
-        ]
+        "tags": ["Enum - Danh mục"]
       }
     },
     "/favorites": {
@@ -4045,9 +3878,7 @@
           }
         ],
         "summary": "Thêm bác sĩ hoặc bệnh viện vào yêu thích",
-        "tags": [
-          "Favorites"
-        ]
+        "tags": ["Favorites"]
       },
       "get": {
         "operationId": "FavoriteController_findAll",
@@ -4073,9 +3904,7 @@
           }
         ],
         "summary": "Lấy danh sách yêu thích của tôi",
-        "tags": [
-          "Favorites"
-        ]
+        "tags": ["Favorites"]
       }
     },
     "/favorites/doctor/{doctorId}": {
@@ -4109,9 +3938,7 @@
           }
         ],
         "summary": "Kiểm tra bác sĩ có trong danh sách yêu thích không",
-        "tags": [
-          "Favorites"
-        ]
+        "tags": ["Favorites"]
       }
     },
     "/favorites/hospital/{hospitalId}": {
@@ -4145,9 +3972,7 @@
           }
         ],
         "summary": "Kiểm tra bệnh viện có trong danh sách yêu thích không",
-        "tags": [
-          "Favorites"
-        ]
+        "tags": ["Favorites"]
       }
     },
     "/favorites/{id}": {
@@ -4187,9 +4012,7 @@
           }
         ],
         "summary": "Lấy favorite theo id (chỉ chủ sở hữu hoặc Admin)",
-        "tags": [
-          "Favorites"
-        ]
+        "tags": ["Favorites"]
       },
       "delete": {
         "operationId": "FavoriteController_remove",
@@ -4214,9 +4037,7 @@
           }
         ],
         "summary": "Xóa khỏi yêu thích (truyền doctorId, hospitalId hoặc favoriteId)",
-        "tags": [
-          "Favorites"
-        ]
+        "tags": ["Favorites"]
       }
     },
     "/hospitals": {
@@ -4278,9 +4099,7 @@
           }
         },
         "summary": "Lấy danh sách bệnh viện/phòng khám",
-        "tags": [
-          "Hospitals"
-        ]
+        "tags": ["Hospitals"]
       }
     },
     "/hospitals/cities": {
@@ -4303,9 +4122,7 @@
           }
         },
         "summary": "Lấy danh sách các thành phố có bệnh viện",
-        "tags": [
-          "Hospitals"
-        ]
+        "tags": ["Hospitals"]
       }
     },
     "/hospitals/{id}": {
@@ -4338,9 +4155,7 @@
           }
         },
         "summary": "Lấy thông tin chi tiết bệnh viện",
-        "tags": [
-          "Hospitals"
-        ]
+        "tags": ["Hospitals"]
       }
     },
     "/hospitals/code/{hospitalCode}": {
@@ -4373,9 +4188,7 @@
           }
         },
         "summary": "Lấy bệnh viện theo mã",
-        "tags": [
-          "Hospitals"
-        ]
+        "tags": ["Hospitals"]
       }
     },
     "/hospitals/{id}/doctors": {
@@ -4420,9 +4233,7 @@
           }
         },
         "summary": "Lấy danh sách bác sĩ của bệnh viện",
-        "tags": [
-          "Hospitals"
-        ]
+        "tags": ["Hospitals"]
       }
     },
     "/patients/me": {
@@ -4450,9 +4261,7 @@
           }
         ],
         "summary": "Lấy thông tin bệnh nhân của user hiện tại",
-        "tags": [
-          "Patients"
-        ]
+        "tags": ["Patients"]
       }
     },
     "/patients/me/profile": {
@@ -4477,9 +4286,7 @@
           }
         ],
         "summary": "Lấy hồ sơ bệnh nhân với thống kê tổng hợp",
-        "tags": [
-          "Patients"
-        ]
+        "tags": ["Patients"]
       }
     },
     "/patients/{id}": {
@@ -4520,9 +4327,7 @@
           }
         ],
         "summary": "Lấy thông tin bệnh nhân theo ID (Admin/Doctor/Chính mình)",
-        "tags": [
-          "Patients"
-        ]
+        "tags": ["Patients"]
       },
       "patch": {
         "operationId": "PatientController_update",
@@ -4568,9 +4373,7 @@
           }
         ],
         "summary": "Cập nhật thông tin bệnh nhân (Admin/Chính mình)",
-        "tags": [
-          "Patients"
-        ]
+        "tags": ["Patients"]
       }
     },
     "/patients/{id}/medical-records": {
@@ -4608,9 +4411,7 @@
           }
         ],
         "summary": "Lấy danh sách hồ sơ bệnh án của bệnh nhân",
-        "tags": [
-          "Patients"
-        ]
+        "tags": ["Patients"]
       }
     },
     "/patients/{id}/vital-signs": {
@@ -4648,9 +4449,7 @@
           }
         ],
         "summary": "Lấy lịch sử chỉ số sinh tồn của bệnh nhân",
-        "tags": [
-          "Patients"
-        ]
+        "tags": ["Patients"]
       }
     },
     "/patients/{id}/prescriptions": {
@@ -4688,9 +4487,7 @@
           }
         ],
         "summary": "Lấy danh sách đơn thuốc của bệnh nhân",
-        "tags": [
-          "Patients"
-        ]
+        "tags": ["Patients"]
       }
     },
     "/patients/{id}/appointments": {
@@ -4707,27 +4504,75 @@
             }
           },
           {
-            "name": "status",
+            "name": "page",
             "required": false,
             "in": "query",
+            "description": "Số trang (bắt đầu từ 1)",
             "schema": {
-              "type": "string"
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
             }
           },
           {
             "name": "limit",
             "required": false,
             "in": "query",
+            "description": "Số lượng items mỗi trang",
             "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10,
               "type": "number"
             }
           },
           {
-            "name": "page",
+            "name": "search",
             "required": false,
             "in": "query",
+            "description": "Từ khóa tìm kiếm",
             "schema": {
-              "type": "number"
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "required": false,
+            "in": "query",
+            "description": "Trường dùng để sắp xếp kết quả",
+            "schema": {
+              "example": "createdAt",
+              "type": "string"
+            }
+          },
+          {
+            "name": "order",
+            "required": false,
+            "in": "query",
+            "description": "Thứ tự sắp xếp (ASC hoặc DESC)",
+            "schema": {
+              "example": "DESC",
+              "type": "string",
+              "enum": ["ASC", "DESC"]
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filter by appointment status",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PENDING_PAYMENT",
+                "PENDING",
+                "CONFIRMED",
+                "CHECKED_IN",
+                "IN_PROGRESS",
+                "COMPLETED",
+                "CANCELLED",
+                "RESCHEDULED"
+              ]
             }
           }
         ],
@@ -4749,9 +4594,7 @@
           }
         ],
         "summary": "Lấy danh sách lịch hẹn của bệnh nhân",
-        "tags": [
-          "Patients"
-        ]
+        "tags": ["Patients"]
       }
     },
     "/patients/{id}/profile": {
@@ -4786,9 +4629,7 @@
           }
         ],
         "summary": "Lấy hồ sơ tổng hợp bệnh nhân (thông tin + thống kê)",
-        "tags": [
-          "Patients"
-        ]
+        "tags": ["Patients"]
       }
     },
     "/reports": {
@@ -4826,9 +4667,7 @@
           }
         ],
         "summary": "Tạo báo cáo bác sĩ hoặc cuộc hẹn",
-        "tags": [
-          "Reports"
-        ]
+        "tags": ["Reports"]
       }
     },
     "/reports/my-reports": {
@@ -4856,9 +4695,7 @@
           }
         ],
         "summary": "Lấy danh sách báo cáo của tôi",
-        "tags": [
-          "Reports"
-        ]
+        "tags": ["Reports"]
       }
     },
     "/reports/{id}": {
@@ -4898,9 +4735,7 @@
           }
         ],
         "summary": "Lấy chi tiết báo cáo (chỉ Admin hoặc người tạo báo cáo)",
-        "tags": [
-          "Reports"
-        ]
+        "tags": ["Reports"]
       }
     },
     "/reviews": {
@@ -4938,9 +4773,7 @@
           }
         ],
         "summary": "Tạo đánh giá bác sĩ mới",
-        "tags": [
-          "Reviews"
-        ]
+        "tags": ["Reviews"]
       },
       "get": {
         "operationId": "ReviewController_findAll",
@@ -4966,9 +4799,7 @@
           }
         ],
         "summary": "Lấy danh sách tất cả đánh giá",
-        "tags": [
-          "Reviews"
-        ]
+        "tags": ["Reviews"]
       }
     },
     "/reviews/doctor/{doctorId}": {
@@ -5005,9 +4836,7 @@
           }
         ],
         "summary": "Lấy danh sách đánh giá theo bác sĩ",
-        "tags": [
-          "Reviews"
-        ]
+        "tags": ["Reviews"]
       }
     },
     "/reviews/my-reviews": {
@@ -5035,9 +4864,7 @@
           }
         ],
         "summary": "Lấy danh sách đánh giá của tôi",
-        "tags": [
-          "Reviews"
-        ]
+        "tags": ["Reviews"]
       }
     },
     "/reviews/{id}": {
@@ -5074,9 +4901,7 @@
           }
         ],
         "summary": "Lấy đánh giá theo id",
-        "tags": [
-          "Reviews"
-        ]
+        "tags": ["Reviews"]
       },
       "patch": {
         "operationId": "ReviewController_update",
@@ -5118,9 +4943,7 @@
           }
         ],
         "summary": "Cập nhật đánh giá",
-        "tags": [
-          "Reviews"
-        ]
+        "tags": ["Reviews"]
       },
       "delete": {
         "operationId": "ReviewController_remove",
@@ -5145,9 +4968,7 @@
           }
         ],
         "summary": "Xóa đánh giá",
-        "tags": [
-          "Reviews"
-        ]
+        "tags": ["Reviews"]
       }
     },
     "/reviews/{id}/response": {
@@ -5191,9 +5012,7 @@
           }
         ],
         "summary": "Bác sĩ phản hồi đánh giá",
-        "tags": [
-          "Reviews"
-        ]
+        "tags": ["Reviews"]
       }
     },
     "/screenings/{id}": {
@@ -5234,9 +5053,7 @@
           }
         ],
         "summary": "Lấy chi tiết yêu cầu sàng lọc",
-        "tags": [
-          "Screening"
-        ]
+        "tags": ["Screening"]
       }
     },
     "/screenings/{screeningId}/images": {
@@ -5274,9 +5091,7 @@
           }
         ],
         "summary": "Lấy danh sách ảnh của yêu cầu sàng lọc",
-        "tags": [
-          "Screening"
-        ]
+        "tags": ["Screening"]
       }
     },
     "/screenings/{screeningId}/analyses": {
@@ -5314,9 +5129,7 @@
           }
         ],
         "summary": "Lấy danh sách kết quả phân tích AI cho yêu cầu sàng lọc",
-        "tags": [
-          "Screening"
-        ]
+        "tags": ["Screening"]
       }
     },
     "/screenings/analyses/{analysisId}": {
@@ -5351,9 +5164,7 @@
           }
         ],
         "summary": "Lấy chi tiết kết quả phân tích AI",
-        "tags": [
-          "Screening"
-        ]
+        "tags": ["Screening"]
       }
     },
     "/screenings/{screeningId}/conclusions": {
@@ -5391,9 +5202,7 @@
           }
         ],
         "summary": "Lấy danh sách kết luận của 1 phiên sàng lọc",
-        "tags": [
-          "Screening"
-        ]
+        "tags": ["Screening"]
       }
     },
     "/users/me": {
@@ -5418,9 +5227,7 @@
           }
         ],
         "summary": "Lấy thông tin user hiện tại",
-        "tags": [
-          "Users"
-        ]
+        "tags": ["Users"]
       }
     },
     "/users/{id}": {
@@ -5460,9 +5267,7 @@
           }
         ],
         "summary": "Lấy user theo id (Admin hoặc chính mình)",
-        "tags": [
-          "Users"
-        ]
+        "tags": ["Users"]
       },
       "patch": {
         "operationId": "UserController_update",
@@ -5507,9 +5312,7 @@
           }
         ],
         "summary": "Cập nhật thông tin user (Admin hoặc chính mình)",
-        "tags": [
-          "Users"
-        ]
+        "tags": ["Users"]
       }
     },
     "/users/me/avatar": {
@@ -5530,9 +5333,7 @@
                     "description": "Ảnh avatar (jpg, png, jpeg, webp)"
                   }
                 },
-                "required": [
-                  "file"
-                ]
+                "required": ["file"]
               }
             }
           }
@@ -5595,9 +5396,7 @@
           }
         ],
         "summary": "Upload avatar cho user hiện tại",
-        "tags": [
-          "Users"
-        ]
+        "tags": ["Users"]
       }
     },
     "/users/me/fcm-token": {
@@ -5625,9 +5424,7 @@
           }
         ],
         "summary": "Thêm FCM Token cho user hiện tại",
-        "tags": [
-          "Users"
-        ]
+        "tags": ["Users"]
       },
       "delete": {
         "operationId": "UserController_removeFcmToken",
@@ -5653,9 +5450,7 @@
           }
         ],
         "summary": "Xóa FCM Token cho user hiện tại (khi logout)",
-        "tags": [
-          "Users"
-        ]
+        "tags": ["Users"]
       }
     }
   },
@@ -5698,9 +5493,9 @@
           },
           "password": {
             "type": "string",
-            "example": "SecurePass123",
+            "example": "SecurePass@123",
             "minLength": 8,
-            "description": "Mật khẩu (ít nhất 8 ký tự, có chữ hoa, chữ thường và số)"
+            "description": "Mật khẩu (ít nhất 8 ký tự, có chữ hoa, chữ thường, số và ký tự đặc biệt)"
           },
           "fullName": {
             "type": "string",
@@ -6772,10 +6567,7 @@
             ]
           }
         },
-        "required": [
-          "email",
-          "password"
-        ]
+        "required": ["email", "password"]
       },
       "RegisterResponseDto": {
         "type": "object",
@@ -6785,9 +6577,7 @@
             "example": "Register successful!"
           }
         },
-        "required": [
-          "message"
-        ]
+        "required": ["message"]
       },
       "LoginDto": {
         "type": "object",
@@ -6804,10 +6594,7 @@
             "description": "Mật khẩu"
           }
         },
-        "required": [
-          "email",
-          "password"
-        ]
+        "required": ["email", "password"]
       },
       "AuthUserResponseDto": {
         "type": "object",
@@ -6826,10 +6613,7 @@
           },
           "status": {
             "type": "string",
-            "enum": [
-              "ACTIVE",
-              "INACTIVE"
-            ]
+            "enum": ["ACTIVE", "INACTIVE"]
           },
           "doctorId": {
             "type": "string",
@@ -6840,9 +6624,7 @@
             "example": "patient-id"
           }
         },
-        "required": [
-          "id"
-        ]
+        "required": ["id"]
       },
       "AuthAccountResponseDto": {
         "type": "object",
@@ -6859,13 +6641,7 @@
             "type": "array",
             "items": {
               "type": "string",
-              "enum": [
-                "ADMIN",
-                "DOCTOR",
-                "PATIENT",
-                "SYSTEM",
-                "RECEPTIONIST"
-              ]
+              "enum": ["ADMIN", "DOCTOR", "PATIENT", "SYSTEM", "RECEPTIONIST"]
             }
           },
           "isVerified": {
@@ -6911,11 +6687,7 @@
             "$ref": "#/components/schemas/AuthAccountResponseDto"
           }
         },
-        "required": [
-          "accessToken",
-          "refreshToken",
-          "account"
-        ]
+        "required": ["accessToken", "refreshToken", "account"]
       },
       "ForgotPasswordDto": {
         "type": "object",
@@ -6926,9 +6698,7 @@
             "example": "user@example.com"
           }
         },
-        "required": [
-          "email"
-        ]
+        "required": ["email"]
       },
       "ResetPasswordWithOtpDto": {
         "type": "object",
@@ -6943,15 +6713,10 @@
           },
           "newPassword": {
             "type": "string",
-            "description": "Mật khẩu mới",
-            "minLength": 6
+            "description": "Mật khẩu mới"
           }
         },
-        "required": [
-          "email",
-          "otp",
-          "newPassword"
-        ]
+        "required": ["email", "otp", "newPassword"]
       },
       "ResetPasswordResponseDto": {
         "type": "object",
@@ -6961,9 +6726,7 @@
             "example": "Password reset successful!"
           }
         },
-        "required": [
-          "message"
-        ]
+        "required": ["message"]
       },
       "ResetPasswordWithTokenDto": {
         "type": "object",
@@ -6974,14 +6737,10 @@
           },
           "newPassword": {
             "type": "string",
-            "description": "Mật khẩu mới",
-            "minLength": 6
+            "description": "Mật khẩu mới"
           }
         },
-        "required": [
-          "token",
-          "newPassword"
-        ]
+        "required": ["token", "newPassword"]
       },
       "RefreshTokenDto": {
         "type": "object",
@@ -6991,9 +6750,7 @@
             "description": "Refresh token"
           }
         },
-        "required": [
-          "refreshToken"
-        ]
+        "required": ["refreshToken"]
       },
       "RefreshTokenResponseDto": {
         "type": "object",
@@ -7009,9 +6766,7 @@
             "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
           }
         },
-        "required": [
-          "accessToken"
-        ]
+        "required": ["accessToken"]
       },
       "ResendVerificationDto": {
         "type": "object",
@@ -7022,9 +6777,7 @@
             "example": "user@example.com"
           }
         },
-        "required": [
-          "email"
-        ]
+        "required": ["email"]
       },
       "VerifyOtpDto": {
         "type": "object",
@@ -7042,10 +6795,7 @@
             "maxLength": 6
           }
         },
-        "required": [
-          "email",
-          "otp"
-        ]
+        "required": ["email", "otp"]
       },
       "PaginationMetaDto": {
         "type": "object",
@@ -7097,10 +6847,7 @@
             "$ref": "#/components/schemas/PaginationMetaDto"
           }
         },
-        "required": [
-          "items",
-          "meta"
-        ]
+        "required": ["items", "meta"]
       },
       "DoctorResponseDto": {
         "type": "object",
@@ -7138,11 +6885,7 @@
           },
           "gender": {
             "type": "string",
-            "enum": [
-              "MALE",
-              "FEMALE",
-              "OTHER"
-            ],
+            "enum": ["MALE", "FEMALE", "OTHER"],
             "example": "MALE",
             "description": "Giới tính"
           },
@@ -7153,10 +6896,7 @@
           },
           "status": {
             "type": "string",
-            "enum": [
-              "ACTIVE",
-              "INACTIVE"
-            ],
+            "enum": ["ACTIVE", "INACTIVE"],
             "example": "ACTIVE",
             "description": "Trạng thái tài khoản"
           },
@@ -7370,9 +7110,7 @@
             "description": "Ngày hết hạn (YYYY-MM-DD)"
           }
         },
-        "required": [
-          "url"
-        ]
+        "required": ["url"]
       },
       "UpdateDoctorDto": {
         "type": "object",
@@ -7495,11 +7233,7 @@
           "gender": {
             "type": "string",
             "description": "Giới tính",
-            "enum": [
-              "MALE",
-              "FEMALE",
-              "OTHER"
-            ],
+            "enum": ["MALE", "FEMALE", "OTHER"],
             "example": "MALE"
           },
           "CCCD": {
@@ -8613,17 +8347,11 @@
           },
           "allowedAppointmentTypes": {
             "type": "array",
-            "example": [
-              "IN_CLINIC",
-              "VIDEO"
-            ],
+            "example": ["IN_CLINIC", "VIDEO"],
             "description": "Các loại hình khám được phép",
             "items": {
               "type": "string",
-              "enum": [
-                "VIDEO",
-                "IN_CLINIC"
-              ]
+              "enum": ["VIDEO", "IN_CLINIC"]
             }
           },
           "startTime": {
@@ -8720,10 +8448,7 @@
             "description": "Các loại hình khám được phép",
             "items": {
               "type": "string",
-              "enum": [
-                "VIDEO",
-                "IN_CLINIC"
-              ]
+              "enum": ["VIDEO", "IN_CLINIC"]
             }
           },
           "capacity": {
@@ -8747,11 +8472,7 @@
             "description": "Version của schedule tại thời điểm tạo slot"
           }
         },
-        "required": [
-          "startTime",
-          "endTime",
-          "allowedAppointmentTypes"
-        ]
+        "required": ["startTime", "endTime", "allowedAppointmentTypes"]
       },
       "BulkCreateTimeSlotsDto": {
         "type": "object",
@@ -8764,9 +8485,7 @@
             }
           }
         },
-        "required": [
-          "slots"
-        ]
+        "required": ["slots"]
       },
       "ToggleSlotAvailabilityDto": {
         "type": "object",
@@ -8777,9 +8496,7 @@
             "example": false
           }
         },
-        "required": [
-          "isAvailable"
-        ]
+        "required": ["isAvailable"]
       },
       "BulkToggleSlotsDto": {
         "type": "object",
@@ -8797,10 +8514,7 @@
             "example": false
           }
         },
-        "required": [
-          "slotIds",
-          "isAvailable"
-        ]
+        "required": ["slotIds", "isAvailable"]
       },
       "DisableSlotsForDayDto": {
         "type": "object",
@@ -8811,9 +8525,7 @@
             "example": "2026-01-15"
           }
         },
-        "required": [
-          "date"
-        ]
+        "required": ["date"]
       },
       "UpdateTimeSlotDto": {
         "type": "object",
@@ -8878,10 +8590,7 @@
           },
           "appointmentType": {
             "type": "string",
-            "enum": [
-              "VIDEO",
-              "IN_CLINIC"
-            ],
+            "enum": ["VIDEO", "IN_CLINIC"],
             "example": "IN_CLINIC",
             "description": "Loại hình khám"
           },
@@ -8943,11 +8652,7 @@
           },
           "scheduleType": {
             "type": "string",
-            "enum": [
-              "REGULAR",
-              "FLEXIBLE",
-              "TIME_OFF"
-            ],
+            "enum": ["REGULAR", "FLEXIBLE", "TIME_OFF"],
             "example": "REGULAR",
             "description": "Loại lịch: REGULAR (cố định), FLEXIBLE (linh hoạt), TIME_OFF (nghỉ)"
           },
@@ -9020,10 +8725,7 @@
           "appointmentType": {
             "type": "string",
             "description": "Loại hình khám",
-            "enum": [
-              "VIDEO",
-              "IN_CLINIC"
-            ]
+            "enum": ["VIDEO", "IN_CLINIC"]
           },
           "minimumBookingDays": {
             "type": "number",
@@ -9069,12 +8771,7 @@
             "description": "Ngày kết thúc hiệu lực (YYYY-MM-DD)"
           }
         },
-        "required": [
-          "dayOfWeek",
-          "startTime",
-          "endTime",
-          "appointmentType"
-        ]
+        "required": ["dayOfWeek", "startTime", "endTime", "appointmentType"]
       },
       "BulkCreateDoctorSchedulesDto": {
         "type": "object",
@@ -9101,9 +8798,7 @@
             }
           }
         },
-        "required": [
-          "schedules"
-        ]
+        "required": ["schedules"]
       },
       "UpdateDoctorScheduleDto": {
         "type": "object",
@@ -9114,9 +8809,7 @@
             "example": "550e8400-e29b-41d4-a716-446655440000"
           }
         },
-        "required": [
-          "id"
-        ]
+        "required": ["id"]
       },
       "BulkUpdateDoctorSchedulesDto": {
         "type": "object",
@@ -9140,9 +8833,7 @@
             }
           }
         },
-        "required": [
-          "schedules"
-        ]
+        "required": ["schedules"]
       },
       "GenerateSlotsDto": {
         "type": "object",
@@ -9158,10 +8849,7 @@
             "example": "2026-01-31"
           }
         },
-        "required": [
-          "startDate",
-          "endDate"
-        ]
+        "required": ["startDate", "endDate"]
       },
       "CreateFlexibleScheduleDto": {
         "type": "object",
@@ -9174,10 +8862,7 @@
           "appointmentType": {
             "type": "string",
             "description": "Loại lịch làm việc",
-            "enum": [
-              "VIDEO",
-              "IN_CLINIC"
-            ],
+            "enum": ["VIDEO", "IN_CLINIC"],
             "example": "IN_CLINIC"
           },
           "startTime": {
@@ -9265,11 +8950,7 @@
             "example": "17:00"
           }
         },
-        "required": [
-          "specificDate",
-          "startTime",
-          "endTime"
-        ]
+        "required": ["specificDate", "startTime", "endTime"]
       },
       "ConflictingAppointmentDto": {
         "type": "object",
@@ -9298,10 +8979,7 @@
           "appointmentType": {
             "type": "string",
             "description": "Loại cuộc hẹn",
-            "enum": [
-              "VIDEO",
-              "IN_CLINIC"
-            ]
+            "enum": ["VIDEO", "IN_CLINIC"]
           },
           "status": {
             "type": "string",
@@ -9337,11 +9015,7 @@
             "description": "Thông báo tổng kết"
           }
         },
-        "required": [
-          "conflictingAppointments",
-          "affectedSlotsCount",
-          "message"
-        ]
+        "required": ["conflictingAppointments", "affectedSlotsCount", "message"]
       },
       "UpdateFlexibleScheduleDto": {
         "type": "object",
@@ -9354,10 +9028,7 @@
           "appointmentType": {
             "type": "string",
             "description": "Loại lịch làm việc",
-            "enum": [
-              "VIDEO",
-              "IN_CLINIC"
-            ],
+            "enum": ["VIDEO", "IN_CLINIC"],
             "example": "IN_CLINIC"
           },
           "startTime": {
@@ -9443,11 +9114,7 @@
             "maxLength": 500
           }
         },
-        "required": [
-          "specificDate",
-          "startTime",
-          "endTime"
-        ]
+        "required": ["specificDate", "startTime", "endTime"]
       },
       "PreviewTimeOffConflictsDto": {
         "type": "object",
@@ -9468,11 +9135,7 @@
             "example": "12:00"
           }
         },
-        "required": [
-          "specificDate",
-          "startTime",
-          "endTime"
-        ]
+        "required": ["specificDate", "startTime", "endTime"]
       },
       "UpdateTimeOffDto": {
         "type": "object",
@@ -9504,6 +9167,24 @@
           }
         }
       },
+      "ResponseCommon": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "number",
+            "example": 200,
+            "description": "HTTP status code"
+          },
+          "message": {
+            "type": "string",
+            "example": "Success"
+          },
+          "data": {
+            "type": "object"
+          }
+        },
+        "required": ["code", "message"]
+      },
       "NotificationResponseDto": {
         "type": "object",
         "properties": {
@@ -9518,14 +9199,7 @@
           "type": {
             "type": "string",
             "example": "PAYMENT",
-            "enum": [
-              "GENERAL",
-              "PAYMENT",
-              "CONTRACT",
-              "PENALTY",
-              "SYSTEM",
-              "APPOINTMENT"
-            ]
+            "enum": ["GENERAL", "PAYMENT", "SYSTEM", "APPOINTMENT"]
           },
           "title": {
             "type": "string",
@@ -9554,14 +9228,31 @@
             "description": "Ngày tạo"
           }
         },
-        "required": [
-          "id",
-          "userId",
-          "type",
-          "title",
-          "content",
-          "status"
-        ]
+        "required": ["id", "userId", "type", "title", "content", "status"]
+      },
+      "NotificationActionResponseDto": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "Operation completed successfully"
+          }
+        },
+        "required": ["success", "message"]
+      },
+      "NotificationUnreadCountResponseDto": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "number",
+            "example": 3
+          }
+        },
+        "required": ["count"]
       },
       "PatientUserSummaryDto": {
         "type": "object",
@@ -9683,12 +9374,7 @@
             ]
           }
         },
-        "required": [
-          "id",
-          "userId",
-          "createdAt",
-          "updatedAt"
-        ]
+        "required": ["id", "userId", "createdAt", "updatedAt"]
       },
       "AppointmentResponseDto": {
         "type": "object",
@@ -9739,25 +9425,15 @@
           },
           "appointmentType": {
             "type": "string",
-            "enum": [
-              "VIDEO",
-              "IN_CLINIC"
-            ]
+            "enum": ["VIDEO", "IN_CLINIC"]
           },
           "subType": {
             "type": "string",
-            "enum": [
-              "INSTANT",
-              "SCHEDULED",
-              "RE_EXAM"
-            ]
+            "enum": ["INSTANT", "SCHEDULED", "RE_EXAM"]
           },
           "sourceType": {
             "type": "string",
-            "enum": [
-              "INTERNAL",
-              "EXTERNAL"
-            ]
+            "enum": ["INTERNAL", "EXTERNAL"]
           },
           "feeAmount": {
             "type": "string"
@@ -9882,10 +9558,7 @@
             ]
           }
         },
-        "required": [
-          "items",
-          "meta"
-        ]
+        "required": ["items", "meta"]
       },
       "MedicalRecordResponseDto": {
         "type": "object",
@@ -10093,11 +9766,7 @@
             "description": "Recorded at"
           }
         },
-        "required": [
-          "id",
-          "patientId",
-          "createdAt"
-        ]
+        "required": ["id", "patientId", "createdAt"]
       },
       "PrescriptionItemResponseDto": {
         "type": "object",
@@ -10139,13 +9808,7 @@
             "description": "Unit"
           }
         },
-        "required": [
-          "id",
-          "dosage",
-          "frequency",
-          "duration",
-          "unit"
-        ]
+        "required": ["id", "dosage", "frequency", "duration", "unit"]
       },
       "PrescriptionResponseDto": {
         "type": "object",
@@ -10266,20 +9929,13 @@
           "subType": {
             "type": "string",
             "description": "Loại con (INSTANT: Khám ngay, SCHEDULED: Đặt lịch, RE_EXAM: Tái khám)",
-            "enum": [
-              "INSTANT",
-              "SCHEDULED",
-              "RE_EXAM"
-            ],
+            "enum": ["INSTANT", "SCHEDULED", "RE_EXAM"],
             "default": "SCHEDULED"
           },
           "sourceType": {
             "type": "string",
             "description": "Nguồn đặt lịch (INTERNAL: Tại cơ sở, EXTERNAL: Online)",
-            "enum": [
-              "INTERNAL",
-              "EXTERNAL"
-            ],
+            "enum": ["INTERNAL", "EXTERNAL"],
             "default": "EXTERNAL"
           },
           "chiefComplaint": {
@@ -10298,9 +9954,7 @@
             "description": "Ghi chú của bệnh nhân"
           }
         },
-        "required": [
-          "timeSlotId"
-        ]
+        "required": ["timeSlotId"]
       },
       "CheckInByNumberDto": {
         "type": "object",
@@ -10311,9 +9965,7 @@
             "example": "APT-20240204-001"
           }
         },
-        "required": [
-          "appointmentNumber"
-        ]
+        "required": ["appointmentNumber"]
       },
       "CompleteExaminationDto": {
         "type": "object",
@@ -10368,9 +10020,7 @@
             "description": "Trạng thái mới của lịch hẹn"
           }
         },
-        "required": [
-          "status"
-        ]
+        "required": ["status"]
       },
       "CancelAppointmentDto": {
         "type": "object",
@@ -10380,9 +10030,7 @@
             "description": "Lý do hủy lịch"
           }
         },
-        "required": [
-          "reason"
-        ]
+        "required": ["reason"]
       },
       "RescheduleAppointmentDto": {
         "type": "object",
@@ -10392,9 +10040,7 @@
             "description": "ID của time slot mới"
           }
         },
-        "required": [
-          "newTimeSlotId"
-        ]
+        "required": ["newTimeSlotId"]
       },
       "JoinVideoCallResponseDto": {
         "type": "object",
@@ -10411,10 +10057,7 @@
             "$ref": "#/components/schemas/AppointmentResponseDto"
           }
         },
-        "required": [
-          "token",
-          "url"
-        ]
+        "required": ["token", "url"]
       },
       "UpdateMedicalRecordDtoForEncounter": {
         "type": "object",
@@ -10596,12 +10239,7 @@
             "description": "Hướng dẫn sử dụng"
           }
         },
-        "required": [
-          "medicineName",
-          "dosage",
-          "frequency",
-          "duration"
-        ]
+        "required": ["medicineName", "dosage", "frequency", "duration"]
       },
       "CreatePrescriptionDto": {
         "type": "object",
@@ -10622,9 +10260,7 @@
             }
           }
         },
-        "required": [
-          "items"
-        ]
+        "required": ["items"]
       },
       "DoctorQueueDto": {
         "type": "object",
@@ -10752,18 +10388,10 @@
           },
           "type": {
             "type": "string",
-            "enum": [
-              "today",
-              "7days",
-              "30days"
-            ]
+            "enum": ["today", "7days", "30days"]
           }
         },
-        "required": [
-          "start",
-          "end",
-          "type"
-        ]
+        "required": ["start", "end", "type"]
       },
       "RevenueStatsDto": {
         "type": "object",
@@ -10785,12 +10413,7 @@
             "description": "Số chỉ định xét nghiệm đã thanh toán"
           }
         },
-        "required": [
-          "total",
-          "visitCount",
-          "prescriptions",
-          "labTests"
-        ]
+        "required": ["total", "visitCount", "prescriptions", "labTests"]
       },
       "AppointmentStatsDto": {
         "type": "object",
@@ -10804,10 +10427,7 @@
             "description": "Số lượt khám trực tuyến (video)"
           }
         },
-        "required": [
-          "inClinic",
-          "video"
-        ]
+        "required": ["inClinic", "video"]
       },
       "PatientStatsDto": {
         "type": "object",
@@ -10825,11 +10445,7 @@
             "description": "Số bệnh nhân cũ (đã từng khám trước đó)"
           }
         },
-        "required": [
-          "total",
-          "new",
-          "returning"
-        ]
+        "required": ["total", "new", "returning"]
       },
       "DailyBreakdownDto": {
         "type": "object",
@@ -10851,12 +10467,7 @@
             "description": "Tổng lượt khám trong ngày"
           }
         },
-        "required": [
-          "date",
-          "newPatients",
-          "returningPatients",
-          "visits"
-        ]
+        "required": ["date", "newPatients", "returningPatients", "visits"]
       },
       "ComparisonStatsDto": {
         "type": "object",
@@ -10870,10 +10481,7 @@
             "description": "Phần trăm thay đổi so với kỳ trước"
           }
         },
-        "required": [
-          "previousPeriod",
-          "percentChange"
-        ]
+        "required": ["previousPeriod", "percentChange"]
       },
       "DashboardStatsDto": {
         "type": "object",
@@ -10926,11 +10534,7 @@
             "example": "2024-01-10T10:00:00Z"
           }
         },
-        "required": [
-          "appointmentId",
-          "roomName",
-          "joinedAt"
-        ]
+        "required": ["appointmentId", "roomName", "joinedAt"]
       },
       "UserCallStatusResponseDto": {
         "type": "object",
@@ -10943,9 +10547,7 @@
             "$ref": "#/components/schemas/CurrentCallDto"
           }
         },
-        "required": [
-          "inCall"
-        ]
+        "required": ["inCall"]
       },
       "VideoCallStatusResponseDto": {
         "type": "object",
@@ -10980,9 +10582,7 @@
             "example": false
           },
           "participantsInCall": {
-            "example": [
-              "doctor-uuid"
-            ],
+            "example": ["doctor-uuid"],
             "type": "array",
             "items": {
               "type": "string"
@@ -10993,10 +10593,7 @@
             "example": "Bạn có thể join video call"
           }
         },
-        "required": [
-          "canJoin",
-          "appointmentStatus"
-        ]
+        "required": ["canJoin", "appointmentStatus"]
       },
       "CreatePaymentDto": {
         "type": "object",
@@ -11005,11 +10602,19 @@
             "type": "string",
             "description": "ID của cuộc hẹn cần thanh toán",
             "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "returnUrl": {
+            "type": "string",
+            "description": "URL chuyển hướng sau khi thanh toán thành công",
+            "example": "https://example.com/payment/success"
+          },
+          "cancelUrl": {
+            "type": "string",
+            "description": "URL chuyển hướng khi hủy thanh toán",
+            "example": "https://example.com/payment/cancel"
           }
         },
-        "required": [
-          "appointmentId"
-        ]
+        "required": ["appointmentId"]
       },
       "PaymentResponseDto": {
         "type": "object",
@@ -11061,6 +10666,21 @@
             "type": "string",
             "description": "ID cuộc hẹn",
             "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "bin": {
+            "type": "string",
+            "description": "Mã ngân hàng (BIN)",
+            "example": "970418"
+          },
+          "accountNumber": {
+            "type": "string",
+            "description": "Số tài khoản nhận",
+            "example": "19038765321011"
+          },
+          "accountName": {
+            "type": "string",
+            "description": "Tên chủ tài khoản",
+            "example": "VU NGUYEN MINH DUC"
           },
           "createdAt": {
             "format": "date-time",
@@ -11170,12 +10790,7 @@
           },
           "diagnosisStatus": {
             "type": "string",
-            "enum": [
-              "DETECTED",
-              "UNCERTAIN",
-              "ERROR",
-              "PENDING"
-            ],
+            "enum": ["DETECTED", "UNCERTAIN", "ERROR", "PENDING"],
             "example": "PENDING"
           },
           "primaryDiagnosis": {
@@ -11293,13 +10908,7 @@
             "example": "2024-10-11T09:30:00.000Z"
           }
         },
-        "required": [
-          "id",
-          "patientId",
-          "reviewedAt",
-          "createdAt",
-          "updatedAt"
-        ]
+        "required": ["id", "patientId", "reviewedAt", "createdAt", "updatedAt"]
       },
       "ScreeningRequestResponseDto": {
         "type": "object",
@@ -11349,13 +10958,7 @@
           },
           "priority": {
             "type": "string",
-            "enum": [
-              "LOW",
-              "NORMAL",
-              "HIGH",
-              "URGENT",
-              "CRITICAL"
-            ],
+            "enum": ["LOW", "NORMAL", "HIGH", "URGENT", "CRITICAL"],
             "example": "NORMAL"
           },
           "requestedAt": {
@@ -11449,10 +11052,7 @@
           },
           "signedStatus": {
             "type": "string",
-            "enum": [
-              "NOT_SIGNED",
-              "SIGNED"
-            ]
+            "enum": ["NOT_SIGNED", "SIGNED"]
           },
           "signedAt": {
             "format": "date-time",
@@ -11767,9 +11367,7 @@
             "description": "Additional notes"
           }
         },
-        "required": [
-          "signature"
-        ]
+        "required": ["signature"]
       },
       "MedicalRecordExaminationDto": {
         "type": "object",
@@ -11883,12 +11481,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "id",
-          "prescriptionNumber",
-          "diagnosis",
-          "createdAt"
-        ]
+        "required": ["id", "prescriptionNumber", "diagnosis", "createdAt"]
       },
       "MedicalRecordSummaryDto": {
         "type": "object",
@@ -11967,13 +11560,7 @@
             "description": "Trạng thái hồ sơ"
           }
         },
-        "required": [
-          "id",
-          "recordNumber",
-          "patient",
-          "doctor",
-          "status"
-        ]
+        "required": ["id", "recordNumber", "patient", "doctor", "status"]
       },
       "CreateMedicineDto": {
         "type": "object",
@@ -12211,11 +11798,7 @@
             "default": true
           }
         },
-        "required": [
-          "name",
-          "goodsType",
-          "unit"
-        ]
+        "required": ["name", "goodsType", "unit"]
       },
       "MedicineResponseDto": {
         "type": "object",
@@ -12279,14 +11862,7 @@
             "description": "Updated at"
           }
         },
-        "required": [
-          "id",
-          "code",
-          "name",
-          "isActive",
-          "createdAt",
-          "updatedAt"
-        ]
+        "required": ["id", "code", "name", "isActive", "createdAt", "updatedAt"]
       },
       "PaginatedMedicineResponseDto": {
         "type": "object",
@@ -12301,10 +11877,7 @@
             "$ref": "#/components/schemas/PaginationMeta"
           }
         },
-        "required": [
-          "items",
-          "meta"
-        ]
+        "required": ["items", "meta"]
       },
       "UpdateMedicineDto": {
         "type": "object",
@@ -12588,21 +12161,13 @@
             "type": "string"
           }
         },
-        "required": [
-          "id",
-          "email",
-          "isVerified",
-          "roles"
-        ]
+        "required": ["id", "email", "isVerified", "roles"]
       },
       "AdminUpdateAccountDto": {
         "type": "object",
         "properties": {
           "roles": {
-            "example": [
-              "PATIENT",
-              "DOCTOR"
-            ],
+            "example": ["PATIENT", "DOCTOR"],
             "description": "Danh sách vai trò (ADMIN only)",
             "type": "array",
             "items": {
@@ -12675,9 +12240,7 @@
             "description": "Metadata bổ sung (JSON)"
           }
         },
-        "required": [
-          "actionType"
-        ]
+        "required": ["actionType"]
       },
       "AdminActionResponseDto": {
         "type": "object",
@@ -12708,12 +12271,7 @@
             "description": "Ngày thực hiện"
           }
         },
-        "required": [
-          "id",
-          "adminId",
-          "targetId",
-          "actionType"
-        ]
+        "required": ["id", "adminId", "targetId", "actionType"]
       },
       "VoidAdminActionDto": {
         "type": "object",
@@ -12724,9 +12282,7 @@
             "description": "Lý do void action này"
           }
         },
-        "required": [
-          "reason"
-        ]
+        "required": ["reason"]
       },
       "CreateChatMessageDto": {
         "type": "object",
@@ -12742,10 +12298,7 @@
             "description": "Nội dung tin nhắn"
           }
         },
-        "required": [
-          "chatroomId",
-          "content"
-        ]
+        "required": ["chatroomId", "content"]
       },
       "SenderBasicDto": {
         "type": "object",
@@ -12763,11 +12316,7 @@
             "example": "nguyenvana@email.com"
           }
         },
-        "required": [
-          "id",
-          "fullName",
-          "email"
-        ]
+        "required": ["id", "fullName", "email"]
       },
       "ChatMessageResponseDto": {
         "type": "object",
@@ -12792,13 +12341,7 @@
             "example": "2024-07-18T08:21:09.000Z"
           }
         },
-        "required": [
-          "id",
-          "chatroomId",
-          "sender",
-          "content",
-          "createdAt"
-        ]
+        "required": ["id", "chatroomId", "sender", "content", "createdAt"]
       },
       "UpdateChatMessageDto": {
         "type": "object",
@@ -12824,10 +12367,7 @@
             "description": "ID user 2"
           }
         },
-        "required": [
-          "user1Id",
-          "user2Id"
-        ]
+        "required": ["user1Id", "user2Id"]
       },
       "UserBasicDto": {
         "type": "object",
@@ -12845,11 +12385,7 @@
             "example": "nguyenvana@email.com"
           }
         },
-        "required": [
-          "id",
-          "fullName",
-          "email"
-        ]
+        "required": ["id", "fullName", "email"]
       },
       "ChatRoomResponseDto": {
         "type": "object",
@@ -12875,13 +12411,7 @@
             "description": "Thời gian cập nhật cuối"
           }
         },
-        "required": [
-          "id",
-          "user1",
-          "user2",
-          "createdAt",
-          "updatedAt"
-        ]
+        "required": ["id", "user1", "user2", "createdAt", "updatedAt"]
       },
       "UpdateChatRoomDto": {
         "type": "object",
@@ -12934,11 +12464,7 @@
             "description": "Ngày thêm vào danh sách yêu thích"
           }
         },
-        "required": [
-          "id",
-          "userId",
-          "createdAt"
-        ]
+        "required": ["id", "userId", "createdAt"]
       },
       "HospitalResponseDto": {
         "type": "object",
@@ -13115,10 +12641,7 @@
             "$ref": "#/components/schemas/PaginationMeta"
           }
         },
-        "required": [
-          "items",
-          "meta"
-        ]
+        "required": ["items", "meta"]
       },
       "PatientProfileResponseDto": {
         "type": "object",
@@ -13137,10 +12660,7 @@
             }
           }
         },
-        "required": [
-          "patient",
-          "summary"
-        ]
+        "required": ["patient", "summary"]
       },
       "UpdatePatientDto": {
         "type": "object",
@@ -13190,11 +12710,7 @@
           },
           "reportType": {
             "type": "string",
-            "enum": [
-              "doctor",
-              "appointment",
-              "system"
-            ],
+            "enum": ["doctor", "appointment", "system"],
             "example": "doctor",
             "description": "Loại báo cáo: doctor, appointment, system"
           },
@@ -13204,9 +12720,7 @@
             "description": "Nội dung báo cáo chi tiết"
           }
         },
-        "required": [
-          "content"
-        ]
+        "required": ["content"]
       },
       "ReportResponseDto": {
         "type": "object",
@@ -13229,11 +12743,7 @@
           },
           "reportType": {
             "type": "string",
-            "enum": [
-              "doctor",
-              "appointment",
-              "system"
-            ],
+            "enum": ["doctor", "appointment", "system"],
             "example": "doctor"
           },
           "content": {
@@ -13242,12 +12752,7 @@
           },
           "status": {
             "type": "string",
-            "enum": [
-              "pending",
-              "in_progress",
-              "resolved",
-              "rejected"
-            ],
+            "enum": ["pending", "in_progress", "resolved", "rejected"],
             "example": "pending"
           },
           "adminNotes": {
@@ -13284,12 +12789,7 @@
         "properties": {
           "status": {
             "type": "string",
-            "enum": [
-              "pending",
-              "in_progress",
-              "resolved",
-              "rejected"
-            ],
+            "enum": ["pending", "in_progress", "resolved", "rejected"],
             "example": "resolved",
             "description": "Trạng thái báo cáo"
           },
@@ -13332,11 +12832,7 @@
             "default": false
           }
         },
-        "required": [
-          "doctorId",
-          "comment",
-          "rating"
-        ]
+        "required": ["doctorId", "comment", "rating"]
       },
       "ReviewResponseDto": {
         "type": "object",
@@ -13442,9 +12938,7 @@
             }
           }
         },
-        "required": [
-          "patientId"
-        ]
+        "required": ["patientId"]
       },
       "TriggerAiAnalysisDto": {
         "type": "object",
@@ -13460,20 +12954,14 @@
           "decisionSource": {
             "type": "string",
             "description": "Source of the final decision",
-            "enum": [
-              "AI_ONLY",
-              "DOCTOR_ONLY",
-              "DOCTOR_REVIEWED_AI"
-            ]
+            "enum": ["AI_ONLY", "DOCTOR_ONLY", "DOCTOR_REVIEWED_AI"]
           },
           "doctorOverrideReason": {
             "type": "string",
             "description": "Reason for overriding AI analysis (if applicable)"
           }
         },
-        "required": [
-          "decisionSource"
-        ]
+        "required": ["decisionSource"]
       },
       "UploadAnalyzeResponseDto": {
         "type": "object",
@@ -13488,11 +12976,7 @@
             "$ref": "#/components/schemas/AiAnalysisResponseDto"
           }
         },
-        "required": [
-          "screening",
-          "image",
-          "analysis"
-        ]
+        "required": ["screening", "image", "analysis"]
       },
       "UserResponseDto": {
         "type": "object",
@@ -13525,11 +13009,7 @@
           },
           "gender": {
             "type": "string",
-            "enum": [
-              "MALE",
-              "FEMALE",
-              "OTHER"
-            ],
+            "enum": ["MALE", "FEMALE", "OTHER"],
             "example": "MALE",
             "description": "Giới tính"
           },
@@ -13540,10 +13020,7 @@
           },
           "status": {
             "type": "string",
-            "enum": [
-              "ACTIVE",
-              "INACTIVE"
-            ],
+            "enum": ["ACTIVE", "INACTIVE"],
             "example": "ACTIVE",
             "description": "Trạng thái tài khoản"
           },
@@ -14671,12 +14148,7 @@
             "description": "Thời gian cập nhật cuối"
           }
         },
-        "required": [
-          "id",
-          "status",
-          "createdAt",
-          "updatedAt"
-        ]
+        "required": ["id", "status", "createdAt", "updatedAt"]
       },
       "PaginatedUserResponseDto": {
         "type": "object",
@@ -14697,10 +14169,7 @@
             ]
           }
         },
-        "required": [
-          "items",
-          "meta"
-        ]
+        "required": ["items", "meta"]
       },
       "UpdateUserDto": {
         "type": "object",
@@ -14725,11 +14194,7 @@
           "gender": {
             "type": "string",
             "description": "Giới tính",
-            "enum": [
-              "MALE",
-              "FEMALE",
-              "OTHER"
-            ],
+            "enum": ["MALE", "FEMALE", "OTHER"],
             "example": "MALE"
           },
           "CCCD": {
@@ -15829,10 +15294,7 @@
           "status": {
             "type": "string",
             "description": "Trạng thái tài khoản (chỉ admin mới có thể cập nhật)",
-            "enum": [
-              "ACTIVE",
-              "INACTIVE"
-            ],
+            "enum": ["ACTIVE", "INACTIVE"],
             "example": "ACTIVE"
           }
         }
@@ -15846,9 +15308,7 @@
             "example": "dXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
           }
         },
-        "required": [
-          "token"
-        ]
+        "required": ["token"]
       }
     }
   }

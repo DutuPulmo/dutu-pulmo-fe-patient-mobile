@@ -77,7 +77,7 @@ export function HomeScreen() {
     },
     {
       key: 'support',
-      label: 'Hỗ trợ',
+      label: 'Hỗ trợ\nAI',
       iconName: 'center-focus-strong',
       color: '#4F46E5',
       bg: '#EEF2FF',

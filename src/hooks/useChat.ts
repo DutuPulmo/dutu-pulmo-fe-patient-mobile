@@ -28,7 +28,6 @@ export function useChatMessages(chatroomId: string) {
     queryKey: chatKeys.messages(chatroomId),
     queryFn: () => chatService.getChatMessages(chatroomId),
     enabled: Boolean(chatroomId),
-    refetchInterval: 5000,
   });
 }
 
@@ -36,10 +35,17 @@ export function useSendChatMessage() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ chatroomId, content }: { chatroomId: string; content: string }) =>
-      chatService.sendMessage({ chatroomId, content }),
+    mutationFn: ({
+      chatroomId,
+      content,
+    }: {
+      chatroomId: string;
+      content: string;
+    }) => chatService.sendMessage({ chatroomId, content }),
     onSuccess: (message) => {
-      void queryClient.invalidateQueries({ queryKey: chatKeys.messages(message.chatroomId) });
+      void queryClient.invalidateQueries({
+        queryKey: chatKeys.messages(message.chatroomId),
+      });
       void queryClient.invalidateQueries({ queryKey: chatKeys.myRooms });
     },
   });

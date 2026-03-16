@@ -1,8 +1,7 @@
 import { Stack, useRouter } from 'expo-router';
-import { View, Text, FlatList, Pressable, Image } from 'react-native';
+import { View, Text, FlatList, Pressable, Image, Alert } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
-// Reuse mock data for now
 const today = new Date().toLocaleDateString('vi-VN');
 const NEWS = [
   {
@@ -29,6 +28,11 @@ const NEWS = [
 export default function NewsScreen() {
   const router = useRouter();
 
+  const handleNewsPress = (id: string, title: string) => {
+    // router.push(`/news/${id}`);
+    Alert.alert('Sắp ra mắt', `Tính năng đọc chi tiết bài "${title}" đang được phát triển.`);
+  };
+
   return (
     <View style={{ flex: 1, backgroundColor: '#F8FAFC' }}>
       <Stack.Screen
@@ -51,6 +55,7 @@ export default function NewsScreen() {
           contentContainerStyle={{ padding: 16, gap: 16 }}
           renderItem={({ item }) => (
             <Pressable
+              onPress={() => handleNewsPress(item.id, item.title)}
               style={({ pressed }) => ({
                 backgroundColor: 'white',
                 borderRadius: 20,

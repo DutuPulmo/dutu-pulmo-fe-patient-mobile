@@ -12,6 +12,7 @@ import type {
   PatientAppointmentQueryDto,
   RescheduleAppointmentDto,
   TimeSlotResponseDto,
+  VideoLeaveCallResponseDto,
 } from '@/types/appointment.types';
 
 export type AppointmentTypeFilter = 'all' | 'online' | 'offline';
@@ -157,7 +158,7 @@ export const appointmentService = {
   },
 
   leaveVideoCall: async (appointmentId: string) => {
-    const { data } = await api.post<{ message: string }>(
+    const { data } = await api.post<VideoLeaveCallResponseDto>(
       `/appointments/${appointmentId}/video/leave`,
     );
     return data;
