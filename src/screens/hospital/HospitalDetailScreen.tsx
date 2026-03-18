@@ -158,7 +158,7 @@ export function HospitalDetailScreen() {
           <View style={{ marginTop: 24, paddingHorizontal: 16 }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
               <Text style={{ fontSize: 17, fontWeight: '700', color: '#1F2937' }}>Đội ngũ bác sĩ</Text>
-              <Pressable onPress={() => router.push(`/doctors?hospitalId=${id}` as any)}>
+              <Pressable onPress={() => router.push({ pathname: '/doctors', params: { hospitalId: id } })}>
                 <Text style={{ fontSize: 13, color: '#0A7CFF', fontWeight: '600' }}>Xem tất cả</Text>
               </Pressable>
             </View>
@@ -176,7 +176,7 @@ export function HospitalDetailScreen() {
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={{ gap: 12, paddingRight: 4 }}
               >
-                {doctorsQuery.data!.items.map((d) => {
+                {doctorsQuery.data!.items.map((d: any) => {
                   const initials = d.fullName
                     ? d.fullName.split(' ').slice(-2).map((w: string) => w[0]?.toUpperCase() ?? '').join('')
                     : '?';
@@ -239,3 +239,4 @@ export function HospitalDetailScreen() {
 }
 
 export default HospitalDetailScreen;
+

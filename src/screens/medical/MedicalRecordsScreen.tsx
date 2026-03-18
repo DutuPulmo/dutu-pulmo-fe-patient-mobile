@@ -4,43 +4,11 @@ import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Loading } from '@/components/ui/Loading';
+import { ScreenHeader } from '@/components/ui/ScreenHeader';
+import { FALLBACK_MEDICAL_RECORD_STATUS, MEDICAL_RECORD_STATUS_CONFIG } from '@/constants/status-configs';
 import { patientService } from '@/services/patient.service';
 import { useQuery } from '@tanstack/react-query';
 
-// ─── Status config (đồng bộ với appointment screens) ──────────────────────────
-const RECORD_STATUS_CONFIG: Record<
-  string,
-  { label: string; icon: string; color: string; bgClass: string; borderClass: string; textClass: string }
-> = {
-  DRAFT: {
-    label: 'Đang xử lý',
-    icon: 'edit-note',
-    color: '#d97706',
-    bgClass: 'bg-amber-50',
-    borderClass: 'border-amber-200',
-    textClass: 'text-amber-700',
-  },
-  IN_PROGRESS: {
-    label: 'Đang khám',
-    icon: 'medical-services',
-    color: '#0A7CFF',
-    bgClass: 'bg-blue-50',
-    borderClass: 'border-blue-200',
-    textClass: 'text-blue-600',
-  },
-  COMPLETED: {
-    label: 'Đã hoàn thành',
-    icon: 'done-all',
-    color: '#16a34a',
-    bgClass: 'bg-green-50',
-    borderClass: 'border-green-200',
-    textClass: 'text-green-700',
-  },
-};
-
-const FALLBACK_STATUS = RECORD_STATUS_CONFIG['DRAFT'];
-
-// ─── Record card ──────────────────────────────────────────────────────────────
 function MedicalRecordCard({
   record,
   onPress,
@@ -48,7 +16,7 @@ function MedicalRecordCard({
   record: any;
   onPress: () => void;
 }) {
-  const statusConfig = RECORD_STATUS_CONFIG[record.status] ?? FALLBACK_STATUS;
+  const statusConfig = MEDICAL_RECORD_STATUS_CONFIG[record.status] ?? FALLBACK_MEDICAL_RECORD_STATUS;
   const scheduledAt = record.appointment?.scheduledAt
     ? new Date(record.appointment.scheduledAt)
     : new Date(record.createdAt);
@@ -118,7 +86,6 @@ function MedicalRecordCard({
   );
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
 export function MedicalRecordsScreen() {
   const router = useRouter();
 
@@ -149,15 +116,7 @@ export function MedicalRecordsScreen() {
 
   return (
     <View className="flex-1 bg-slate-50">
-      {/* HEADER */}
-      <View className="flex-row items-center justify-between bg-blue-500 px-4 pb-4 pt-12">
-        <TouchableOpacity onPress={() => router.back()} activeOpacity={0.7} className="rounded-full p-1">
-          <MaterialIcons name="arrow-back-ios-new" size={22} color="white" />
-        </TouchableOpacity>
-        <Text className="text-lg font-bold text-white">Hồ sơ y tế</Text>
-        <View className="w-8" />
-      </View>
-
+      <ScreenHeader title="Hồ sơ y tế" />
       <ScrollView
         className="flex-1"
         contentContainerClassName="p-4 pb-8"
@@ -202,3 +161,4 @@ export function MedicalRecordsScreen() {
 }
 
 export default MedicalRecordsScreen;
+

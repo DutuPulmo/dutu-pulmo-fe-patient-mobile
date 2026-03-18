@@ -45,7 +45,7 @@ export function HospitalListScreen() {
 
   const hospitals = rawHospitals.filter((h) => {
     if (activeFilter.type === 'clinic') return h.name.toLowerCase().includes('phòng khám');
-    if (activeFilter.type === 'hospital') return !h.name.toLowerCase().includes('phòng khám');
+    if (activeFilter.type === 'hospital') return !h.name.toLowerCase().includes('bệnh viện');
     return true;
   });
 
@@ -201,7 +201,7 @@ export function HospitalListScreen() {
           renderItem={({ item }) => (
             <HospitalCard
               hospital={item}
-              onPress={() => router.push(`/hospitals/${item.id}` as any)}
+              onPress={() => router.push(`/hospitals/${item.id}`)}
             />
           )}
           showsVerticalScrollIndicator={false}
@@ -219,3 +219,4 @@ export function HospitalListScreen() {
 }
 
 export default HospitalListScreen;
+

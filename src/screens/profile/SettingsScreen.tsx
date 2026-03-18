@@ -1,10 +1,29 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { Platform, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import type { ReactNode } from 'react';
+import {
+  Linking,
+  ScrollView,
+  Switch,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { useAuthStore } from '@/store/auth.store';
+import { ScreenHeader } from '@/components/ui/ScreenHeader';
+import { registerFcmTokenAfterLogin, removeFcmTokenBestEffort } from '@/services/fcm.service';
+import { useLogout } from '@/hooks/useLogout';
 
-// ─── Toggle item ──────────────────────────────────────────────────────────────
+const PRIVACY_URL = 'https://example.com/privacy';
+const HELP_URL = 'https://example.com/help';
+const TERMS_URL = 'https://example.com/terms';
+
+const PUSH_PREF_KEY = 'settings.push_enabled';
+const EMAIL_PREF_KEY = 'settings.email_enabled';
+
 function SettingRow({
   icon,
   iconColor,
@@ -13,6 +32,8 @@ function SettingRow({
   subtitle,
   value,
   isLast,
+  onPress,
+  rightElement,
 }: {
   icon: string;
   iconColor: string;
@@ -21,13 +42,11 @@ function SettingRow({
   subtitle?: string;
   value?: string;
   isLast?: boolean;
+  onPress?: () => void;
+  rightElement?: ReactNode;
 }) {
-  return (
-    <View
-      className={`flex-row items-center gap-3 bg-white px-4 py-[14px] ${
-        isLast ? '' : 'border-b border-slate-50'
-      }`}
-    >
+  const content = (
+    <>
       <View
         className="h-9 w-9 items-center justify-center rounded-[10px]"
         style={{ backgroundColor: iconBg }}
@@ -40,38 +59,103 @@ function SettingRow({
           <Text className="mt-0.5 text-[12px] text-slate-400">{subtitle}</Text>
         )}
       </View>
-      {value && <Text className="text-[13px] text-slate-400">{value}</Text>}
-    </View>
+      {rightElement ?? (value ? <Text className="text-[13px] text-slate-400">{value}</Text> : null)}
+    </>
   );
+
+  const rowClass = `flex-row items-center gap-3 bg-white px-4 py-[14px] ${
+    isLast ? '' : 'border-b border-slate-50'
+  }`;
+
+  if (onPress) {
+    return (
+      <TouchableOpacity onPress={onPress} activeOpacity={0.8} className={rowClass}>
+        {content}
+      </TouchableOpacity>
+    );
+  }
+
+  return <View className={rowClass}>{content}</View>;
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
 export function SettingsScreen() {
   const router = useRouter();
-  const clearSession = useAuthStore((state) => state.clearSession);
+  const insets = useSafeAreaInsets();
+  const logout = useLogout();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [pushEnabled, setPushEnabled] = useState(true);
+  const [emailEnabled, setEmailEnabled] = useState(true);
+  const [isUpdatingPush, setIsUpdatingPush] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const loadPreferences = async () => {
+      const [pushSaved, emailSaved] = await Promise.all([
+        AsyncStorage.getItem(PUSH_PREF_KEY),
+        AsyncStorage.getItem(EMAIL_PREF_KEY),
+      ]);
+
+      if (!mounted) return;
+      setPushEnabled(pushSaved == null ? true : pushSaved === 'true');
+      setEmailEnabled(emailSaved == null ? true : emailSaved === 'true');
+    };
+
+    void loadPreferences();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const handleLogout = async () => {
+    if (isLoggingOut) return;
+    try {
+      setIsLoggingOut(true);
+      await logout();
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
+
+  const handleTogglePush = async () => {
+    if (isUpdatingPush) return;
+
+    const nextValue = !pushEnabled;
+    setPushEnabled(nextValue);
+    setIsUpdatingPush(true);
+
+    try {
+      if (nextValue) {
+        await registerFcmTokenAfterLogin();
+      } else {
+        await removeFcmTokenBestEffort();
+      }
+      await AsyncStorage.setItem(PUSH_PREF_KEY, String(nextValue));
+    } catch (error) {
+      setPushEnabled(!nextValue);
+      console.warn('Failed to update push setting:', error);
+    } finally {
+      setIsUpdatingPush(false);
+    }
+  };
+
+  const handleToggleEmail = async () => {
+    const nextValue = !emailEnabled;
+    setEmailEnabled(nextValue);
+    await AsyncStorage.setItem(EMAIL_PREF_KEY, String(nextValue));
+  };
 
   return (
     <View className="flex-1 bg-slate-50">
-      {/* HEADER */}
-      <View className="flex-row items-center gap-3 bg-blue-500 px-4 pb-4 pt-12">
-        <TouchableOpacity
-          onPress={() => router.back()}
-          activeOpacity={0.7}
-          className="rounded-full p-1"
-        >
-          <MaterialIcons name="arrow-back-ios-new" size={22} color="white" />
-        </TouchableOpacity>
-        <Text className="text-lg font-bold text-white">Cài đặt</Text>
-      </View>
+      <ScreenHeader title="Cài đặt" />
 
-      <ScrollView
+        <ScrollView
         className="flex-1"
         contentContainerStyle={{
-          paddingBottom: Platform.OS === 'ios' ? 40 : 24,
+          paddingBottom: Math.max(insets.bottom, 24),
         }}
         showsVerticalScrollIndicator={false}
       >
-        {/* ── THÔNG TIN ỨNG DỤNG ── */}
         <View className="mt-5 mx-4">
           <Text className="mb-2 text-[11px] font-bold tracking-[0.8px] text-slate-400 px-1">
             THÔNG TIN ỨNG DỤNG
@@ -102,7 +186,6 @@ export function SettingsScreen() {
           </View>
         </View>
 
-        {/* ── QUYỀN RIÊNG TƯ ── */}
         <View className="mt-4 mx-4">
           <Text className="mb-2 text-[11px] font-bold tracking-[0.8px] text-slate-400 px-1">
             QUYỀN RIÊNG TƯ & BẢO MẬT
@@ -114,6 +197,7 @@ export function SettingsScreen() {
               iconBg="#F5F3FF"
               title="Bảo mật tài khoản"
               subtitle="Đổi mật khẩu, xác thực 2 bước"
+              onPress={() => router.push('/change-password')}
             />
             <SettingRow
               icon="privacy-tip"
@@ -121,12 +205,12 @@ export function SettingsScreen() {
               iconBg="#ECFEFF"
               title="Chính sách quyền riêng tư"
               subtitle="Xem cách chúng tôi bảo vệ dữ liệu"
+              onPress={() => void Linking.openURL(PRIVACY_URL)}
               isLast
             />
           </View>
         </View>
 
-        {/* ── THÔNG BÁO ── */}
         <View className="mt-4 mx-4">
           <Text className="mb-2 text-[11px] font-bold tracking-[0.8px] text-slate-400 px-1">
             THÔNG BÁO
@@ -137,7 +221,15 @@ export function SettingsScreen() {
               iconColor="#d97706"
               iconBg="#FFFBEB"
               title="Thông báo đẩy"
-              subtitle="Nhận thông báo về lịch khám"
+              subtitle="Nhận thông báo"
+              onPress={handleTogglePush}
+              rightElement={(
+                <Switch
+                  value={pushEnabled}
+                  onValueChange={handleTogglePush}
+                  disabled={isUpdatingPush}
+                />
+              )}
             />
             <SettingRow
               icon="mail"
@@ -145,12 +237,15 @@ export function SettingsScreen() {
               iconBg="#FEF2F2"
               title="Thông báo email"
               subtitle="Nhận xác nhận qua email"
+              onPress={handleToggleEmail}
+              rightElement={(
+                <Switch value={emailEnabled} onValueChange={handleToggleEmail} />
+              )}
               isLast
             />
           </View>
         </View>
 
-        {/* ── HỖ TRỢ ── */}
         <View className="mt-4 mx-4">
           <Text className="mb-2 text-[11px] font-bold tracking-[0.8px] text-slate-400 px-1">
             HỖ TRỢ
@@ -162,6 +257,7 @@ export function SettingsScreen() {
               iconBg="#F8FAFC"
               title="Trung tâm trợ giúp"
               subtitle="Câu hỏi thường gặp"
+              onPress={() => void Linking.openURL(HELP_URL)}
             />
             <SettingRow
               icon="description"
@@ -169,26 +265,26 @@ export function SettingsScreen() {
               iconBg="#F8FAFC"
               title="Điều khoản sử dụng"
               subtitle="Đọc điều khoản dịch vụ"
+              onPress={() => void Linking.openURL(TERMS_URL)}
               isLast
             />
           </View>
         </View>
 
-        {/* ── ĐĂNG XUẤT ── */}
         <View className="mt-4 mx-4">
           <TouchableOpacity
-            onPress={clearSession}
+            onPress={handleLogout}
             activeOpacity={0.85}
+            disabled={isLoggingOut}
             className="flex-row items-center justify-center gap-2 rounded-2xl border border-red-200 bg-red-50 py-4"
           >
             <MaterialIcons name="logout" size={18} color="#ef4444" />
             <Text className="text-[15px] font-semibold text-red-500">
-              Đăng xuất
+              {isLoggingOut ? 'Đang xử lý...' : 'Đăng xuất'}
             </Text>
           </TouchableOpacity>
         </View>
 
-        {/* Footer */}
         <View className="mt-6 items-center">
           <Text className="text-[11px] text-slate-300">
             DuTu Pulmo • © 2025 DuTu Health
@@ -200,3 +296,4 @@ export function SettingsScreen() {
 }
 
 export default SettingsScreen;
+

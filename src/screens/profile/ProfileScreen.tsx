@@ -1,13 +1,17 @@
 import { MaterialIcons } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
+import { useState } from 'react';
 import { Image, Platform, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Loading } from '@/components/ui/Loading';
+import { ScreenHeader } from '@/components/ui/ScreenHeader';
+import { useLogout } from '@/hooks/useLogout';
 import { useMyPatient, useProfile } from '@/hooks/useProfile';
+import { api } from '@/services/api';
 import { useAuthStore } from '@/store/auth.store';
 
-// ─── Menu item ────────────────────────────────────────────────────────────────
 function MenuItem({
   icon,
   iconColor,
@@ -70,7 +74,6 @@ function MenuItem({
   );
 }
 
-// ─── Stat item ────────────────────────────────────────────────────────────────
 function StatItem({
   icon,
   value,
@@ -91,11 +94,13 @@ function StatItem({
   );
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
 export function ProfileScreen() {
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
-  const clearSession = useAuthStore((state) => state.clearSession);
+  const setUser = useAuthStore((state) => state.setUser);
+  const logout = useLogout();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
 
   const myPatientQuery = useMyPatient();
   const profileQuery = useProfile();
@@ -118,15 +123,63 @@ export function ProfileScreen() {
   const profile = profileQuery.data;
   const patient = myPatientQuery.data;
 
-  const handleLogout = () => {
-    clearSession();
+  const handleLogout = async () => {
+    if (isLoggingOut) return;
+    try {
+      setIsLoggingOut(true);
+      await logout();
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
+
+  const handleAvatarPress = async () => {
+    if (isUploadingAvatar) return;
+
+    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permission.granted) {
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.8,
+    });
+
+    if (result.canceled || !result.assets?.[0]) {
+      return;
+    }
+
+    try {
+      setIsUploadingAvatar(true);
+      const asset = result.assets[0];
+      const formData = new FormData();
+      formData.append('file', {
+        uri: asset.uri,
+        type: asset.mimeType || 'image/jpeg',
+        name: asset.fileName || 'avatar.jpg',
+      } as any);
+
+      const response = await api.post('/users/me/avatar', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      if (response?.data?.user && user) {
+        setUser({ ...user, avatarUrl: response.data.user.avatarUrl });
+      }
+    } catch (error) {
+      console.warn('Avatar upload failed:', error);
+    } finally {
+      setIsUploadingAvatar(false);
+    }
   };
 
   return (
     <View className="flex-1 bg-slate-50">
-      {/* HEADER */}
-      <View className="bg-blue-500 px-4 pb-20 pt-12">
-        <Text className="text-lg font-bold text-white">Tài khoản</Text>
+      <View className="bg-blue-500 pb-8">
+        <ScreenHeader title="Tài khoản" hideBack />
       </View>
 
       <ScrollView
@@ -135,9 +188,9 @@ export function ProfileScreen() {
           paddingBottom: Platform.OS === 'ios' ? 40 : 24,
         }}
         showsVerticalScrollIndicator={false}
-        style={{ marginTop: -64 }}
+        style={{ marginTop: -48 }}
       >
-        {/* ── PROFILE CARD ── */}
+        {/* PROFILE CARD */}
         <View className="mx-4 overflow-hidden rounded-2xl bg-white shadow-sm"
           style={{
             shadowColor: '#000',
@@ -170,7 +223,11 @@ export function ProfileScreen() {
                   <MaterialIcons name="person" size={36} color="#60a5fa" />
                 </View>
               )}
-              <TouchableOpacity className="absolute bottom-0 right-0 h-7 w-7 items-center justify-center rounded-full bg-blue-500 border-2 border-white">
+              <TouchableOpacity
+                onPress={handleAvatarPress}
+                disabled={isUploadingAvatar}
+                className="absolute bottom-0 right-0 h-7 w-7 items-center justify-center rounded-full bg-blue-500 border-2 border-white"
+              >
                 <MaterialIcons name="camera-alt" size={14} color="white" />
               </TouchableOpacity>
             </View>
@@ -241,6 +298,14 @@ export function ProfileScreen() {
           </Text>
           <View className="overflow-hidden rounded-2xl bg-white shadow-sm">
             <MenuItem
+              icon="edit"
+              iconColor="#0A7CFF"
+              iconBg="#EFF6FF"
+              title="Chỉnh sửa hồ sơ"
+              subtitle="Cập nhật thông tin cá nhân"
+              onPress={() => router.push('/edit-profile')}
+            />
+            <MenuItem
               icon="calendar-today"
               iconColor="#4F46E5"
               iconBg="#EEF2FF"
@@ -309,7 +374,7 @@ export function ProfileScreen() {
               icon="logout"
               iconColor="#ef4444"
               iconBg="#FEF2F2"
-              title="Đăng xuất"
+              title={isLoggingOut ? 'Đang xử lý...' : 'Đăng xuất'}
               subtitle="Kết thúc phiên đăng nhập"
               onPress={handleLogout}
               isLast
@@ -328,3 +393,4 @@ export function ProfileScreen() {
 }
 
 export default ProfileScreen;
+

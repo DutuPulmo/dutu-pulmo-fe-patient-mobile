@@ -1,9 +1,4 @@
-import {
-  Stack,
-  useRouter,
-  useSegments,
-  useRootNavigationState,
-} from 'expo-router';
+import { Stack, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
@@ -12,8 +7,10 @@ import '../../global.css';
 import { AppQueryProvider } from '@/providers/query-provider';
 import { useAuthStore } from '@/store/auth.store';
 import { Loading } from '@/components/ui/Loading';
+import { startPushListeners } from '@/services/push-listener.service';
 
 import { Redirect } from 'expo-router';
+import * as Notifications from 'expo-notifications';
 
 function AuthGuard({ children }: { children: React.ReactNode }) {
   const accessToken = useAuthStore((state) => state.accessToken);
@@ -43,6 +40,15 @@ export default function RootLayout() {
   useEffect(() => {
     setHydrated(true);
   }, [setHydrated]);
+
+  useEffect(() => {
+    Notifications.requestPermissionsAsync();
+  }, []);
+
+  useEffect(() => {
+    const stopListeners = startPushListeners();
+    return stopListeners;
+  }, []);
 
   return (
     <AppQueryProvider>

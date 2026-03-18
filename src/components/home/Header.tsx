@@ -1,10 +1,17 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { Image, Text, TextInput, View } from 'react-native';
+import { useRouter } from 'expo-router';
+import { Image, Pressable, Text, TextInput, View } from 'react-native';
 
+import { theme } from '@/constants/theme';
+import { useNotificationUnreadCount } from '@/hooks/useNotifications';
 import { useAuthStore } from '@/store/auth.store';
 
 export function Header() {
+  const router = useRouter();
   const { user } = useAuthStore();
+  const { data: unreadData } = useNotificationUnreadCount();
+  const unreadCount = unreadData?.count ?? 0;
+
   const currentHour = new Date().getHours();
   let greeting = 'Chào buổi tối!';
   if (currentHour < 12) greeting = 'Chào buổi sáng!';
@@ -31,7 +38,8 @@ export function Header() {
           <View className="flex-row items-center gap-2 pl-1">
             <Image
               source={{
-                uri: user?.avatarUrl || 'https://lh3.googleusercontent.com/aida-public/AB6AXuBlsQ3DvfFlr_UgmmwE9It1YpLX8WBOWH06ZQqHysA90z-joKXMu4MZhrbe-cPkp1V9u1uEhXXfEPBL7Tw7C_c9xGTQuY7Del_d-yQpoVNHAWTxYvVf_MiAbNF-0SRxRH6OYRq3__dNi_pR5fBRRP56xt_RP7yrMgDkOqmh8vE5v2PhHBBf4GzodYp-JO5RVpHaBQhDZSlh9X3BTCHvX3U2i-IFMBYoQT626xH4aUrD9qM7q6tlAywfRcibQz5e0bG6lIEveyWKPEFJ',
+                uri: user?.avatarUrl ||
+                  'https://lh3.googleusercontent.com/aida-public/AB6AXuBlsQ3DvfFlr_UgmmwE9It1YpLX8WBOWH06ZQqHysA90z-joKXMu4MZhrbe-cPkp1V9u1uEhXXfEPBL7Tw7C_c9xGTQuY7Del_d-yQpoVNHAWTxYvVf_MiAbNF-0SRxRH6OYRq3__dNi_pR5fBRRP56xt_RP7yrMgDkOqmh8vE5v2PhHBBf4GzodYp-JO5RVpHaBQhDZSlh9X3BTCHvX3U2i-IFMBYoQT626xH4aUrD9qM7q6tlAywfRcibQz5e0bG6lIEveyWKPEFJ',
               }}
               className="w-10 h-10 rounded-full border border-white/30"
             />
@@ -40,23 +48,30 @@ export function Header() {
                 {greeting}
               </Text>
               <Text className="text-white font-bold text-base">
-                {user?.fullName || 'Khách'}
+                {user?.fullName || 'Khach'}
               </Text>
             </View>
           </View>
         </View>
 
-        <View className="relative">
+        <Pressable className="relative" onPress={() => router.push('/notifications')}>
           <View className="w-10 h-10 rounded-full bg-white/15 items-center justify-center">
             <MaterialIcons name="notifications" size={22} color="white" />
           </View>
-          <View className="absolute top-0 right-0 w-4 h-4 rounded-full bg-red-500 border-2 border-primary items-center justify-center">
-            <Text className="text-white text-[9px] font-bold">4</Text>
-          </View>
-        </View>
+          {unreadCount > 0 ? (
+            <View className="absolute top-0 right-0 w-4 h-4 rounded-full bg-red-500 border-2 border-primary items-center justify-center">
+              <Text className="text-white text-[9px] font-bold">
+                {unreadCount > 9 ? '9+' : unreadCount}
+              </Text>
+            </View>
+          ) : null}
+        </Pressable>
       </View>
 
-      <View className="absolute -bottom-7 left-4 right-4 bg-white rounded-2xl h-14 flex-row items-center px-3.5 shadow-md elevation-6">
+      <View
+        className="absolute -bottom-7 left-4 right-4 bg-white rounded-2xl h-14 flex-row items-center px-3.5"
+        style={theme.shadow.card}
+      >
         <MaterialIcons
           name="search"
           size={22}

@@ -52,7 +52,7 @@ export default function SpecialtiesScreen() {
               const { label, icon, color, bg } = getSpecialtyConfig(item);
               return (
                 <Pressable
-                  onPress={() => router.push(`/doctors?specialty=${item}`)}
+                  onPress={() => router.push({ pathname: '/doctors', params: { specialty: item } })}
                   style={({ pressed }) => ({
                     backgroundColor: 'white',
                     borderRadius: 16,
@@ -96,3 +96,4 @@ export default function SpecialtiesScreen() {
     </View>
   );
 }
+

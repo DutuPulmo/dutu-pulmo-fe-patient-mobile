@@ -6,7 +6,6 @@ import {
   Clipboard,
   Image,
   Linking,
-  Platform,
   Pressable,
   ScrollView,
   Share,
@@ -27,6 +26,9 @@ import {
 import { useMyPatient } from '@/hooks/useProfile';
 import { useAuthStore } from '@/store/auth.store';
 import { chatService } from '@/services/chat.service';
+import { ScreenHeader } from '@/components/ui/ScreenHeader';
+import { APPOINTMENT_STATUS_CONFIG, FALLBACK_APPOINTMENT_STATUS } from '@/constants/status-configs';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 function QrCodeBox({ value }: { value: string }) {
   return (
@@ -36,7 +38,6 @@ function QrCodeBox({ value }: { value: string }) {
   );
 }
 
-// ─── Copy button ──────────────────────────────────────────────────────────────
 function CopyText({ text, className }: { text: string; className?: string }) {
   const [copied, setCopied] = useState(false);
   const onCopy = () => {
@@ -64,85 +65,6 @@ function CopyText({ text, className }: { text: string; className?: string }) {
   );
 }
 
-// Status badge config
-const STATUS_CONFIG: Record<
-  string,
-  {
-    label: string;
-    icon: string;
-    color: string;
-    bgClass: string;
-    borderClass: string;
-    textClass: string;
-  }
-> = {
-  CONFIRMED: {
-    label: 'Đã đặt lịch',
-    icon: 'check-circle',
-    color: '#16a34a',
-    bgClass: 'bg-green-50',
-    borderClass: 'border-green-200',
-    textClass: 'text-green-700',
-  },
-  PENDING: {
-    label: 'Chờ xác nhận',
-    icon: 'schedule',
-    color: '#d97706',
-    bgClass: 'bg-amber-50',
-    borderClass: 'border-amber-200',
-    textClass: 'text-amber-700',
-  },
-  PENDING_PAYMENT: {
-    label: 'Chờ thanh toán',
-    icon: 'payment',
-    color: '#d97706',
-    bgClass: 'bg-amber-50',
-    borderClass: 'border-amber-200',
-    textClass: 'text-amber-700',
-  },
-  COMPLETED: {
-    label: 'Đã hoàn thành',
-    icon: 'done-all',
-    color: '#0A7CFF',
-    bgClass: 'bg-blue-50',
-    borderClass: 'border-blue-200',
-    textClass: 'text-blue-600',
-  },
-  CANCELLED: {
-    label: 'Đã huỷ',
-    icon: 'cancel',
-    color: '#ef4444',
-    bgClass: 'bg-red-50',
-    borderClass: 'border-red-200',
-    textClass: 'text-red-500',
-  },
-  CHECKED_IN: {
-    label: 'Đã check-in',
-    icon: 'how-to-reg',
-    color: '#0A7CFF',
-    bgClass: 'bg-blue-50',
-    borderClass: 'border-blue-200',
-    textClass: 'text-blue-600',
-  },
-  IN_PROGRESS: {
-    label: 'Đang khám',
-    icon: 'medical-services',
-    color: '#0A7CFF',
-    bgClass: 'bg-blue-50',
-    borderClass: 'border-blue-200',
-    textClass: 'text-blue-600',
-  },
-  RESCHEDULED: {
-    label: 'Đã đổi lịch',
-    icon: 'event-repeat',
-    color: '#d97706',
-    bgClass: 'bg-amber-50',
-    borderClass: 'border-amber-200',
-    textClass: 'text-amber-700',
-  },
-};
-
-// ── InfoLine ──────────────────────────────────────────────────────────────────
 function InfoLine({
   label,
   value,
@@ -179,9 +101,9 @@ function InfoLine({
   );
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
 export function AppointmentDetailScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const { appointmentId } = useLocalSearchParams<{ appointmentId: string }>();
   const currentUser = useAuthStore((s) => s.user);
 
@@ -257,11 +179,12 @@ export function AppointmentDetailScreen() {
   const myPatient = myPatientQuery.data;
 
   const statusConfig =
-    STATUS_CONFIG[appointment.status] ?? STATUS_CONFIG['PENDING'];
+    APPOINTMENT_STATUS_CONFIG[appointment.status] ?? FALLBACK_APPOINTMENT_STATUS;
   const canCancel = ['PENDING', 'CONFIRMED', 'PENDING_PAYMENT'].includes(
     appointment.status,
   );
   const isCancelled = appointment.status === 'CANCELLED';
+  const isVideoAppointment = appointment.appointmentType === 'VIDEO';
 
   const scheduledDate = new Date(appointment.scheduledAt);
   const weekdays = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
@@ -291,24 +214,14 @@ export function AppointmentDetailScreen() {
   return (
     <>
       <View className="flex-1 bg-slate-50">
-        {/* HEADER */}
-        <View className="flex-row items-center justify-between bg-blue-500 px-4 pb-4 pt-12">
-          <TouchableOpacity
-            onPress={() => router.back()}
-            activeOpacity={0.7}
-            className="rounded-full p-1"
-          >
-            <MaterialIcons name="arrow-back-ios-new" size={22} color="white" />
-          </TouchableOpacity>
-          <Text className="text-lg font-bold text-white">Phiếu khám</Text>
-          <TouchableOpacity
-            onPress={handleShare}
-            activeOpacity={0.7}
-            className="rounded-full p-1"
-          >
-            <MaterialIcons name="ios-share" size={22} color="white" />
-          </TouchableOpacity>
-        </View>
+        <ScreenHeader
+          title="Phiếu khám"
+          rightSlot={
+            <TouchableOpacity onPress={handleShare} activeOpacity={0.7} className="rounded-full p-1">
+              <MaterialIcons name="ios-share" size={22} color="white" />
+            </TouchableOpacity>
+          }
+        />
 
         <ScrollView
           className="flex-1"
@@ -504,10 +417,9 @@ export function AppointmentDetailScreen() {
 
         {/* FIXED BOTTOM BUTTON */}
         <View
-          className={`absolute bottom-0 left-0 right-0 border-t border-slate-100 bg-white px-4 pt-3 ${
-            Platform.OS === 'ios' ? 'pb-9' : 'pb-4'
-          }`}
+          className="absolute bottom-0 left-0 right-0 border-t border-slate-100 bg-white px-4 pt-3"
           style={{
+            paddingBottom: Math.max(insets.bottom, 16),
             shadowColor: '#000',
             shadowOpacity: 0.08,
             shadowOffset: { width: 0, height: -4 },
@@ -526,6 +438,36 @@ export function AppointmentDetailScreen() {
                 Đặt lịch khám khác
               </Text>
             </TouchableOpacity>
+          ) : isVideoAppointment ? (
+            <View className="gap-2">
+              <TouchableOpacity
+                onPress={() =>
+                  router.push({
+                    pathname: '/video-call',
+                    params: { appointmentId },
+                  })
+                }
+                activeOpacity={0.85}
+                className="flex-row items-center justify-center gap-2 rounded-[14px] bg-blue-500 py-[15px]"
+              >
+                <MaterialIcons name="video-call" size={18} color="white" />
+                <Text className="text-[15px] font-bold text-white">
+                  Vào video call
+                </Text>
+              </TouchableOpacity>
+              {canCancel ? (
+                <TouchableOpacity
+                  onPress={() => setCancelModalOpen(true)}
+                  activeOpacity={0.85}
+                  className="items-center justify-center rounded-[14px] border border-red-500 py-[14px]"
+                  style={{ borderWidth: 1.5 }}
+                >
+                  <Text className="text-[15px] font-bold text-red-500">
+                    Hủy lịch
+                  </Text>
+                </TouchableOpacity>
+              ) : null}
+            </View>
           ) : canCancel ? (
             <TouchableOpacity
               onPress={() => setCancelModalOpen(true)}
@@ -598,3 +540,5 @@ export function AppointmentDetailScreen() {
 }
 
 export default AppointmentDetailScreen;
+
+

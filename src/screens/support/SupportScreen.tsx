@@ -8,6 +8,9 @@ import {
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { useState } from 'react';
+
+import { Modal } from '@/components/ui/Modal';
 import { useAuthStore } from '@/store/auth.store';
 
 // ─── Danh mục hỗ trợ ──────────────────────────────────────────────────────────
@@ -102,6 +105,7 @@ const FAQ_ITEMS = [
 export function SupportScreen() {
   const router = useRouter();
   const user = useAuthStore((s) => s.user);
+  const [selectedCategoryIndex, setSelectedCategoryIndex] = useState<number | null>(null);
 
   const greeting = (() => {
     const h = new Date().getHours();
@@ -114,6 +118,8 @@ export function SupportScreen() {
 
   const handleCall = () => Linking.openURL('tel:19002805');
   const handleChat = () => router.push('/(tabs)/chat');
+  const selectedCategory =
+    selectedCategoryIndex == null ? null : SUPPORT_CATEGORIES[selectedCategoryIndex];
 
   return (
     <View style={{ flex: 1, backgroundColor: '#F8FAFC' }}>
@@ -322,6 +328,7 @@ export function SupportScreen() {
             {SUPPORT_CATEGORIES.map((cat, idx) => (
               <TouchableOpacity
                 key={idx}
+                onPress={() => setSelectedCategoryIndex(idx)}
                 activeOpacity={0.85}
                 style={{
                   width: '47.5%',
@@ -499,9 +506,115 @@ export function SupportScreen() {
             © 2025 DuTu Health. All rights reserved.
           </Text>
         </View>
-      </ScrollView>
+            </ScrollView>
+
+      <Modal
+        visible={selectedCategoryIndex !== null}
+        onRequestClose={() => setSelectedCategoryIndex(null)}
+      >
+        <View
+          style={{
+            margin: 20,
+            borderRadius: 20,
+            backgroundColor: 'white',
+            padding: 18,
+          }}
+        >
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+            <View
+              style={{
+                width: 44,
+                height: 44,
+                borderRadius: 12,
+                backgroundColor: selectedCategory?.bg ?? '#EFF6FF',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <MaterialIcons
+                name={selectedCategory?.icon ?? 'help-outline'}
+                size={20}
+                color={selectedCategory?.color ?? '#2563EB'}
+              />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: 16, fontWeight: '700', color: '#0F172A' }}>
+                {(selectedCategory?.label ?? '').replace('\n', ' ')}
+              </Text>
+              <Text style={{ fontSize: 11, fontWeight: '600', color: '#64748B', marginTop: 2 }}>
+                {selectedCategory?.sublabel}
+              </Text>
+            </View>
+          </View>
+
+          <Text style={{ marginTop: 12, fontSize: 13, color: '#475569', lineHeight: 20 }}>
+            Chuyên viên hỗ trợ sẽ tư vấn theo danh mục bạn vừa chọn. Bạn có thể bắt đầu chat
+            ngay hoặc gọi tổng đài để được xử lý nhanh hơn.
+          </Text>
+
+          <View style={{ marginTop: 14, gap: 10 }}>
+            <TouchableOpacity
+              onPress={() => {
+                setSelectedCategoryIndex(null);
+                handleChat();
+              }}
+              activeOpacity={0.85}
+              style={{
+                borderRadius: 12,
+                paddingVertical: 12,
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexDirection: 'row',
+                gap: 6,
+                backgroundColor: '#2563EB',
+              }}
+            >
+              <MaterialIcons name="chat-bubble" size={16} color="white" />
+              <Text style={{ fontSize: 14, fontWeight: '700', color: 'white' }}>
+                Trao đổi qua chat
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => {
+                setSelectedCategoryIndex(null);
+                handleCall();
+              }}
+              activeOpacity={0.85}
+              style={{
+                borderRadius: 12,
+                paddingVertical: 12,
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexDirection: 'row',
+                gap: 6,
+                borderWidth: 1,
+                borderColor: '#E2E8F0',
+              }}
+            >
+              <MaterialIcons name="phone" size={16} color="#334155" />
+              <Text style={{ fontSize: 14, fontWeight: '600', color: '#334155' }}>
+                Gọi tổng đài 1900-2805
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => setSelectedCategoryIndex(null)}
+              activeOpacity={0.8}
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                paddingVertical: 8,
+              }}
+            >
+              <Text style={{ fontSize: 13, color: '#64748B' }}>Đóng</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
 
 export default SupportScreen;
+

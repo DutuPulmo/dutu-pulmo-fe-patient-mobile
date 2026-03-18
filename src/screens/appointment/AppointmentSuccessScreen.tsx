@@ -5,7 +5,6 @@ import {
   Alert,
   Clipboard,
   Image,
-  Platform,
   Pressable,
   ScrollView,
   Share,
@@ -17,12 +16,14 @@ import QRCode from "react-native-qrcode-svg";
 
 import { Loading } from '@/components/ui/Loading';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { ScreenHeader } from '@/components/ui/ScreenHeader';
 import { StepBar } from '@/components/appointment/StepBar';
 import { SupportItem } from '@/components/appointment/SupportItem';
 import { useAppointmentDetail } from '@/hooks/useAppointments';
 import { useMyPatient } from '@/hooks/useProfile';
 import { useAuthStore } from '@/store/auth.store';
 import { chatService } from '@/services/chat.service';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // ─── QR Code  ──────────────────────────────────────────────────────
 function QrCodeBox({ value }: { value: string }) {
@@ -112,9 +113,9 @@ function InfoLine({
 // ══════════════════════════════════════════════════════════════════════════════
 export function AppointmentSuccessScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const { appointmentId } = useLocalSearchParams<{ appointmentId: string }>();
   const user = useAuthStore((s) => s.user);
-  const currentUser = useAuthStore((s) => s.user);
 
   const [patientInfoExpanded, setPatientInfoExpanded] = useState(true);
   const [chatLoading, setChatLoading] = useState(false);
@@ -134,11 +135,11 @@ export function AppointmentSuccessScreen() {
   };
 
   const handleChat = async () => {
-    if (!currentUser?.id || !appointment?.doctor?.userId) return;
+    if (!user?.id || !appointment?.doctor?.userId) return;
     try {
       setChatLoading(true);
       const room = await chatService.createOrGetRoom({
-        user1Id: currentUser.id,
+        user1Id: user.id,
         user2Id: appointment.doctor.userId,
       });
       router.push({
@@ -200,24 +201,15 @@ export function AppointmentSuccessScreen() {
 
   return (
     <View className="flex-1 bg-slate-50">
-      {/* HEADER */}
-      <View className="flex-row items-center justify-between bg-blue-500 px-4 pb-4 pt-12">
-        <TouchableOpacity
-          onPress={() => router.replace('/(tabs)/home')}
-          activeOpacity={0.7}
-          className="rounded-full p-1"
-        >
-          <MaterialIcons name="close" size={24} color="white" />
-        </TouchableOpacity>
-        <Text className="text-lg font-bold text-white">Kết quả đặt khám</Text>
-        <TouchableOpacity
-          onPress={handleShare}
-          activeOpacity={0.7}
-          className="rounded-full p-1"
-        >
-          <MaterialIcons name="ios-share" size={22} color="white" />
-        </TouchableOpacity>
-      </View>
+      <ScreenHeader
+        title="Kết quả đặt lịch"
+        onBack={() => router.replace('/(tabs)/home')}
+        rightSlot={
+          <TouchableOpacity onPress={handleShare} activeOpacity={0.7} className="rounded-full p-1">
+            <MaterialIcons name="ios-share" size={22} color="white" />
+          </TouchableOpacity>
+        }
+      />
 
       {/* STEP BAR */}
       <StepBar current={4} />
@@ -363,10 +355,9 @@ export function AppointmentSuccessScreen() {
 
       {/* FIXED BOTTOM BUTTONS */}
       <View
-        className={`absolute bottom-0 left-0 right-0 flex-row gap-3 border-t border-slate-100 bg-white px-4 pt-3 ${
-          Platform.OS === 'ios' ? 'pb-9' : 'pb-4'
-        }`}
+        className="absolute bottom-0 left-0 right-0 flex-row gap-3 border-t border-slate-100 bg-white px-4 pt-3"
         style={{
+          paddingBottom: Math.max(insets.bottom, 16),
           shadowColor: '#000',
           shadowOpacity: 0.08,
           shadowOffset: { width: 0, height: -4 },
@@ -411,3 +402,4 @@ export function AppointmentSuccessScreen() {
 }
 
 export default AppointmentSuccessScreen;
+

@@ -22,6 +22,8 @@ const appointmentKeys = {
     to: string,
     appointmentType: AppointmentTypeFilter,
   ) => ['doctors', 'slots', 'summary', doctorId, from, to, appointmentType] as const,
+  videoStatus: (appointmentId: string) =>
+    ['appointments', 'video-status', appointmentId] as const,
   specialties: () => ['doctors', 'specialties'] as const,
 };
 
@@ -148,5 +150,19 @@ export function useRescheduleAppointment() {
 export function useJoinVideoCall() {
   return useMutation({
     mutationFn: (appointmentId: string) => appointmentService.joinVideoCall(appointmentId),
+  });
+}
+
+export function useLeaveVideoCall() {
+  return useMutation({
+    mutationFn: (appointmentId: string) => appointmentService.leaveVideoCall(appointmentId),
+  });
+}
+
+export function useVideoCallStatus(appointmentId: string) {
+  return useQuery({
+    queryKey: appointmentKeys.videoStatus(appointmentId),
+    queryFn: () => appointmentService.getVideoCallStatus(appointmentId),
+    enabled: Boolean(appointmentId),
   });
 }

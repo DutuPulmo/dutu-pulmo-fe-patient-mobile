@@ -4,46 +4,9 @@ import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Loading } from '@/components/ui/Loading';
+import { ScreenHeader } from '@/components/ui/ScreenHeader';
+import { REPORT_STATUS_CONFIG } from '@/constants/status-configs';
 import { useReports } from '@/hooks/useReports';
-
-// ─── Status config ─────────────────────────────────────────────────────────────
-const REPORT_STATUS_CONFIG: Record<
-  string,
-  { label: string; icon: string; color: string; bgClass: string; borderClass: string; textClass: string }
-> = {
-  pending: {
-    label: 'Chờ xử lý',
-    icon: 'schedule',
-    color: '#d97706',
-    bgClass: 'bg-amber-50',
-    borderClass: 'border-amber-200',
-    textClass: 'text-amber-700',
-  },
-  in_progress: {
-    label: 'Đang xử lý',
-    icon: 'autorenew',
-    color: '#0A7CFF',
-    bgClass: 'bg-blue-50',
-    borderClass: 'border-blue-200',
-    textClass: 'text-blue-600',
-  },
-  resolved: {
-    label: 'Đã giải quyết',
-    icon: 'check-circle',
-    color: '#16a34a',
-    bgClass: 'bg-green-50',
-    borderClass: 'border-green-200',
-    textClass: 'text-green-700',
-  },
-  rejected: {
-    label: 'Đã từ chối',
-    icon: 'cancel',
-    color: '#ef4444',
-    bgClass: 'bg-red-50',
-    borderClass: 'border-red-200',
-    textClass: 'text-red-500',
-  },
-};
 
 const REPORT_TYPE_LABEL: Record<string, string> = {
   doctor: 'Báo cáo bác sĩ',
@@ -51,7 +14,6 @@ const REPORT_TYPE_LABEL: Record<string, string> = {
   system: 'Báo cáo hệ thống',
 };
 
-// ─── Report card ──────────────────────────────────────────────────────────────
 function ReportCard({ report }: { report: any }) {
   const statusConfig =
     REPORT_STATUS_CONFIG[report.status] ?? REPORT_STATUS_CONFIG['pending'];
@@ -106,7 +68,6 @@ function ReportCard({ report }: { report: any }) {
         </Text>
       </View>
 
-      {/* Admin notes (nếu có) */}
       {report.adminNotes && (
         <View className="mx-4 mb-4 rounded-xl bg-blue-50 px-3 py-2.5">
           <Text className="mb-1 text-[11px] font-bold tracking-[0.6px] text-blue-500">
@@ -121,7 +82,6 @@ function ReportCard({ report }: { report: any }) {
   );
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
 export function MyReportsScreen() {
   const router = useRouter();
   const reportsQuery = useReports();
@@ -143,25 +103,18 @@ export function MyReportsScreen() {
 
   return (
     <View className="flex-1 bg-slate-50">
-      {/* HEADER */}
-      <View className="flex-row items-center justify-between bg-blue-500 px-4 pb-4 pt-12">
-        <TouchableOpacity
-          onPress={() => router.back()}
-          activeOpacity={0.7}
-          className="rounded-full p-1"
-        >
-          <MaterialIcons name="arrow-back-ios-new" size={22} color="white" />
-        </TouchableOpacity>
-        <Text className="text-lg font-bold text-white">Báo cáo của tôi</Text>
-        <TouchableOpacity
-          onPress={() => router.push('/reports/new')}
-          activeOpacity={0.7}
-          className="rounded-full p-1"
-        >
-          <MaterialIcons name="add" size={24} color="white" />
-        </TouchableOpacity>
-      </View>
-
+      <ScreenHeader
+        title="Báo cáo của tôi"
+        rightSlot={
+          <TouchableOpacity
+            onPress={() => router.push('/reports/new')}
+            activeOpacity={0.7}
+            className="rounded-full p-1"
+          >
+            <MaterialIcons name="add" size={24} color="white" />
+          </TouchableOpacity>
+        }
+      />
       <ScrollView
         className="flex-1"
         contentContainerClassName="p-4 pb-8"

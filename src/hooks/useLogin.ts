@@ -1,5 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 
+import { registerFcmTokenAfterLogin } from '@/services/fcm.service';
 import { authService } from '@/services/auth.service';
 import { useAuthStore } from '@/store/auth.store';
 import type { LoginDto } from '@/types/auth.types';
@@ -15,6 +16,12 @@ export function useLogin() {
         refreshToken: data.refreshToken,
         user: data.account.user,
       });
+
+      setTimeout(() => {
+        void registerFcmTokenAfterLogin().catch((error) => {
+          console.warn('FCM registration failed:', error);
+        });
+      }, 1000);
     },
     onError: (error: any) => {
       if (!__DEV__) {

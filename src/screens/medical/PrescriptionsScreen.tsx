@@ -5,42 +5,10 @@ import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Loading } from '@/components/ui/Loading';
+import { ScreenHeader } from '@/components/ui/ScreenHeader';
+import { FALLBACK_PRESCRIPTION_STATUS, PRESCRIPTION_STATUS_CONFIG } from '@/constants/status-configs';
 import { patientService } from '@/services/patient.service';
 
-// ─── Status config ─────────────────────────────────────────────────────────────
-const PRESCRIPTION_STATUS_CONFIG: Record<
-  string,
-  { label: string; icon: string; color: string; bgClass: string; borderClass: string; textClass: string }
-> = {
-  ACTIVE: {
-    label: 'Đang dùng',
-    icon: 'medication',
-    color: '#16a34a',
-    bgClass: 'bg-green-50',
-    borderClass: 'border-green-200',
-    textClass: 'text-green-700',
-  },
-  COMPLETED: {
-    label: 'Đã hoàn thành',
-    icon: 'done-all',
-    color: '#0A7CFF',
-    bgClass: 'bg-blue-50',
-    borderClass: 'border-blue-200',
-    textClass: 'text-blue-600',
-  },
-  CANCELLED: {
-    label: 'Đã huỷ',
-    icon: 'cancel',
-    color: '#ef4444',
-    bgClass: 'bg-red-50',
-    borderClass: 'border-red-200',
-    textClass: 'text-red-500',
-  },
-};
-
-const FALLBACK_PRESCRIPTION_STATUS = PRESCRIPTION_STATUS_CONFIG['ACTIVE'];
-
-// ─── Prescription card ─────────────────────────────────────────────────────────
 function PrescriptionCard({
   prescription,
   onPress,
@@ -113,7 +81,6 @@ function PrescriptionCard({
   );
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
 export function PrescriptionsScreen() {
   const router = useRouter();
 
@@ -144,15 +111,7 @@ export function PrescriptionsScreen() {
 
   return (
     <View className="flex-1 bg-slate-50">
-      {/* HEADER */}
-      <View className="flex-row items-center justify-between bg-blue-500 px-4 pb-4 pt-12">
-        <TouchableOpacity onPress={() => router.back()} activeOpacity={0.7} className="rounded-full p-1">
-          <MaterialIcons name="arrow-back-ios-new" size={22} color="white" />
-        </TouchableOpacity>
-        <Text className="text-lg font-bold text-white">Đơn thuốc</Text>
-        <View className="w-8" />
-      </View>
-
+      <ScreenHeader title="Đơn thuốc" />
       <ScrollView
         className="flex-1"
         contentContainerClassName="p-4 pb-8"
@@ -197,3 +156,4 @@ export function PrescriptionsScreen() {
 }
 
 export default PrescriptionsScreen;
+

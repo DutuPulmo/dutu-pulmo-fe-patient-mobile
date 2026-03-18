@@ -4,6 +4,7 @@ import type {
   AppointmentQueryDto,
   AppointmentResponseDto,
   JoinVideoCallResponseDto,
+  VideoCallStatusResponseDto,
   CreateAppointmentDto,
   CancelAppointmentDto,
   DoctorResponseDto,
@@ -160,6 +161,13 @@ export const appointmentService = {
   leaveVideoCall: async (appointmentId: string) => {
     const { data } = await api.post<VideoLeaveCallResponseDto>(
       `/appointments/${appointmentId}/video/leave`,
+    );
+    return data;
+  },
+
+  getVideoCallStatus: async (appointmentId: string) => {
+    const { data } = await api.get<VideoCallStatusResponseDto>(
+      `/appointments/${appointmentId}/video/status`,
     );
     return data;
   },

@@ -4,89 +4,10 @@ import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Loading } from '@/components/ui/Loading';
+import { ScreenHeader } from '@/components/ui/ScreenHeader';
+import { APPOINTMENT_STATUS_CONFIG, FALLBACK_APPOINTMENT_STATUS } from '@/constants/status-configs';
 import { useAppointments } from '@/hooks/useAppointments';
 
-// ─── Status config (đồng bộ với AppointmentDetailScreen) ─────────────────────
-const STATUS_CONFIG: Record<
-  string,
-  {
-    label: string;
-    icon: string;
-    color: string;
-    bgClass: string;
-    borderClass: string;
-    textClass: string;
-  }
-> = {
-  CONFIRMED: {
-    label: 'Đã đặt lịch',
-    icon: 'check-circle',
-    color: '#16a34a',
-    bgClass: 'bg-green-50',
-    borderClass: 'border-green-200',
-    textClass: 'text-green-700',
-  },
-  PENDING: {
-    label: 'Chờ xác nhận',
-    icon: 'schedule',
-    color: '#d97706',
-    bgClass: 'bg-amber-50',
-    borderClass: 'border-amber-200',
-    textClass: 'text-amber-700',
-  },
-  PENDING_PAYMENT: {
-    label: 'Chờ thanh toán',
-    icon: 'payment',
-    color: '#d97706',
-    bgClass: 'bg-amber-50',
-    borderClass: 'border-amber-200',
-    textClass: 'text-amber-700',
-  },
-  COMPLETED: {
-    label: 'Đã hoàn thành',
-    icon: 'done-all',
-    color: '#0A7CFF',
-    bgClass: 'bg-blue-50',
-    borderClass: 'border-blue-200',
-    textClass: 'text-blue-600',
-  },
-  CANCELLED: {
-    label: 'Đã hủy lịch',
-    icon: 'cancel',
-    color: '#ef4444',
-    bgClass: 'bg-red-50',
-    borderClass: 'border-red-200',
-    textClass: 'text-red-500',
-  },
-  CHECKED_IN: {
-    label: 'Đã check-in',
-    icon: 'how-to-reg',
-    color: '#0A7CFF',
-    bgClass: 'bg-blue-50',
-    borderClass: 'border-blue-200',
-    textClass: 'text-blue-600',
-  },
-  IN_PROGRESS: {
-    label: 'Đang khám',
-    icon: 'medical-services',
-    color: '#0A7CFF',
-    bgClass: 'bg-blue-50',
-    borderClass: 'border-blue-200',
-    textClass: 'text-blue-600',
-  },
-  RESCHEDULED: {
-    label: 'Đã đổi lịch',
-    icon: 'event-repeat',
-    color: '#d97706',
-    bgClass: 'bg-amber-50',
-    borderClass: 'border-amber-200',
-    textClass: 'text-amber-700',
-  },
-};
-
-const FALLBACK_STATUS = STATUS_CONFIG['PENDING'];
-
-// ─── Appointment card ─────────────────────────────────────────────────────────
 function AppointmentCard({
   appointment,
   onPress,
@@ -94,7 +15,7 @@ function AppointmentCard({
   appointment: any;
   onPress: () => void;
 }) {
-  const statusConfig = STATUS_CONFIG[appointment.status] ?? FALLBACK_STATUS;
+  const statusConfig = APPOINTMENT_STATUS_CONFIG[appointment.status] ?? FALLBACK_APPOINTMENT_STATUS;
   const isCancelled = appointment.status === 'CANCELLED';
   const scheduledDate = new Date(appointment.scheduledAt);
   const weekdays = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
@@ -182,14 +103,13 @@ function AppointmentCard({
         </Text>
 
         {isCancelled && (
-          <Text className="text-[11px] font-medium text-red-400">Đã huỷ lịch</Text>
+          <Text className="text-[11px] font-medium text-red-400">Đã hủy lịch</Text>
         )}
       </View>
     </TouchableOpacity>
   );
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
 export function MyAppointmentsScreen() {
   const router = useRouter();
   const appointmentsQuery = useAppointments();
@@ -213,20 +133,7 @@ export function MyAppointmentsScreen() {
 
   return (
     <View className="flex-1 bg-slate-50">
-      {/* HEADER */}
-      <View className="flex-row items-center justify-between bg-blue-500 px-4 pb-4 pt-12">
-        <TouchableOpacity
-          onPress={() => router.back()}
-          activeOpacity={0.7}
-          className="rounded-full p-1"
-        >
-          <MaterialIcons name="arrow-back-ios-new" size={22} color="white" />
-        </TouchableOpacity>
-        <Text className="text-lg font-bold text-white">Lịch khám của tôi</Text>
-        {/* placeholder để căn giữa title */}
-        <View className="w-8" />
-      </View>
-
+      <ScreenHeader title="Lịch khám của tôi" />
       <ScrollView
         className="flex-1"
         contentContainerClassName="p-4 pb-8"
@@ -289,7 +196,7 @@ export function MyAppointmentsScreen() {
               </TouchableOpacity>
             </View>
           ) : (
-            appointments.map((appointment) => (
+            appointments.map((appointment: any) => (
               <AppointmentCard
                 key={appointment.id}
                 appointment={appointment}
@@ -304,3 +211,4 @@ export function MyAppointmentsScreen() {
 }
 
 export default MyAppointmentsScreen;
+

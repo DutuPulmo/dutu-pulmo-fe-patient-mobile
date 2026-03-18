@@ -6,7 +6,6 @@ import { DoctorAvatar } from '@/components/home/DoctorAvatar';
 import { FacilityCard } from '@/components/home/FacilityCard';
 import { Header } from '@/components/home/Header';
 import { NewsCard } from '@/components/home/NewsCard';
-import type { NewsItem } from '@/components/home/NewsCard';
 import { PromoBanner } from '@/components/home/PromoBanner';
 import { QuickActions } from '@/components/home/QuickActions';
 import type { QuickAction } from '@/components/home/QuickActions';
@@ -17,32 +16,7 @@ import { usePublicDoctors, useSpecialties } from '@/hooks/useAppointments';
 import { useHospitals } from '@/hooks/useHospitals';
 import { Loading } from '@/components/ui/Loading';
 
-const today = new Date().toLocaleDateString('vi-VN');
-
-const NEWS: NewsItem[] = [
-  {
-    id: '1',
-    title: 'Cách bảo vệ phổi hiệu quả trong mùa ô nhiễm',
-    date: today,
-    badge: 'Nổi bật',
-    image:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuC_iLiX96-7KdxD4YhY0FSz0j7UjUIwRaf_hijFJXoGnoU0IKtsM5oAaEYSD5faycH9y8oNIauP5l9PXYxdsY8BgA76M9mLZJ8ee-3zNiE5svEEj9YwZ2w1qWdc7fqr3OPfkX5dkfXBaLvlobTs2n7EgUxU2vrO2z08OQ7LYxOz-yk62p01ISci48F58PYinPutu76l38sDmsdKyYvzADcFQ5Ir61f-_9CilNd2SDQQ-joUrGyreyvry5R-zRH__G7ns7a-0x5bTuPF',
-  },
-  {
-    id: '2',
-    title: '5 loại thực phẩm "vàng" giúp thanh lọc phổi',
-    date: today,
-    image:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuDuT8PX4pCe44kEMMhyHmWX_Lu8fVS07PKoL9Mlcj-hpq61iUxwNd0HtAGHEpSvERiEDZx2SOGC2ux-14VEWoRQ3QTtXbX1hb_XROkDVvUjJXMCmnFCbrjerRmFIQONHmn4kVqrmJZh_3HXTwJAxAG7TZxYakAAW57D-mE4oazGNsaBRcMWZKAgsWK463Z130Kp86aTSo1SGa5mMMjzFcezqP5lQ_KuTh7i5bSDiVXI30RnFv_VOhvhjHcfENOSRCgzy7vslHqkek-e',
-  },
-  {
-    id: '3',
-    title: 'Tầm soát ung thư phổi: Khi nào cần thực hiện?',
-    date: today,
-    image:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuD8Z35PMEKVy1oCowwCra6qNghyrapFVbSjVECe3cNKjl9gZJHbC4gWSbILWcIonzWzC2L-dgPNFoAVbfFQj8SIDoprB3jEKaqmVyP6_DkfYIAuSHJxPiThA1CjgGDL1vIkDu8l4o0VvJbY1M-7mGIRoFs5AbQiuFe9F8eVabNuGTYVUXVKT5QW0pmOXYzTKTwkDUyGpEZGa_xZ-2_an9chkmWtjg9hPXGNeXRmlFf3hHtS1ahwIv5dJKZmRNMlXphQUS7w_KvcyEMB',
-  },
-];
+import { SAMPLE_NEWS } from '@/constants/news-data';
 
 export function HomeScreen() {
   const router = useRouter();
@@ -73,11 +47,11 @@ export function HomeScreen() {
       iconName: 'apartment',
       color: theme.colors.primary,
       bg: '#EFF6FF',
-      onPress: () => router.push('/doctors'),
+      onPress: () => router.push('/hospitals'),
     },
     {
       key: 'support',
-      label: 'Hỗ trợ\nAI',
+      label: 'Hỗ trợ',
       iconName: 'center-focus-strong',
       color: '#4F46E5',
       bg: '#EEF2FF',
@@ -113,7 +87,7 @@ export function HomeScreen() {
       iconName: 'article',
       color: theme.colors.primary,
       bg: '#EFF6FF',
-      onPress: () => router.push('/settings'),
+      onPress: () => router.push('/news'),
     },
   ];
 
@@ -157,8 +131,8 @@ export function HomeScreen() {
               renderItem={({ item: doctor }) => (
                 <Pressable
                   onPress={() => router.push(`/doctors/${doctor.id}`)}
-                  style={({ pressed }) => ({ opacity: pressed ? 0.9 : 1 })}
-                  className="w-[152px] bg-white p-3 rounded-[18px] border border-slate-100 shadow-sm elevation-1"
+                  style={({ pressed }) => ({ ...theme.shadow.card, opacity: pressed ? 0.9 : 1 })}
+                  className="w-[152px] bg-white p-3 rounded-[18px] border border-slate-100"
                 >
                   <DoctorAvatar avatarUrl={doctor.avatarUrl} name={doctor.fullName} />
                   <Text className="text-sm font-bold text-gray-800" numberOfLines={1}>
@@ -231,7 +205,7 @@ export function HomeScreen() {
         <View>
           <SectionHeader
             title="Khám theo chuyên khoa"
-            onSeeAll={() => router.push('/specialties' as any)}
+            onSeeAll={() => router.push('/specialties')}
           />
           {specialtiesQuery.isLoading ? (
             <Text className="text-slate-400 text-sm mt-2">Đang tải...</Text>
@@ -241,11 +215,11 @@ export function HomeScreen() {
         </View>
 
         <View className="pb-8">
-          <SectionHeader title="Tin tức y khoa" onSeeAll={() => router.push('/news' as any)} />
+          <SectionHeader title="Tin tức y khoa" onSeeAll={() => router.push('/news')} />
           <FlatList
             horizontal
             showsHorizontalScrollIndicator={false}
-            data={NEWS}
+            data={SAMPLE_NEWS}
             keyExtractor={(item) => item.id}
             contentContainerStyle={{ gap: 16, paddingRight: 16, paddingBottom: 4 }}
             renderItem={({ item }) => <NewsCard item={item} />}
@@ -257,3 +231,7 @@ export function HomeScreen() {
 }
 
 export default HomeScreen;
+
+
+
+

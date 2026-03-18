@@ -27,13 +27,8 @@ const NOTIFICATION_TYPES = new Set<NotificationItem['type']>([
 ]);
 
 const NOTIFICATION_STATUSES = new Set<NotificationItem['status']>([
-  'ACTIVE',
-  'INACTIVE',
-  'PENDING',
-  'APPROVED',
-  'REJECTED',
-  'COMPLETED',
-  'CANCELLED',
+  'UNREAD',
+  'READ',
 ]);
 
 const normalizeNotificationItem = (
@@ -49,9 +44,9 @@ const normalizeNotificationItem = (
     type: NOTIFICATION_TYPES.has(raw.type ?? 'SYSTEM') ? raw.type! : 'SYSTEM',
     title: typeof raw.title === 'string' ? raw.title : '',
     content: typeof raw.content === 'string' ? raw.content : '',
-    status: NOTIFICATION_STATUSES.has(raw.status ?? 'PENDING')
+    status: NOTIFICATION_STATUSES.has(raw.status ?? 'UNREAD')
       ? raw.status!
-      : 'PENDING',
+      : 'UNREAD',
     createdAt: typeof raw.createdAt === 'string' ? raw.createdAt : undefined,
   };
 };

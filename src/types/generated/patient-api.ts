@@ -3148,10 +3148,10 @@ export interface components {
             /** @example Bạn vừa thanh toán tiền thuê nhà tháng 7 */
             content: string;
             /**
-             * @example PENDING
+             * @example UNREAD
              * @enum {string}
              */
-            status: "ACTIVE" | "INACTIVE" | "PENDING" | "APPROVED" | "REJECTED" | "COMPLETED" | "CANCELLED";
+            status: "UNREAD" | "READ";
             /**
              * @description Ngày tạo
              * @example 2024-07-17T09:12:23.000Z

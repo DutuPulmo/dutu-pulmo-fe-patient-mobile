@@ -38,7 +38,7 @@ import {
   useDoctorTimeSlotSummary,
   usePublicDoctorDetail,
 } from '@/hooks/useAppointments';
-import { useMyPatient, useProfile } from '@/hooks/useProfile';
+import { useMyPatient } from '@/hooks/useProfile';
 import { useBookingStore } from '@/store/booking.store';
 import { useAuthStore } from '@/store/auth.store';
 import { getDoctorTitleLabel, getSpecialtyLabel } from '@/utils/doctor-display';
@@ -85,8 +85,6 @@ export function BookAppointmentScreen() {
 
   const user = useAuthStore((s) => s.user);
   const setDraft = useBookingStore((s) => s.setDraft);
-
-  const meQuery = useProfile();
   const myPatientQuery = useMyPatient();
   const doctorQuery = usePublicDoctorDetail(doctorId ?? '');
 
@@ -176,7 +174,6 @@ export function BookAppointmentScreen() {
   });
 
   // ── Computed display values ───────────────────────────────────────────────
-  const me = meQuery.data;
   const myPatient = myPatientQuery.data;
   const doctor = doctorQuery.data;
   const titleLabel = doctor ? getDoctorTitleLabel(doctor.title) : '';
@@ -184,9 +181,9 @@ export function BookAppointmentScreen() {
     ? getSpecialtyLabel(doctor.specialty ?? '')
     : '';
   const fallback = '—';
-  const patientUser = me?.patient?.user;
+  const patientUser = myPatient?.user;
   const profileCode =
-    myPatient?.profileCode ?? me?.patient?.profileCode ?? fallback;
+    myPatient?.profileCode ?? fallback;
   const displayName = patientUser?.fullName ?? user?.fullName ?? fallback;
   const displayGender = genderLabel(patientUser?.gender);
   const displayDOB = formatDate(patientUser?.dateOfBirth);

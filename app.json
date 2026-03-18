@@ -1,10 +1,14 @@
 {
   "expo": {
-    "name": "dutu-pulmo-fe-patient-mobile",
+    "name": "DUTU Pulmo",
     "slug": "dutu-pulmo-fe-patient-mobile",
     "version": "1.0.0",
     "extra": {
-      "apiBaseUrl": "http://192.168.1.3:3000"
+      "apiBaseUrl": "https://authorised-wannest-kacey.ngrok-free.dev",
+      "router": {},
+      "eas": {
+        "projectId": "3d76970f-5cbc-487a-93a6-f9591661a19d"
+      }
     },
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -12,7 +16,10 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "UIBackgroundModes": ["fetch", "remote-notification"]
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -22,7 +29,22 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.minhduc14.dutupulmofepatientmobile",
+      "googleServicesFile": "./google-services.json",
+      "permissions": [
+        "android.permission.ACCESS_NETWORK_STATE",
+        "android.permission.INTERNET",
+        "android.permission.WAKE_LOCK",
+        "android.permission.POST_NOTIFICATIONS",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.CAMERA",
+        "android.permission.FOREGROUND_SERVICE_CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS",
+        "android.permission.FOREGROUND_SERVICE_MICROPHONE",
+        "android.permission.BLUETOOTH_CONNECT"
+      ]
     },
     "web": {
       "output": "static",
@@ -31,6 +53,18 @@
     },
     "plugins": [
       "expo-router",
+      "@react-native-firebase/app",
+      "@react-native-firebase/messaging",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/icon.png",
+          "color": "#E6F4FE",
+          "sounds": [],
+          "androidMode": "default",
+          "androidCollapsedTitle": "DUTU Pulmo"
+        }
+      ],
       [
         "expo-splash-screen",
         {
@@ -43,7 +77,16 @@
           }
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "@daily-co/config-plugin-rn-daily-js",
+        {
+          "enableCamera": true,
+          "enableMicrophone": true,
+          "enableScreenShare": false
+        }
+      ],
+      "./plugins/withAndroidManifestFix"
     ],
     "experiments": {
       "typedRoutes": true,

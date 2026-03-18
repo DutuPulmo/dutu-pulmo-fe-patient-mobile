@@ -4,6 +4,7 @@ import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Loading } from '@/components/ui/Loading';
+import { ScreenHeader } from '@/components/ui/ScreenHeader';
 import {
   useMarkAllNotificationsAsRead,
   useMarkNotificationAsRead,
@@ -32,7 +33,7 @@ function NotificationCard({
   onMarkRead?: () => void;
   isMarking: boolean;
 }) {
-  const isRead = item.status === 'ACTIVE';
+  const isRead = item.status === 'READ';
   const typeConfig =
     NOTIFICATION_TYPE_CONFIG[item.type] ?? NOTIFICATION_TYPE_CONFIG.DEFAULT;
   const title = item.title?.trim() || 'Thông báo';
@@ -61,22 +62,33 @@ function NotificationCard({
         className="mt-0.5 h-10 w-10 items-center justify-center rounded-full"
         style={{ backgroundColor: typeConfig.bgColor }}
       >
-        <MaterialIcons name={typeConfig.icon} size={20} color={typeConfig.color} />
+        <MaterialIcons
+          name={typeConfig.icon}
+          size={20}
+          color={typeConfig.color}
+        />
       </View>
 
       <View className="flex-1">
         <View className="flex-row items-start justify-between gap-2">
           <Text
             className={`flex-1 text-[14px] leading-[20px] ${
-              isRead ? 'font-normal text-slate-700' : 'font-semibold text-slate-900'
+              isRead
+                ? 'font-normal text-slate-700'
+                : 'font-semibold text-slate-900'
             }`}
             numberOfLines={2}
           >
             {title}
           </Text>
-          {!isRead && <View className="mt-1.5 h-2 w-2 rounded-full bg-blue-500" />}
+          {!isRead && (
+            <View className="mt-1.5 h-2 w-2 rounded-full bg-blue-500" />
+          )}
         </View>
-        <Text className="mt-1 text-[13px] leading-[18px] text-slate-500" numberOfLines={3}>
+        <Text
+          className="mt-1 text-[13px] leading-[18px] text-slate-500"
+          numberOfLines={3}
+        >
           {content}
         </Text>
         <Text className="mt-2 text-[11px] text-slate-400">{timeLabel}</Text>
@@ -90,7 +102,8 @@ export function NotificationsScreen() {
   const markOneMutation = useMarkNotificationAsRead();
   const markAllMutation = useMarkAllNotificationsAsRead();
 
-  if (notificationsQuery.isLoading) return <Loading label="Đang tải thông báo..." />;
+  if (notificationsQuery.isLoading)
+    return <Loading label="Đang tải thông báo..." />;
 
   if (notificationsQuery.isError) {
     return (
@@ -104,21 +117,18 @@ export function NotificationsScreen() {
   }
 
   const notifications = notificationsQuery.data?.items ?? [];
-  const unreadNotifications = notifications.filter((n) => n.status === 'PENDING');
-  const readNotifications = notifications.filter((n) => n.status === 'ACTIVE');
+  const unreadNotifications = notifications.filter(
+    (n) => n.status === 'UNREAD',
+  );
+  const readNotifications = notifications.filter((n) => n.status === 'READ');
   const unreadCount = unreadNotifications.length;
 
   return (
     <View className="flex-1 bg-slate-50">
-      <View className="bg-blue-500 px-4 pb-4 pt-12">
-        <View className="flex-row items-center justify-between">
-          <View>
-            <Text className="text-lg font-bold text-white">Thông báo</Text>
-            {unreadCount > 0 && (
-              <Text className="mt-0.5 text-[13px] text-blue-100">{unreadCount} chưa đọc</Text>
-            )}
-          </View>
-          {unreadCount > 0 && (
+      <ScreenHeader
+        title="Thông báo"
+        rightSlot={
+          unreadCount > 0 ? (
             <TouchableOpacity
               onPress={() => markAllMutation.mutate()}
               disabled={markAllMutation.isPending}
@@ -129,22 +139,30 @@ export function NotificationsScreen() {
                 {markAllMutation.isPending ? 'Đang xử lý...' : 'Đọc tất cả'}
               </Text>
             </TouchableOpacity>
-          )}
-        </View>
-      </View>
-
+          ) : null
+        }
+      />
       {notifications.length === 0 ? (
         <View className="flex-1 items-center justify-center px-6">
           <View className="mb-4 h-20 w-20 items-center justify-center rounded-full bg-blue-50">
-            <MaterialIcons name="notifications-none" size={36} color="#93c5fd" />
+            <MaterialIcons
+              name="notifications-none"
+              size={36}
+              color="#93c5fd"
+            />
           </View>
-          <Text className="text-base font-bold text-slate-700">Chưa có thông báo</Text>
+          <Text className="text-base font-bold text-slate-700">
+            Chưa có thông báo
+          </Text>
           <Text className="mt-1 text-center text-sm text-slate-400">
             Các thông báo về lịch khám và thanh toán sẽ xuất hiện ở đây
           </Text>
         </View>
       ) : (
-        <ScrollView className="flex-1 bg-white" showsVerticalScrollIndicator={false}>
+        <ScrollView
+          className="flex-1 bg-white"
+          showsVerticalScrollIndicator={false}
+        >
           {unreadCount > 0 && (
             <>
               <View className="border-b border-slate-100 px-4 py-3">

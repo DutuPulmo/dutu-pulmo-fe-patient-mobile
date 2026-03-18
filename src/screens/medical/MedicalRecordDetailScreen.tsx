@@ -12,45 +12,9 @@ import {
 import RenderHtml from 'react-native-render-html';
 import { Loading } from '@/components/ui/Loading';
 import { medicalService } from '@/services/medical.service';
-import EmptyState from '@/components/ui/EmptyState';
-
-// ─── Status configs ────────────────────────────────────────────────────────────
-const RECORD_STATUS_CONFIG: Record<
-  string,
-  {
-    label: string;
-    icon: string;
-    color: string;
-    bgClass: string;
-    borderClass: string;
-    textClass: string;
-  }
-> = {
-  DRAFT: {
-    label: 'Đang xử lý',
-    icon: 'edit-note',
-    color: '#d97706',
-    bgClass: 'bg-amber-50',
-    borderClass: 'border-amber-200',
-    textClass: 'text-amber-700',
-  },
-  IN_PROGRESS: {
-    label: 'Đang khám',
-    icon: 'medical-services',
-    color: '#0A7CFF',
-    bgClass: 'bg-blue-50',
-    borderClass: 'border-blue-200',
-    textClass: 'text-blue-600',
-  },
-  COMPLETED: {
-    label: 'Đã hoàn thành',
-    icon: 'done-all',
-    color: '#16a34a',
-    bgClass: 'bg-green-50',
-    borderClass: 'border-green-200',
-    textClass: 'text-green-700',
-  },
-};
+import { EmptyState } from '@/components/ui/EmptyState';
+import { ScreenHeader } from '@/components/ui/ScreenHeader';
+import { FALLBACK_MEDICAL_RECORD_STATUS, MEDICAL_RECORD_STATUS_CONFIG } from '@/constants/status-configs';
 
 const SIGNED_CONFIG: Record<
   string,
@@ -81,7 +45,6 @@ const SIGNED_CONFIG: Record<
   },
 };
 
-// ─── Reusable components ───────────────────────────────────────────────────────
 function InfoLine({
   label,
   value,
@@ -192,7 +155,6 @@ function StatusBadge({
   );
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
 export function MedicalRecordDetailScreen() {
   const router = useRouter();
   const { recordId } = useLocalSearchParams<{ recordId: string }>();
@@ -225,7 +187,7 @@ export function MedicalRecordDetailScreen() {
   const record = detailQuery.data;
   const pdfUrl = pdfQuery.data?.pdfUrl ?? pdfQuery.data?.url ?? null;
   const statusConfig =
-    RECORD_STATUS_CONFIG[record.status] ?? RECORD_STATUS_CONFIG['DRAFT'];
+    MEDICAL_RECORD_STATUS_CONFIG[record.status] ?? FALLBACK_MEDICAL_RECORD_STATUS;
   const signedConfig =
     SIGNED_CONFIG[record.signedStatus] ?? SIGNED_CONFIG['NOT_SIGNED'];
   const vs = record.vitalSigns ?? {};
@@ -237,21 +199,7 @@ export function MedicalRecordDetailScreen() {
 
   return (
     <View className="flex-1 bg-slate-50">
-      {/* HEADER */}
-      <View className="flex-row items-center justify-between bg-blue-500 px-4 pb-4 pt-12">
-        <TouchableOpacity
-          onPress={() => router.back()}
-          activeOpacity={0.7}
-          className="rounded-full p-1"
-        >
-          <MaterialIcons name="arrow-back-ios-new" size={22} color="white" />
-        </TouchableOpacity>
-        <Text className="text-lg font-bold text-white">
-          Chi tiết hồ sơ y tế
-        </Text>
-        <View className="w-8" />
-      </View>
-
+      <ScreenHeader title="Chi tiết hồ sơ y tế" />
       <ScrollView
         className="flex-1"
         contentContainerClassName="p-4 pb-[120px]"
@@ -527,3 +475,4 @@ export function MedicalRecordDetailScreen() {
 }
 
 export default MedicalRecordDetailScreen;
+

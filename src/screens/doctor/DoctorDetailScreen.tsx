@@ -171,11 +171,11 @@ export function DoctorDetailScreen() {
   }
 
   const doctor = doctorQuery.data as DoctorResponseDto;
-  const displayName = doctor.fullName ?? 'Bac si';
+  const displayName = doctor.fullName ?? 'Bác sĩ';
   const titleLabel = getDoctorTitleLabel(doctor.title);
-  const specialty = getSpecialtyLabel(doctor.specialty ?? 'Chuyen khoa');
+  const specialty = getSpecialtyLabel(doctor.specialty ?? 'Chuyên khoa');
   const experience = doctor.yearsOfExperience;
-  const bio = doctor.bio ?? 'Thong tin dang duoc cap nhat.';
+  const bio = doctor.bio ?? 'Thông tin đang được cập nhật.';
 
   const splitLines = (val?: string | null): string[] =>
     val
@@ -209,14 +209,14 @@ export function DoctorDetailScreen() {
         params: { chatroomId: room.id },
       });
     } catch (error) {
-      console.error('Khong the mo chat:', error);
+      console.error('Không thể mở chat:', error);
     } finally {
       setChatLoading(false);
     }
   };
 
   const handleOpenMap = () => {
-    const query = encodeURIComponent(address || 'Ho Chi Minh');
+    const query = encodeURIComponent(address || 'Hồ Chí Minh');
     const url =
       Platform.OS === 'ios' ? `maps:0,0?q=${query}` : `geo:0,0?q=${query}`;
     void Linking.openURL(url);
