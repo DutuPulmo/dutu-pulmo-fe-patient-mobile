@@ -1,0 +1,43 @@
+# dependencies
+node_modules
+
+# Expo cache
+.expo
+.expo-shared
+
+# build output
+dist
+web-build
+
+# native folders
+android
+ios
+node_modules
+.android
+.expo
+.gradle
+android/.gradle
+android/build
+ios/build
+dist
+
+# git
+.git
+.gitignore
+
+# env
+.env
+.env.*
+
+# IDE
+.vscode
+.idea
+
+# logs
+*.log
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# macOS
+.DS_Store
