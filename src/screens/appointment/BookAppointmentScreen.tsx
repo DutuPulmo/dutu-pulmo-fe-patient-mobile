@@ -7,6 +7,7 @@ import { Controller, useForm } from 'react-hook-form';
 import {
   Image,
   Platform,
+  ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
@@ -20,6 +21,7 @@ import {
 } from 'react-native-pell-rich-editor';
 import { z } from 'zod';
 
+import { Modal } from '@/components/ui/Modal';
 import { Loading } from '@/components/ui/Loading';
 import { ScreenHeader } from '@/components/ui/ScreenHeader';
 import { DatePicker } from '@/components/doctor/DatePicker';
@@ -28,7 +30,7 @@ import { SectionLabel } from '@/components/doctor/SectionLabel';
 import { StepBar } from '@/components/appointment/StepBar';
 import { InfoRowHorizontal } from '@/components/appointment/InfoRowHorizontal';
 import {
-  buildDateWindow,
+  buildMonthDateWindow,
   formatDate,
   genderLabel,
   toLocalDateString,
@@ -49,8 +51,6 @@ const schema = z.object({
   symptoms: z.string().optional(),
 });
 type FormData = z.infer<typeof schema>;
-
-const BASE_DATES = buildDateWindow();
 
 // ─── Local sub-components ─────────────────────────────────────────────────────
 function Divider() {
@@ -89,23 +89,47 @@ export function BookAppointmentScreen() {
   const myPatientQuery = useMyPatient();
   const doctorQuery = usePublicDoctorDetail(doctorId ?? '');
 
-  // ── Date state ────────────────────────────────────────────────────────────
+  // ── Date & Type state ──────────────────────────────────────────────────
+  const [activeTab, setActiveTab] = useState<'appointment' | 'consultation'>(
+    'appointment',
+  );
+  const [showMonthPicker, setShowMonthPicker] = useState(false);
+  const [searchDate, setSearchDate] = useState(new Date());
+
   const [selectedDate, setSelectedDate] = useState(
-    paramDate ?? BASE_DATES[0]?.date ?? toLocalDateString(new Date()),
+    paramDate ?? toLocalDateString(new Date()),
   );
   const [selectedSlotId, setSelectedSlotId] = useState<string | null>(
     preSelectedSlotId ?? null,
   );
 
+  const isInitialMount = useRef(true);
   useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
     setSelectedSlotId(null);
   }, [selectedDate]);
 
-  const slotsQuery = useDoctorAvailableSlots(doctorId, selectedDate);
+  const appointmentTypeFilter =
+    activeTab === 'consultation' ? 'online' : 'offline';
+
+  const weekDates = useMemo(
+    () => buildMonthDateWindow(searchDate),
+    [searchDate],
+  );
+
+  const slotsQuery = useDoctorAvailableSlots(
+    doctorId,
+    selectedDate,
+    appointmentTypeFilter,
+  );
   const summaryQuery = useDoctorTimeSlotSummary(
     doctorId ?? '',
-    BASE_DATES[0]?.date ?? selectedDate,
-    BASE_DATES[BASE_DATES.length - 1]?.date ?? selectedDate,
+    weekDates[0]?.date ?? selectedDate,
+    weekDates[weekDates.length - 1]?.date ?? selectedDate,
+    appointmentTypeFilter,
   );
 
   const summaryMap = useMemo(() => {
@@ -116,9 +140,9 @@ export function BookAppointmentScreen() {
     return m;
   }, [summaryQuery.data]);
 
-  const weekDates = useMemo(
-    () => BASE_DATES.map((d) => ({ ...d, slots: summaryMap.get(d.date) ?? 0 })),
-    [summaryMap],
+  const weekDatesWithSlots = useMemo(
+    () => weekDates.map((d) => ({ ...d, slots: summaryMap.get(d.date) ?? 0 })),
+    [weekDates, summaryMap],
   );
 
   const timeSlots = useMemo(
@@ -412,7 +436,41 @@ export function BookAppointmentScreen() {
               style={{ shadowColor: '#000', shadowOpacity: 0.04, elevation: 1 }}
             >
               <View className="px-4 pt-4">
-                <View className="mb-3 flex-row items-center gap-1.5">
+                <View className="mb-4 flex-row rounded-xl bg-gray-100 p-1">
+                  {(
+                    [
+                      { key: 'appointment', label: 'Lịch khám' },
+                      { key: 'consultation', label: 'Lịch tư vấn' },
+                    ] as const
+                  ).map((tab) => {
+                    const isActive = activeTab === tab.key;
+                    return (
+                      <TouchableOpacity
+                        key={tab.key}
+                        onPress={() => setActiveTab(tab.key)}
+                        className="flex-1 items-center rounded-lg py-2"
+                        style={
+                          isActive
+                            ? { backgroundColor: 'white' }
+                            : { backgroundColor: 'transparent' }
+                        }
+                      >
+                        <Text
+                          className="text-sm font-semibold"
+                          style={{ color: isActive ? '#0A7CFF' : '#64748b' }}
+                        >
+                          {tab.label}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+
+                <TouchableOpacity
+                  onPress={() => setShowMonthPicker(true)}
+                  activeOpacity={0.7}
+                  className="mb-4 flex-row items-center justify-center gap-1"
+                >
                   <MaterialIcons
                     name="calendar-today"
                     size={14}
@@ -422,9 +480,15 @@ export function BookAppointmentScreen() {
                     Tháng {parseInt(selectedDate.slice(5, 7), 10)}/
                     {selectedDate.slice(0, 4)}
                   </Text>
-                </View>
+                  <MaterialIcons
+                    name="expand-more"
+                    size={18}
+                    color="#0A7CFF"
+                  />
+                </TouchableOpacity>
+
                 <DatePicker
-                  dates={weekDates}
+                  dates={weekDatesWithSlots}
                   selected={selectedDate}
                   onSelect={setSelectedDate}
                 />
@@ -696,6 +760,79 @@ export function BookAppointmentScreen() {
           <Text className="text-base font-bold text-white">Tiếp tục</Text>
         </TouchableOpacity>
       </View>
+      {/* MODAL CHỌN THÁNG/NĂM */}
+      <Modal visible={showMonthPicker} onRequestClose={() => setShowMonthPicker(false)}>
+        <View className="w-full rounded-2xl bg-white p-6">
+          <Text className="mb-4 text-center text-lg font-bold text-gray-900">
+            Chọn thời gian
+          </Text>
+          <View className="max-h-60 flex-row">
+            {/* Cột Tháng */}
+            <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+              {Array.from({ length: 12 }, (_, i) => {
+                const m = i + 1;
+                const isCurM = m === searchDate.getMonth() + 1;
+                return (
+                  <TouchableOpacity
+                    key={m}
+                    onPress={() => {
+                      const newD = new Date(searchDate);
+                      newD.setMonth(i);
+                      setSearchDate(newD);
+                    }}
+                    className={`mb-2 items-center rounded-lg py-3 ${isCurM ? 'bg-blue-50' : ''
+                      }`}
+                  >
+                    <Text
+                      className={`text-sm font-semibold ${isCurM ? 'text-blue-600' : 'text-gray-600'
+                        }`}
+                    >
+                      Tháng {m}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+            {/* Cột Năm */}
+            <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+              {Array.from(
+                { length: 6 },
+                (_, i) => new Date().getFullYear() + i,
+              ).map((y) => {
+                const isCurY = y === searchDate.getFullYear();
+                return (
+                  <TouchableOpacity
+                    key={y}
+                    onPress={() => {
+                      const newD = new Date(searchDate);
+                      newD.setFullYear(y);
+                      setSearchDate(newD);
+                    }}
+                    className={`mb-2 items-center rounded-lg py-3 ${isCurY ? 'bg-blue-50' : ''
+                      }`}
+                  >
+                    <Text
+                      className={`text-sm font-semibold ${isCurY ? 'text-blue-600' : 'text-gray-600'
+                        }`}
+                    >
+                      {y}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+          </View>
+          <TouchableOpacity
+            onPress={() => {
+              setShowMonthPicker(false);
+              setSelectedDate(toLocalDateString(searchDate));
+            }}
+            className="mt-6 items-center rounded-xl bg-blue-600 py-4"
+          >
+            <Text className="text-sm font-bold text-white">Xác nhận</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </View>
   );
 }

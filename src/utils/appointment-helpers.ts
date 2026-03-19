@@ -15,11 +15,33 @@ export function toLocalDateString(d: Date): string {
   return `${y}-${m}-${day}`;
 }
 
-export function buildDateWindow(days = DATE_WINDOW_DAYS): DateItem[] {
-  const today = new Date();
+export function buildDateWindow(startDate = new Date(), days = DATE_WINDOW_DAYS): DateItem[] {
   return Array.from({ length: days }, (_, i) => {
-    const d = new Date(today);
-    d.setDate(today.getDate() + i);
+    const d = new Date(startDate);
+    d.setDate(startDate.getDate() + i);
+    return {
+      label: DAY_LABELS[d.getDay()],
+      day: d.getDate(),
+      date: toLocalDateString(d),
+      slots: 0,
+    };
+  });
+}
+
+export function buildMonthDateWindow(searchDate: Date): DateItem[] {
+  const now = new Date();
+  const targetYear = searchDate.getFullYear();
+  const targetMonth = searchDate.getMonth();
+
+  const isCurrentMonth =
+    targetYear === now.getFullYear() && targetMonth === now.getMonth();
+
+  const startDay = isCurrentMonth ? now.getDate() : 1;
+  const lastDay = new Date(targetYear, targetMonth + 1, 0).getDate();
+  const numDays = lastDay - startDay + 1;
+
+  return Array.from({ length: numDays }, (_, i) => {
+    const d = new Date(targetYear, targetMonth, startDay + i);
     return {
       label: DAY_LABELS[d.getDay()],
       day: d.getDate(),

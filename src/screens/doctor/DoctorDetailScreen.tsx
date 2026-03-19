@@ -21,6 +21,7 @@ import { TimeSlotGrid } from '@/components/doctor/TimeSlotGrid';
 import type { TimeSlot } from '@/components/doctor/TimeSlotGrid';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Loading } from '@/components/ui/Loading';
+import { Modal } from '@/components/ui/Modal';
 import { theme } from '@/constants/theme';
 import {
   useDoctorAvailableSlots,
@@ -36,53 +37,14 @@ import { getDoctorTitleLabel, getSpecialtyLabel } from '@/utils/doctor-display';
 import { useCheckFavoriteDoctor, useAddFavorite, useRemoveFavorite } from '@/hooks/useFavorites';
 import { useDoctorReviews } from '@/hooks/useReviews';
 import { ReviewItem } from '@/components/review/ReviewItem';
-
-const DAY_LABELS = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
-const DATE_WINDOW_DAYS = 14;
-
-function toLocalDateString(d: Date): string {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  return `${y}-${m}-${day}`;
-}
-
-function buildDateWindow(days = DATE_WINDOW_DAYS): DateItem[] {
-  const today = new Date();
-  return Array.from({ length: days }, (_, i) => {
-    const d = new Date(today);
-    d.setDate(today.getDate() + i);
-    return {
-      label: DAY_LABELS[d.getDay()],
-      day: d.getDate(),
-      date: toLocalDateString(d),
-      slots: 0,
-    };
-  });
-}
-
-function formatLocalTime(utcStr: string): string {
-  const d = new Date(utcStr);
-  return d.toLocaleTimeString('vi-VN', {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-  });
-}
-
-function toTimeSlots(apiSlots: TimeSlotResponseDto[]): TimeSlot[] {
-  return apiSlots.map((s) => {
-    const start = new Date(s.startTime);
-    const localHour = start.getHours();
-    return {
-      id: s.id,
-      label: `${formatLocalTime(s.startTime)} - ${formatLocalTime(s.endTime)}`,
-      startTime: s.startTime,
-      endTime: s.endTime,
-      period: localHour < 12 ? 'morning' : 'afternoon',
-    };
-  });
-}
+import {
+  buildMonthDateWindow,
+  formatDate,
+  formatLocalTime,
+  genderLabel,
+  toLocalDateString,
+  toTimeSlots,
+} from '@/utils/appointment-helpers';
 
 function groupByPeriod(slots: TimeSlot[]) {
   return {
@@ -91,17 +53,21 @@ function groupByPeriod(slots: TimeSlot[]) {
   };
 }
 
-const BASE_DATES = buildDateWindow();
+// const BASE_DATES = buildDateWindow();
 type TabType = 'appointment' | 'consultation';
 
 export function DoctorDetailScreen() {
   const router = useRouter();
   const { doctorId } = useLocalSearchParams<{ doctorId: string }>();
   const [activeTab, setActiveTab] = useState<TabType>('appointment');
+  const [searchDate, setSearchDate] = useState(new Date());
+  const baseDates = useMemo(() => buildMonthDateWindow(searchDate), [searchDate]);
+
   const [selectedDate, setSelectedDate] = useState(
-    BASE_DATES[0]?.date ?? toLocalDateString(new Date()),
+    baseDates[0]?.date ?? toLocalDateString(new Date()),
   );
   const [selectedSlotId, setSelectedSlotId] = useState<string | null>(null);
+  const [showMonthPicker, setShowMonthPicker] = useState(false);
   const [chatLoading, setChatLoading] = useState(false);
   const currentUser = useAuthStore((s) => s.user);
 
@@ -110,7 +76,6 @@ export function DoctorDetailScreen() {
   const addFavorite = useAddFavorite();
   const removeFavorite = useRemoveFavorite();
   const reviewsQuery = useDoctorReviews(doctorId ?? '');
-  console.log(reviewsQuery.data);
   const isSaved = !!favoriteData;
   const appointmentTypeFilter: AppointmentTypeFilter =
     activeTab === 'consultation' ? 'online' : 'offline';
@@ -122,8 +87,8 @@ export function DoctorDetailScreen() {
   );
   const summaryQuery = useDoctorTimeSlotSummary(
     doctorId ?? '',
-    BASE_DATES[0]?.date ?? selectedDate,
-    BASE_DATES[BASE_DATES.length - 1]?.date ?? selectedDate,
+    baseDates[0]?.date ?? selectedDate,
+    baseDates[baseDates.length - 1]?.date ?? selectedDate,
     appointmentTypeFilter,
   );
 
@@ -132,7 +97,9 @@ export function DoctorDetailScreen() {
   }, [selectedDate]);
 
   useEffect(() => {
-    setSelectedDate(BASE_DATES[0]?.date ?? toLocalDateString(new Date()));
+    const d = new Date();
+    setSearchDate(d);
+    setSelectedDate(toLocalDateString(d));
     setSelectedSlotId(null);
   }, [activeTab]);
 
@@ -154,8 +121,8 @@ export function DoctorDetailScreen() {
   }, [summaryQuery.data]);
 
   const weekDates = useMemo(
-    () => BASE_DATES.map((d) => ({ ...d, slots: summaryMap.get(d.date) ?? 0 })),
-    [summaryMap],
+    () => baseDates.map((d) => ({ ...d, slots: summaryMap.get(d.date) ?? 0 })),
+    [summaryMap, baseDates],
   );
 
   const selectedSlot = useMemo(
@@ -294,7 +261,11 @@ export function DoctorDetailScreen() {
             })}
           </View>
 
-          <View className="mb-4 flex-row items-center justify-center gap-1">
+          <TouchableOpacity
+            onPress={() => setShowMonthPicker(true)}
+            activeOpacity={0.7}
+            className="mb-4 flex-row items-center justify-center gap-1"
+          >
             <Text className="text-sm font-semibold text-blue-600">
               Tháng {parseInt(selectedDate.slice(5, 7), 10)}/
               {selectedDate.slice(0, 4)}
@@ -304,7 +275,7 @@ export function DoctorDetailScreen() {
               size={20}
               color={theme.colors.primary}
             />
-          </View>
+          </TouchableOpacity>
 
           <DatePicker
             dates={weekDates}
@@ -455,6 +426,65 @@ export function DoctorDetailScreen() {
             )}
           </AccordionItem>
         </View>
+
+        {/* MODAL CHỌN THÁNG/NĂM */}
+        <Modal visible={showMonthPicker} onRequestClose={() => setShowMonthPicker(false)}>
+          <View className="w-full rounded-2xl bg-white p-6">
+            <Text className="mb-4 text-center text-lg font-bold text-gray-900">Chọn thời gian</Text>
+            <View className="max-h-60 flex-row">
+              {/* Cột Tháng */}
+              <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+                {Array.from({ length: 12 }, (_, i) => {
+                  const m = i + 1;
+                  const isCurM = m === (searchDate.getMonth() + 1);
+                  return (
+                    <TouchableOpacity
+                      key={m}
+                      onPress={() => {
+                        const newD = new Date(searchDate);
+                        newD.setMonth(i);
+                        // Nếu là tháng hiện tại nhưng d < today, set d = today. 
+                        // Nhưng đơn giản hơn: cứ cho phép chọn.
+                        setSearchDate(newD);
+                      }}
+                      className={`mb-2 items-center rounded-lg py-3 ${isCurM ? 'bg-blue-50' : ''}`}
+                    >
+                      <Text className={`text-sm font-semibold ${isCurM ? 'text-blue-600' : 'text-gray-600'}`}>Tháng {m}</Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </ScrollView>
+              {/* Cột Năm */}
+              <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+                {Array.from({ length: 6 }, (_, i) => new Date().getFullYear() + i).map((y) => {
+                  const isCurY = y === searchDate.getFullYear();
+                  return (
+                    <TouchableOpacity
+                      key={y}
+                      onPress={() => {
+                        const newD = new Date(searchDate);
+                        newD.setFullYear(y);
+                        setSearchDate(newD);
+                      }}
+                      className={`mb-2 items-center rounded-lg py-3 ${isCurY ? 'bg-blue-50' : ''}`}
+                    >
+                      <Text className={`text-sm font-semibold ${isCurY ? 'text-blue-600' : 'text-gray-600'}`}>{y}</Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </ScrollView>
+            </View>
+            <TouchableOpacity
+              onPress={() => {
+                setShowMonthPicker(false);
+                setSelectedDate(toLocalDateString(searchDate));
+              }}
+              className="mt-6 items-center rounded-xl bg-blue-600 py-4"
+            >
+              <Text className="text-sm font-bold text-white">Xác nhận</Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
       </ScrollView>
 
       <View className="absolute bottom-0 left-0 right-0 border-t border-gray-200 bg-white px-4 pb-6 pt-3 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
