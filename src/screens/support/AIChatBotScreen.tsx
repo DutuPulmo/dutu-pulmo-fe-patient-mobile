@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity,
   SafeAreaView,
+  Dimensions,
 } from 'react-native';
 import { Send, Bot, User, RotateCcw, Sparkles } from 'lucide-react-native';
 
@@ -17,6 +18,8 @@ import { TypingIndicator } from '@/components/chat/TypingIndicator';
 import ScreenHeader from '@/components/ui/ScreenHeader';
 import { Input } from '@/components/ui/Input';
 import { theme } from '@/constants/theme';
+
+const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export function AIChatBotScreen() {
   const [inputText, setInputText] = useState('');
@@ -30,7 +33,6 @@ export function AIChatBotScreen() {
 
     if (!text) setInputText('');
 
-    // Add user message
     const userMsg: Message = {
       id: Date.now().toString(),
       role: 'user',
@@ -41,11 +43,9 @@ export function AIChatBotScreen() {
 
     setLoading(true);
     try {
-      console.log('[AIChatBotScreen] Calling service...');
       const response = await aiChatBotService.sendMessage(messageText, sessionId ?? undefined);
-      
+
       if (response.success) {
-        console.log('[AIChatBotScreen] Success response:', response.data.type);
         if (response.meta.sessionId) {
           setSessionId(response.meta.sessionId);
         }
@@ -53,20 +53,24 @@ export function AIChatBotScreen() {
         const aiMsg: Message = {
           id: (Date.now() + 1).toString(),
           role: 'assistant',
-          content: response.data.message,
-          timestamp: response.data.timestamp,
-          suggestedActions: response.data.suggestedActions,
+          content: response.data.message ?? '',
+          timestamp: response.data.timestamp ?? new Date().toISOString(),
+          suggestedActions: response.data.suggestedActions ?? [],
         };
         addMessage(aiMsg);
-      } else {
-        console.warn('[AIChatBotScreen] Response reported failure:', response);
       }
-    } catch (error: any) {
-      console.error('[AIChatBotScreen] Error in handleSend:', error);
+    } catch (error: unknown) {
+      console.error('[AIChatBotScreen] Error:', error);
+
+      let errorText = 'Xin lỗi, không thể kết nối với AI. Vui lòng thử lại sau.';
+      if (error instanceof Error && error.message) {
+        errorText = `Lỗi: ${error.message}`;
+      }
+
       const errorMsg: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: `Lỗi: ${error.message || 'Không thể kết nối với AI'}. Vui lòng kiểm tra lại URL Webhook hoặc kết nối mạng.`,
+        content: errorText,
         timestamp: new Date().toISOString(),
       };
       addMessage(errorMsg);
@@ -80,21 +84,17 @@ export function AIChatBotScreen() {
     const isLatestAi = isAi && index === 0;
 
     return (
-      <View
-        className={`mb-4 flex-row ${isAi ? 'justify-start' : 'justify-end'}`}
-      >
+      <View className={`mb-4 flex-row ${isAi ? 'justify-start' : 'justify-end'}`}>
         <View className="flex-row items-end gap-2 max-w-[85%]">
           {isAi && (
             <View className="h-8 w-8 items-center justify-center rounded-full bg-blue-100 mb-1">
               <Bot size={18} color={theme.colors.primary} />
             </View>
           )}
-          
+
           <View
             className={`rounded-2xl px-4 py-3 ${
-              isAi 
-                ? 'bg-white border border-slate-100' 
-                : 'bg-blue-500'
+              isAi ? 'bg-white border border-slate-100' : 'bg-blue-500'
             }`}
             style={isAi ? theme.shadow.card : {}}
           >
@@ -106,9 +106,7 @@ export function AIChatBotScreen() {
               />
             ) : (
               <Text
-                className={`text-[15px] leading-6 ${
-                  isAi ? 'text-slate-800' : 'text-white'
-                }`}
+                className={`text-[15px] leading-6 ${isAi ? 'text-slate-800' : 'text-white'}`}
               >
                 {item.content}
               </Text>
@@ -153,26 +151,36 @@ export function AIChatBotScreen() {
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         className="flex-1"
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
       >
         <FlatList
           ref={flatListRef}
           data={[...messages].reverse()}
           keyExtractor={(item) => item.id}
           renderItem={renderMessage}
-          contentContainerStyle={{ padding: 16, paddingTop: 32 }}
+          // Fix: bỏ paddingTop lớn, chỉ dùng padding đều
+          contentContainerStyle={{
+            padding: 16,
+            // Khi không có message, căn giữa màn hình
+            flexGrow: 1,
+          }}
           inverted
           ListHeaderComponent={isLoading ? <TypingIndicator /> : null}
+          // Fix: chỉ hiện EmptyComponent khi thực sự không có message và không loading
           ListEmptyComponent={
-            <View className="flex-1 items-center justify-center py-20 opacity-40">
-              <View className="mb-4 h-20 w-20 items-center justify-center rounded-full bg-blue-50">
-                <Sparkles size={40} color={theme.colors.primary} />
+            !isLoading ? (
+              <View
+                style={{ height: SCREEN_HEIGHT * 0.5 }}
+                className="items-center justify-center opacity-40"
+              >
+                <View className="mb-4 h-20 w-20 items-center justify-center rounded-full bg-blue-50">
+                  <Sparkles size={40} color={theme.colors.primary} />
+                </View>
+                <Text className="text-base font-bold text-slate-700">Chào bạn!</Text>
+                <Text className="mt-1 text-center text-sm text-slate-400">
+                  Tôi là Trợ lý AI chuyên về sức khỏe hô hấp.{'\n'}Bạn đang cảm thấy thế nào?
+                </Text>
               </View>
-              <Text className="text-base font-bold text-slate-700">Chào bạn!</Text>
-              <Text className="mt-1 text-center text-sm text-slate-400">
-                Tôi là Trợ lý AI chuyên về sức khỏe hô hấp.{"\n"}Bạn đang cảm thấy thế nào?
-              </Text>
-            </View>
+            ) : null
           }
         />
 

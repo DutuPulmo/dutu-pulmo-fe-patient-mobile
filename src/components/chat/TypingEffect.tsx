@@ -17,12 +17,13 @@ export const TypingEffect: React.FC<TypingEffectProps> = ({
   const [displayedText, setDisplayedText] = useState('');
 
   useEffect(() => {
-    let index = 0;
     setDisplayedText('');
-    
+    const chars = [...text];
+    let index = 0;
+
     const timer = setInterval(() => {
-      if (index < text.length) {
-        setDisplayedText((prev) => prev + text.charAt(index));
+      if (index < chars.length) {
+        setDisplayedText((prev) => prev + chars[index]);
         index++;
       } else {
         clearInterval(timer);
@@ -31,7 +32,7 @@ export const TypingEffect: React.FC<TypingEffectProps> = ({
     }, speed);
 
     return () => clearInterval(timer);
-  }, [text, speed]);
+  }, [text, speed, onComplete]);
 
   return (
     <Text style={style} {...props}>
