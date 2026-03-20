@@ -5,3 +5,10 @@ export type ResponseCommon<T> = {
   message: string;
   data?: T;
 };
+
+export interface ChangePasswordDto {
+  oldPassword?: string;
+  newPassword?: string;
+  confirmPassword?: string;
+}
+

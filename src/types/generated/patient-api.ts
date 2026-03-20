@@ -1857,7 +1857,7 @@ export interface paths {
         patch: operations["ReviewController_update"];
         trace?: never;
     };
-    "/reviews/{id}/response": {
+    "/reviews/sync-to-appointments": {
         parameters: {
             query?: never;
             header?: never;
@@ -1866,12 +1866,12 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post?: never;
+        /** Đồng bộ rating từ Review sang Appointment (Dành cho dữ liệu cũ) */
+        post: operations["ReviewController_syncToAppointments"];
         delete?: never;
         options?: never;
         head?: never;
-        /** Bác sĩ phản hồi đánh giá */
-        patch: operations["ReviewController_respondToReview"];
+        patch?: never;
         trace?: never;
     };
     "/screenings/{id}": {
@@ -1992,6 +1992,23 @@ export interface paths {
         head?: never;
         /** Cập nhật thông tin user (Admin hoặc chính mình) */
         patch: operations["UserController_update"];
+        trace?: never;
+    };
+    "/users/me/change-password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Đổi mật khẩu cho user hiện tại */
+        patch: operations["UserController_changePassword"];
         trace?: never;
     };
     "/users/me/avatar": {
@@ -5137,6 +5154,23 @@ export interface components {
              * @enum {string}
              */
             status?: "ACTIVE" | "INACTIVE";
+        };
+        ChangePasswordDto: {
+            /**
+             * @description Mật khẩu hiện tại
+             * @example OldPassword123!
+             */
+            oldPassword: string;
+            /**
+             * @description Mật khẩu mới
+             * @example NewPassword123!
+             */
+            newPassword: string;
+            /**
+             * @description Xác nhận mật khẩu mới
+             * @example NewPassword123!
+             */
+            confirmPassword: string;
         };
         FcmTokenDto: {
             /**
@@ -8377,28 +8411,20 @@ export interface operations {
             };
         };
     };
-    ReviewController_respondToReview: {
+    ReviewController_syncToAppointments: {
         parameters: {
             query?: never;
             header?: never;
-            path: {
-                id: string;
-            };
+            path?: never;
             cookie?: never;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateReviewDto"];
-            };
-        };
+        requestBody?: never;
         responses: {
-            200: {
+            201: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/json": components["schemas"]["ReviewResponseDto"];
-                };
+                content?: never;
             };
         };
     };
@@ -8610,6 +8636,28 @@ export interface operations {
             };
             /** @description Không có quyền truy cập */
             403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    UserController_changePassword: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChangePasswordDto"];
+            };
+        };
+        responses: {
+            /** @description Đổi mật khẩu thành công */
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };

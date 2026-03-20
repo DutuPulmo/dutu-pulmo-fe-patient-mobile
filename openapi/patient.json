@@ -5384,39 +5384,13 @@
         ]
       }
     },
-    "/reviews/{id}/response": {
-      "patch": {
-        "operationId": "ReviewController_respondToReview",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateReviewDto"
-              }
-            }
-          }
-        },
+    "/reviews/sync-to-appointments": {
+      "post": {
+        "operationId": "ReviewController_syncToAppointments",
+        "parameters": [],
         "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ReviewResponseDto"
-                }
-              }
-            }
+          "201": {
+            "description": ""
           }
         },
         "security": [
@@ -5424,7 +5398,7 @@
             "JWT-auth": []
           }
         ],
-        "summary": "Bác sĩ phản hồi đánh giá",
+        "summary": "Đồng bộ rating từ Review sang Appointment (Dành cho dữ liệu cũ)",
         "tags": [
           "Reviews"
         ]
@@ -5741,6 +5715,36 @@
           }
         ],
         "summary": "Cập nhật thông tin user (Admin hoặc chính mình)",
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/users/me/change-password": {
+      "patch": {
+        "operationId": "UserController_changePassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Đổi mật khẩu thành công"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Đổi mật khẩu cho user hiện tại",
         "tags": [
           "Users"
         ]
@@ -16189,6 +16193,31 @@
             "example": "ACTIVE"
           }
         }
+      },
+      "ChangePasswordDto": {
+        "type": "object",
+        "properties": {
+          "oldPassword": {
+            "type": "string",
+            "description": "Mật khẩu hiện tại",
+            "example": "OldPassword123!"
+          },
+          "newPassword": {
+            "type": "string",
+            "description": "Mật khẩu mới",
+            "example": "NewPassword123!"
+          },
+          "confirmPassword": {
+            "type": "string",
+            "description": "Xác nhận mật khẩu mới",
+            "example": "NewPassword123!"
+          }
+        },
+        "required": [
+          "oldPassword",
+          "newPassword",
+          "confirmPassword"
+        ]
       },
       "FcmTokenDto": {
         "type": "object",
