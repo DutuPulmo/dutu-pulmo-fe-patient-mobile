@@ -5,6 +5,7 @@ import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Loading } from '@/components/ui/Loading';
 import { ScreenHeader } from '@/components/ui/ScreenHeader';
+import { PendingPaymentBanner } from '@/components/appointment/PendingPaymentBanner';
 import { APPOINTMENT_STATUS_CONFIG, FALLBACK_APPOINTMENT_STATUS } from '@/constants/status-configs';
 import { useAppointments } from '@/hooks/useAppointments';
 
@@ -15,8 +16,10 @@ function AppointmentCard({
   appointment: any;
   onPress: () => void;
 }) {
+  const router = useRouter();
   const statusConfig = APPOINTMENT_STATUS_CONFIG[appointment.status] ?? FALLBACK_APPOINTMENT_STATUS;
   const isCancelled = appointment.status === 'CANCELLED';
+  const isPendingPayment = appointment.status === 'PENDING_PAYMENT';
   const scheduledDate = new Date(appointment.scheduledAt);
   const weekdays = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
 
@@ -24,7 +27,7 @@ function AppointmentCard({
     <TouchableOpacity
       onPress={onPress}
       activeOpacity={0.85}
-      className="overflow-hidden rounded-2xl bg-white"
+      className={`overflow-hidden rounded-2xl bg-white ${isPendingPayment ? 'border border-amber-200' : ''}`}
       style={{
         shadowColor: '#000',
         shadowOpacity: 0.06,
@@ -32,6 +35,14 @@ function AppointmentCard({
         elevation: 3,
       }}
     >
+      {/* Pending Payment Highlight */}
+      {isPendingPayment && (
+        <View className="bg-amber-100/50 py-1.5 px-4 flex-row items-center gap-1.5 border-b border-amber-100">
+          <MaterialIcons name="info-outline" size={12} color="#d97706" />
+          <Text className="text-[10px] font-bold text-amber-700">Lịch của bạn đang chờ thanh toán</Text>
+        </View>
+      )}
+
       {/* Card header: status + date */}
       <View className="flex-row items-center justify-between border-b border-slate-50 px-4 pb-3 pt-4">
         {/* Status badge */}
@@ -95,15 +106,26 @@ function AppointmentCard({
 
       {/* Appointment number footer */}
       <View className="flex-row items-center justify-between px-4 pb-3">
-        <Text className="text-[11px] text-slate-400">
-          Mã phiếu:{' '}
-          <Text className="font-semibold text-slate-500">
-            {appointment.appointmentNumber ?? '—'}
+        <View>
+          <Text className="text-[11px] text-slate-400">
+            Mã phiếu:{' '}
+            <Text className="font-semibold text-slate-500">
+              {appointment.appointmentNumber ?? '—'}
+            </Text>
           </Text>
-        </Text>
 
-        {isCancelled && (
-          <Text className="text-[11px] font-medium text-red-400">Đã hủy lịch</Text>
+          {isCancelled && (
+            <Text className="text-[11px] font-medium text-red-400 mt-0.5">Đã hủy lịch</Text>
+          )}
+        </View>
+
+        {isPendingPayment && (
+          <TouchableOpacity
+            onPress={() => router.push(`/appointments/payment?appointmentId=${appointment.id}`)}
+            className="bg-amber-500 px-3 py-1.5 rounded-lg"
+          >
+            <Text className="text-white text-[11px] font-bold">Thanh toán ngay</Text>
+          </TouchableOpacity>
         )}
       </View>
     </TouchableOpacity>
@@ -139,6 +161,8 @@ export function MyAppointmentsScreen() {
         contentContainerClassName="p-4 pb-8"
         showsVerticalScrollIndicator={false}
       >
+        <PendingPaymentBanner />
+
         {/* Summary row */}
         {appointments.length > 0 && (
           <View className="mb-4 flex-row items-center justify-between">

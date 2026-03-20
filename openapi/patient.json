@@ -1495,6 +1495,32 @@
                 "DESC"
               ]
             }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "UNREAD",
+                "READ"
+              ]
+            }
+          },
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "GENERAL",
+                "PAYMENT",
+                "SYSTEM",
+                "APPOINTMENT"
+              ]
+            }
           }
         ],
         "responses": {
@@ -2854,6 +2880,38 @@
         "operationId": "PaymentController_handleReturn",
         "parameters": [
           {
+            "name": "code",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cancel",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "orderCode",
             "required": true,
             "in": "query",
@@ -2867,7 +2925,6 @@
             "description": ""
           }
         },
-        "summary": "Return URL sau khi thanh toán thành công",
         "tags": [
           "Payment"
         ]
@@ -4094,6 +4151,68 @@
         ]
       }
     },
+    "/enums/ethnicities/{code}": {
+      "get": {
+        "operationId": "EnumController_getEthnicityByCode",
+        "parameters": [
+          {
+            "name": "code",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thông tin dân tộc",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnumItemDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lấy thông tin dân tộc theo mã",
+        "tags": [
+          "Enum - Danh mục"
+        ]
+      }
+    },
+    "/enums/occupations/{code}": {
+      "get": {
+        "operationId": "EnumController_getOccupationByCode",
+        "parameters": [
+          {
+            "name": "code",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thông tin nghề nghiệp",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnumItemDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lấy thông tin nghề nghiệp theo mã",
+        "tags": [
+          "Enum - Danh mục"
+        ]
+      }
+    },
     "/favorites": {
       "post": {
         "operationId": "FavoriteController_create",
@@ -5095,11 +5214,6 @@
             }
           }
         },
-        "security": [
-          {
-            "JWT-auth": []
-          }
-        ],
         "summary": "Lấy danh sách tất cả đánh giá",
         "tags": [
           "Reviews"
@@ -5134,11 +5248,6 @@
             }
           }
         },
-        "security": [
-          {
-            "JWT-auth": []
-          }
-        ],
         "summary": "Lấy danh sách đánh giá theo bác sĩ",
         "tags": [
           "Reviews"
@@ -5164,11 +5273,6 @@
             }
           }
         },
-        "security": [
-          {
-            "JWT-auth": []
-          }
-        ],
         "summary": "Lấy danh sách đánh giá của tôi",
         "tags": [
           "Reviews"
@@ -5203,11 +5307,6 @@
             "description": "Không tìm thấy đánh giá"
           }
         },
-        "security": [
-          {
-            "JWT-auth": []
-          }
-        ],
         "summary": "Lấy đánh giá theo id",
         "tags": [
           "Reviews"
@@ -13098,6 +13197,23 @@
           }
         }
       },
+      "EnumItemDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "1"
+          },
+          "name": {
+            "type": "string",
+            "example": "Việt Nam"
+          }
+        },
+        "required": [
+          "code",
+          "name"
+        ]
+      },
       "CreateFavoriteDto": {
         "type": "object",
         "properties": {
@@ -13112,38 +13228,6 @@
             "description": "ID của bệnh viện muốn thêm vào yêu thích"
           }
         }
-      },
-      "FavoriteResponseDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "example": "b432ef6e-12e9-415d-acc8-5cb3c3cc285b"
-          },
-          "userId": {
-            "type": "string",
-            "example": "a17ee20d-cae4-422f-bf8c-11a8c0de4f32"
-          },
-          "doctorId": {
-            "type": "string",
-            "example": "e320aa67-b53b-4c4a-bd50-31e8b312defa"
-          },
-          "hospitalId": {
-            "type": "string",
-            "example": "f430bb78-c64c-5d5b-ce61-42f9c423efgb"
-          },
-          "createdAt": {
-            "format": "date-time",
-            "type": "string",
-            "example": "2024-07-16T10:30:15.000Z",
-            "description": "Ngày thêm vào danh sách yêu thích"
-          }
-        },
-        "required": [
-          "id",
-          "userId",
-          "createdAt"
-        ]
       },
       "HospitalResponseDto": {
         "type": "object",
@@ -13206,6 +13290,54 @@
           "createdAt",
           "updatedAt",
           "logoUrl"
+        ]
+      },
+      "FavoriteResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "b432ef6e-12e9-415d-acc8-5cb3c3cc285b"
+          },
+          "userId": {
+            "type": "string",
+            "example": "a17ee20d-cae4-422f-bf8c-11a8c0de4f32"
+          },
+          "doctorId": {
+            "type": "string",
+            "example": "e320aa67-b53b-4c4a-bd50-31e8b312defa"
+          },
+          "doctor": {
+            "example": "e320aa67-b53b-4c4a-bd50-31e8b312defa",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DoctorResponseDto"
+              }
+            ]
+          },
+          "hospitalId": {
+            "type": "string",
+            "example": "f430bb78-c64c-5d5b-ce61-42f9c423efgb"
+          },
+          "hospital": {
+            "example": "f430bb78-c64c-5d5b-ce61-42f9c423efgb",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/HospitalResponseDto"
+              }
+            ]
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2024-07-16T10:30:15.000Z",
+            "description": "Ngày thêm vào danh sách yêu thích"
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "createdAt"
         ]
       },
       "CreateHospitalDto": {
@@ -13590,6 +13722,22 @@
             "type": "string",
             "example": "2024-07-15T10:20:30.000Z",
             "description": "Ngày tạo đánh giá"
+          },
+          "reviewerName": {
+            "type": "string",
+            "example": "Nguyễn Văn A"
+          },
+          "doctorName": {
+            "type": "string",
+            "example": "BS. Trần Văn B"
+          },
+          "reviewerAvatar": {
+            "type": "string",
+            "example": "Nguyễn Văn A"
+          },
+          "doctorAvatar": {
+            "type": "string",
+            "example": "Nguyễn Văn A"
           }
         },
         "required": [

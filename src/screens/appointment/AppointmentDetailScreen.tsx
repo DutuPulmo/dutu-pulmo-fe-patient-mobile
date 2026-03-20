@@ -192,6 +192,7 @@ export function AppointmentDetailScreen() {
   const canJoinVideo = ['CONFIRMED', 'CHECKED_IN', 'IN_PROGRESS'].includes(
     appointment.status,
   );
+  const isPendingPayment = appointment.status === 'PENDING_PAYMENT';
   const isCancelled = appointment.status === 'CANCELLED';
   const isVideoAppointment = appointment.appointmentType === 'VIDEO';
 
@@ -451,6 +452,31 @@ export function AppointmentDetailScreen() {
                 Đặt lịch khám khác
               </Text>
             </TouchableOpacity>
+          ) : isPendingPayment ? (
+            <View className="gap-2">
+              <TouchableOpacity
+                onPress={() =>
+                  router.push(`/appointments/payment?appointmentId=${appointmentId}`)
+                }
+                activeOpacity={0.85}
+                className="flex-row items-center justify-center gap-2 rounded-[14px] bg-amber-500 py-[15px]"
+              >
+                <MaterialIcons name="payment" size={18} color="white" />
+                <Text className="text-[15px] font-bold text-white">
+                  Thanh toán ngay
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setCancelModalOpen(true)}
+                activeOpacity={0.85}
+                className="items-center justify-center rounded-[14px] border border-red-500 py-[14px]"
+                style={{ borderWidth: 1.5 }}
+              >
+                <Text className="text-[15px] font-bold text-red-500">
+                  Hủy lịch
+                </Text>
+              </TouchableOpacity>
+            </View>
           ) : isVideoAppointment ? (
             <View className="gap-2">
               {canJoinVideo ? (

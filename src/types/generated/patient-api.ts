@@ -1049,7 +1049,6 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Return URL sau khi thanh toán thành công */
         get: operations["PaymentController_handleReturn"];
         put?: never;
         post?: never;
@@ -1396,6 +1395,40 @@ export interface paths {
         };
         /** Lấy danh sách nghề nghiệp */
         get: operations["EnumController_getOccupations"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/enums/ethnicities/{code}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy thông tin dân tộc theo mã */
+        get: operations["EnumController_getEthnicityByCode"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/enums/occupations/{code}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy thông tin nghề nghiệp theo mã */
+        get: operations["EnumController_getOccupationByCode"];
         put?: never;
         post?: never;
         delete?: never;
@@ -4574,6 +4607,12 @@ export interface components {
              */
             id?: string;
         };
+        EnumItemDto: {
+            /** @example 1 */
+            code: string;
+            /** @example Việt Nam */
+            name: string;
+        };
         CreateFavoriteDto: {
             /**
              * @description ID của bác sĩ muốn thêm vào yêu thích
@@ -4585,22 +4624,6 @@ export interface components {
              * @example a120bb78-c64c-5d5b-ce61-42f9c423efgb
              */
             hospitalId?: string;
-        };
-        FavoriteResponseDto: {
-            /** @example b432ef6e-12e9-415d-acc8-5cb3c3cc285b */
-            id: string;
-            /** @example a17ee20d-cae4-422f-bf8c-11a8c0de4f32 */
-            userId: string;
-            /** @example e320aa67-b53b-4c4a-bd50-31e8b312defa */
-            doctorId?: string;
-            /** @example f430bb78-c64c-5d5b-ce61-42f9c423efgb */
-            hospitalId?: string;
-            /**
-             * Format: date-time
-             * @description Ngày thêm vào danh sách yêu thích
-             * @example 2024-07-16T10:30:15.000Z
-             */
-            createdAt: string;
         };
         HospitalResponseDto: {
             id: string;
@@ -4620,6 +4643,26 @@ export interface components {
             logoUrl: string;
             /** @description Số lượng bác sĩ làm việc tại bệnh viện */
             doctorCount?: number;
+        };
+        FavoriteResponseDto: {
+            /** @example b432ef6e-12e9-415d-acc8-5cb3c3cc285b */
+            id: string;
+            /** @example a17ee20d-cae4-422f-bf8c-11a8c0de4f32 */
+            userId: string;
+            /** @example e320aa67-b53b-4c4a-bd50-31e8b312defa */
+            doctorId?: string;
+            /** @example e320aa67-b53b-4c4a-bd50-31e8b312defa */
+            doctor?: components["schemas"]["DoctorResponseDto"];
+            /** @example f430bb78-c64c-5d5b-ce61-42f9c423efgb */
+            hospitalId?: string;
+            /** @example f430bb78-c64c-5d5b-ce61-42f9c423efgb */
+            hospital?: components["schemas"]["HospitalResponseDto"];
+            /**
+             * Format: date-time
+             * @description Ngày thêm vào danh sách yêu thích
+             * @example 2024-07-16T10:30:15.000Z
+             */
+            createdAt: string;
         };
         CreateHospitalDto: {
             /** @example Bệnh viện Đa khoa Tâm Anh */
@@ -4827,6 +4870,14 @@ export interface components {
              * @example 2024-07-15T10:20:30.000Z
              */
             createdAt: string;
+            /** @example Nguyễn Văn A */
+            reviewerName?: string;
+            /** @example BS. Trần Văn B */
+            doctorName?: string;
+            /** @example Nguyễn Văn A */
+            reviewerAvatar?: string;
+            /** @example Nguyễn Văn A */
+            doctorAvatar?: string;
         };
         UpdateReviewDto: {
             /**
@@ -6044,6 +6095,8 @@ export interface operations {
                 sort?: string;
                 /** @description Thứ tự sắp xếp (ASC hoặc DESC) */
                 order?: "ASC" | "DESC";
+                status?: "UNREAD" | "READ";
+                type?: "GENERAL" | "PAYMENT" | "SYSTEM" | "APPOINTMENT";
             };
             header?: never;
             path?: never;
@@ -6819,6 +6872,10 @@ export interface operations {
     PaymentController_handleReturn: {
         parameters: {
             query: {
+                code: string;
+                id: string;
+                cancel: string;
+                status: string;
                 orderCode: string;
             };
             header?: never;
@@ -7493,6 +7550,50 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PaginatedResponseDto"];
+                };
+            };
+        };
+    };
+    EnumController_getEthnicityByCode: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Thông tin dân tộc */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EnumItemDto"];
+                };
+            };
+        };
+    };
+    EnumController_getOccupationByCode: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Thông tin nghề nghiệp */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EnumItemDto"];
                 };
             };
         };

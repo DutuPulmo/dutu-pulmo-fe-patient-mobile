@@ -166,3 +166,21 @@ export function useVideoCallStatus(appointmentId: string) {
     enabled: Boolean(appointmentId),
   });
 }
+
+export function usePendingPaymentAppointments() {
+  return useQuery({
+    queryKey: appointmentKeys.myList({
+      status: 'PENDING_PAYMENT' as any,
+      limit: 5,
+      sort: 'createdAt',
+      order: 'DESC',
+    }),
+    queryFn: () =>
+      appointmentService.getMyPatientAppointments({
+        status: 'PENDING_PAYMENT' as any,
+        limit: 5,
+        sort: 'createdAt',
+        order: 'DESC',
+      }),
+  });
+}

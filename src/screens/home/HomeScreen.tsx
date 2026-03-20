@@ -15,6 +15,7 @@ import { theme } from '@/constants/theme';
 import { usePublicDoctors, useSpecialties } from '@/hooks/useAppointments';
 import { useHospitals } from '@/hooks/useHospitals';
 import { Loading } from '@/components/ui/Loading';
+import { PendingPaymentBanner } from '@/components/appointment/PendingPaymentBanner';
 
 import { SAMPLE_NEWS } from '@/constants/news-data';
 
@@ -110,8 +111,12 @@ export function HomeScreen() {
     <ScrollView className="flex-1 bg-slate-50" showsVerticalScrollIndicator={false}>
       <Header />
 
-      <View className="px-4 pt-11 gap-6">
+      <View className="px-4 pt-10">
+        <PendingPaymentBanner />
         <PromoBanner />
+      </View>
+
+      <View className="px-4 pt-2 gap-6">
         <QuickActions actions={quickActions} />
 
         <View>
