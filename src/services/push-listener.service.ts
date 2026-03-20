@@ -3,6 +3,7 @@ import messaging, {
 } from '@react-native-firebase/messaging';
 import * as Notifications from 'expo-notifications';
 import { router } from 'expo-router';
+import { queryClient } from '@/providers/query-provider';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -62,6 +63,12 @@ export function startPushListeners() {
   // Foreground: Firebase nhận → hiện lên notification bar
   const foregroundUnsubscribe = messaging().onMessage(async (message) => {
     await displayNotification(message);
+
+    // Invalidate notification queries to update UI in "real-time"
+    queryClient.invalidateQueries({
+      queryKey: ['notifications'],
+      refetchType: 'all',
+    });
   });
 
   // Khi user bấm vào notification (expo-notifications)

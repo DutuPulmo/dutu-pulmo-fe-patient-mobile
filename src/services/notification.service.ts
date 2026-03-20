@@ -101,6 +101,10 @@ export const notificationService = {
       message: data?.message ?? '',
     };
   },
+
+  testPushNotification: async (title: string, content: string) => {
+    await api.post('/notifications/test-push', { title, content });
+  },
 };
 
 export default notificationService;

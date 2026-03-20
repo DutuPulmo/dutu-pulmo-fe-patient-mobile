@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { notificationService, type NotificationQuery } from '@/services/notification.service';
 
 const notificationKeys = {
-  list: (params?: NotificationQuery) => ['notifications', 'list', params] as const,
+  list: (params?: NotificationQuery) => ['notifications', params] as const,
   unreadCount: ['notifications', 'unread-count'] as const,
 };
 
@@ -40,5 +40,12 @@ export function useMarkAllNotificationsAsRead() {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['notifications'] });
     },
+  });
+}
+
+export function useTestPushNotification() {
+  return useMutation({
+    mutationFn: ({ title, content }: { title: string; content: string }) =>
+      notificationService.testPushNotification(title, content),
   });
 }

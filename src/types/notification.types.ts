@@ -11,4 +11,6 @@ export type NotificationListResponse = {
 };
 
 export type NotificationQuery =
-  operations['NotificationController_getUserNotifications']['parameters']['query'];
+  operations['NotificationController_getUserNotifications']['parameters']['query'] & {
+    status?: components['schemas']['NotificationResponseDto']['status'];
+  };
