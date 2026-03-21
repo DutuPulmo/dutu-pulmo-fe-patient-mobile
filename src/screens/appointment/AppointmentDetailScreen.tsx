@@ -510,19 +510,22 @@ export function AppointmentDetailScreen() {
           ) : isVideoAppointment ? (
             <View className="gap-2">
               {/* 1. Warning (nếu có) */}
-              {isConfirmed && !canCancelConfirmed && !isCancelled && (
-                <View className="flex-row items-start gap-2 rounded-xl border border-orange-200 bg-orange-50 px-3 py-2">
-                  <MaterialIcons
-                    name="schedule"
-                    size={15}
-                    color="#f97316"
-                    style={{ marginTop: 1 }}
-                  />
-                  <Text className="flex-1 text-xs leading-[18px] text-orange-700">
-                    Đã quá thời hạn hủy lịch (trước 4 tiếng).
-                  </Text>
-                </View>
-              )}
+              {isConfirmed &&
+                !canCancelConfirmed &&
+                !isCancelled &&
+                minutesUntilStart >= 0 && (
+                  <View className="flex-row items-start gap-2 rounded-xl border border-orange-200 bg-orange-50 px-3 py-2">
+                    <MaterialIcons
+                      name="schedule"
+                      size={15}
+                      color="#f97316"
+                      style={{ marginTop: 1 }}
+                    />
+                    <Text className="flex-1 text-xs leading-[18px] text-orange-700">
+                      Đã quá thời hạn hủy lịch (trước 4 tiếng).
+                    </Text>
+                  </View>
+                )}
 
               {showCancelWarning && (
                 <View className="flex-row items-start gap-2 rounded-xl border border-yellow-200 bg-yellow-50 px-3 py-2">
@@ -599,19 +602,22 @@ export function AppointmentDetailScreen() {
             /* Nhánh IN_CLINIC — tương tự */
             <View className="gap-2">
               {/* 1. Warning (nếu có) */}
-              {isConfirmed && !canCancelConfirmed && !isCancelled && (
-                <View className="flex-row items-start gap-2 rounded-xl border border-orange-200 bg-orange-50 px-3 py-2">
-                  <MaterialIcons
-                    name="schedule"
-                    size={15}
-                    color="#f97316"
-                    style={{ marginTop: 1 }}
-                  />
-                  <Text className="flex-1 text-xs leading-[18px] text-orange-700">
-                    Đã quá thời hạn hủy lịch (trước 4 tiếng).
-                  </Text>
-                </View>
-              )}
+              {isConfirmed &&
+                !canCancelConfirmed &&
+                !isCancelled &&
+                minutesUntilStart >= 0 && (
+                  <View className="flex-row items-start gap-2 rounded-xl border border-orange-200 bg-orange-50 px-3 py-2">
+                    <MaterialIcons
+                      name="schedule"
+                      size={15}
+                      color="#f97316"
+                      style={{ marginTop: 1 }}
+                    />
+                    <Text className="flex-1 text-xs leading-[18px] text-orange-700">
+                      Đã quá thời hạn hủy lịch (trước 4 tiếng).
+                    </Text>
+                  </View>
+                )}
 
               {showCancelWarning && (
                 <View className="flex-row items-start gap-2 rounded-xl border border-yellow-200 bg-yellow-50 px-3 py-2">
